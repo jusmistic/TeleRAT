@@ -2,6 +2,7 @@
 Project Computer Programing 
 
 # Telegram Commands
+```
 /help - List of commands.
 /shell - Exec shell commands with timeout.
 /cp - Copy file/folder.
@@ -13,3 +14,4 @@ Project Computer Programing
 /getfile - Download file from bot.
 /reserve - Warning text that found in shell.
 /BOOM! - DESTROY ITSELF!
+```
