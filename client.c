@@ -11,7 +11,7 @@ int main(int argc , char *argv[])
     struct sockaddr_in server;
     char message[2000], server_reply[2000];
      
-    //Create socket = socket_build
+    //Create socket
     //if cannot create socket it means socket_build valuable = -1
     socket_build = socket(AF_INET , SOCK_STREAM , 0);
     if (socket_build == -1)
