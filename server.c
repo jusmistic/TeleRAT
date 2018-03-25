@@ -10,7 +10,8 @@ int main(int argc , char *argv[])
     struct sockaddr_in server , client;
     char message[2000];
      
-    //Create socket
+    //Create socket = socket_build
+    //if cannot create socket it means socket_build valuable = -1
     socket_desc = socket(AF_INET , SOCK_STREAM , 0);
     if (socket_desc == -1)
     {
@@ -33,16 +34,17 @@ int main(int argc , char *argv[])
     //Listen
     listen(socket_desc , 3);
      
-    //Accept and incoming connection
+    //Accept and incoming connection(waiting connection form client)
     printf("Waiting for incoming connections...\n");
     c = sizeof(struct sockaddr_in);
     int ret;
     while( (new_socket = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)) )
     {
+        //client have connected with server success and prepare to send massage
         printf("Connection accepted");
          while(1)
         {
-        //Reply to the client
+        //Reply to the client(send massage to client,Then client get massage (#in client.c -> client read))
             printf("\nServer Write: ");
             bzero(message,2000);
             scanf("%s",message);
@@ -53,6 +55,7 @@ int main(int argc , char *argv[])
             printf("Sent");
             //Clear message Var  
             bzero(message,2000);
+            //Recieve massage form client (#in client.c -> client write) 
             printf("\nServer Read: ");
             if( ret = read(new_socket, message, 2000) < 0)
             {
