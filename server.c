@@ -3,7 +3,10 @@
 #include<sys/socket.h>
 #include<arpa/inet.h> //inet_addr
 #include<unistd.h>    //write
- 
+
+
+
+
 int main(int argc , char *argv[])
 {
     int socket_desc , new_socket , c;
@@ -37,6 +40,7 @@ int main(int argc , char *argv[])
     printf("Waiting for incoming connections...\n");
     c = sizeof(struct sockaddr_in);
     int ret;
+    char temp[2000];
     while( (new_socket = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)) )
     {
         printf("Connection accepted");
@@ -45,7 +49,9 @@ int main(int argc , char *argv[])
         //Reply to the client
             printf("\nServer Write: ");
             bzero(message,2000);
-            scanf("%s",message);
+            strcpy(message,"\x01");
+            scanf("%s",temp);
+            strcpy(message,temp);
             if(write(new_socket , message , strlen(message))<0)
             {
                   printf("Sending Error!\n");
