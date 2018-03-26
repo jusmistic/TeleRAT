@@ -7,14 +7,14 @@
  
 int main(int argc , char *argv[])
 {
-    int socket_build;
+    int socket_desc;
     struct sockaddr_in server;
     char message[2000], server_reply[2000];
      
     //Create socket
-    //if cannot create socket it means socket_build valuable = -1
-    socket_build = socket(AF_INET , SOCK_STREAM , 0);
-    if (socket_build == -1)
+    //if cannot create socket it means socket_desc valuable = -1
+    socket_desc = socket(AF_INET , SOCK_STREAM , 0);
+    if (socket_desc == -1)
     {
         printf("Could not create socket");
     }
