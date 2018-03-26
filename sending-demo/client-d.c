@@ -72,7 +72,7 @@ int main(int argc , char *argv[])
         //Stop sending
         //After Client send message to server
         printf("Stop sent..\n");
-        usleep(1000000); //1sec
+        usleep(1000000); //1second
         sprintf(message,"%c",OP_STOP);
         printf("%s",message);
         if( write(socket_desc , message ,2) < 0)
