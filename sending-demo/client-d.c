@@ -47,14 +47,10 @@ int main(int argc , char *argv[])
         printf("--- Sending init --- \n");
         int i=0;
         char tmp[250],buf[250];
-        FILE *fp;
-        if ((fp = popen(message,"r")) != 0)
+        FILE *fp = popen(message, "r");
         {
-            while (fgets(buf, 200, fp) != 0)
+            while (fgets(buf, 200, fp))
             {
-                // fputs(buf, stdout); //Use when you want to print string
-                // strcat(text,buf); //include stream to text
-            // sprintf(buf,"%c%s",OP_START,buf);
             printf("%s\n:",buf);
             if( write(socket_desc , buf , strlen(buf)) < 0)
             {
@@ -66,22 +62,6 @@ int main(int argc , char *argv[])
             bzero(buf,200);
             }
         }
-
-        // while(i < 5)
-        // {
-        //     //init sending
-        //     // scanf(" %[^\n]",temp);
-        // //     sprintf(message,"%c%d",OP_START,i);
-        // //     printf("%s\n:",message);
-        // //     if( write(socket_desc , message , strlen(message)) < 0)
-        // //     {
-        // //         printf("Send failed");
-        // //         return 1;
-        // //     }
-        // // bzero(message,200);
-        // // bzero(tmp,200);
-        // i++;
-        // }
         //Stop sending
         printf("Stop sent..\n");
         usleep(1000000); //1sec
