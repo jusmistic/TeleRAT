@@ -12,6 +12,7 @@ int main(int argc , char *argv[])
     char message[2000], server_reply[2000];
      
     //Create socket
+    //if cannot create socket it means socket_desc valuable = -1
     socket_desc = socket(AF_INET , SOCK_STREAM , 0);
     if (socket_desc == -1)
     {
@@ -23,6 +24,8 @@ int main(int argc , char *argv[])
     server.sin_port = htons(8888);
  
     //Connect to remote server
+    //if cannot connect printf connect error and end program
+    //if can connect printf connected
     if (connect(socket_desc , (struct sockaddr *)&server , sizeof(server)) < 0)
     {
         perror("connect error");
@@ -30,10 +33,10 @@ int main(int argc , char *argv[])
     }
      
     printf("Connected\n");
-    //Send some data
+    //Send some data to server
     while(1){
  
-        //Receive a reply from the server
+        //Receive a reply from the server(Server have massage to client and client read this massage)
         bzero(message,2000);
         printf("client read:");
         if( read(socket_desc, message , 2000 ) < 0)
@@ -42,6 +45,7 @@ int main(int argc , char *argv[])
         }
         printf("%s\n",message);
         bzero(message,2000);
+        //client send massage back to server after receive reply form server
         printf("client write:");
         scanf("%s",message);
         if( write(socket_desc , message , strlen(message)) < 0)
