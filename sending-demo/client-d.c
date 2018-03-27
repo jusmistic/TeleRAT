@@ -3,7 +3,7 @@
 #include<sys/socket.h>
 #include<arpa/inet.h> //inet_addr
 #include <unistd.h>
-#include<stdlib.h>
+#include<stdlib.h> //atoi
 
 #define OP_START '\x02'
 #define OP_STOP 'x'
@@ -12,18 +12,24 @@ int main(int argc , char *argv[])
     int socket_desc;
     struct sockaddr_in server;
     char message[2000], server_reply[2000];
-     
+    int potnumber_client;
+    potnumber_client = atoi(argv[2]);     
     //Create socket
     //If cannot create socket it return value of socket_desc valuable = -1
     socket_desc = socket(AF_INET , SOCK_STREAM , 0);
+    if (3 != argc) {
+        fprintf(stderr, "Usage: %s <server> <port>\n", argv[0]);
+        exit(1);
+
+    }
     if (socket_desc == -1)
     {
         printf("Could not create socket");
     }
          
-    server.sin_addr.s_addr = inet_addr("127.0.0.1");
+    server.sin_addr.s_addr = inet_addr(argv[1]);
     server.sin_family = AF_INET;
-    server.sin_port = htons(8888);
+    server.sin_port = htons(potnumber_client);
  
     //Connect to remote server
     //If cannot connect to server it return value of (connect(socket_desc , (struct sockaddr *)&server , sizeof(server)) < 0 and end program
@@ -35,7 +41,7 @@ int main(int argc , char *argv[])
      
     printf("Connected\n");
     //Send some data (client --> server)
-    while(1){
+    while(1) {
  
         //Receive a reply from the server(Server have massage to client and client read this message)
 	//bzero(message,2000) --> set a byte string (message)
@@ -55,9 +61,9 @@ int main(int argc , char *argv[])
         FILE *fp = popen(message, "r");
         {
             //fgets use to read next input line to keep in charactor array with value MAXLINE - 1
-            while (fgets(buf, 200, fp))
+            while (fgets(buf, 256, fp))
             {
-            printf("%s\n:",buf);
+            printf("%s:",buf);
             //If write(socket_desc , buf , strlen(buf)) < 0 it means client didn't send anything to server
             if( write(socket_desc , buf , strlen(buf)) < 0)
             {
@@ -82,10 +88,8 @@ int main(int argc , char *argv[])
         }
         bzero(message,2000);
         bzero(tmp,200);
-        break;
     }
         
     printf("\n");
      
-    return 0;
 }

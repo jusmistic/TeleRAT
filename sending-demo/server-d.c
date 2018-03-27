@@ -3,6 +3,7 @@
 #include<sys/socket.h>
 #include<arpa/inet.h> //inet_addr
 #include<unistd.h>    //write
+#include<stdlib.h> //exit, atoi
 
 #define OP_START '\x02'
 #define OP_STOP 'x'
@@ -13,7 +14,14 @@ int main(int argc , char *argv[])
     int socket_desc , new_socket , c;
     struct sockaddr_in server , client;
     char message[2000]="";
-     
+    int potnumber_server;
+    potnumber_server = atoi(argv[1]); 
+    if (2 != argc) {
+
+        fprintf(stderr, "Usage: %s <port>\n", argv[0]);
+        exit(1);
+
+    } 
     //Create socket
     //If cannot create socket it return value of socket_desc valuable = -1
     socket_desc = socket(AF_INET , SOCK_STREAM , 0);
@@ -25,7 +33,7 @@ int main(int argc , char *argv[])
     //Prepare the sockaddr_in structure
     server.sin_family = AF_INET;
     server.sin_addr.s_addr = INADDR_ANY;
-    server.sin_port = htons( 8888 );
+    server.sin_port = htons(potnumber_server);
      
     //Bind
     //bind() associates the socket with its local address [that's why server side binds, so that clients can use that address to connect to server.] connect() is used to connect to a remote [server] address
@@ -44,49 +52,48 @@ int main(int argc , char *argv[])
     printf("Waiting for incoming connections...\n");
     c = sizeof(struct sockaddr_in);
     int ret;
-    while( (new_socket = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)) )
+    if( (new_socket = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)) )
     {
-        //accept connection form client complete
-        printf("Connection accepted");
-        //Reply to the client
-            //Server send message to client
-            printf("\nServer Write: ");
-            bzero(message,2000);
-            scanf(" %s",message);
-            printf("%s",message);
-	    //If write(new_socket , message , strlen(message) < 0 it means Server didn't send anything to client
-            if(ret = write(new_socket , message , strlen(message))<0)
-            {
-                  printf("Sending Error!\n");
-            }
-            printf("Sent\n");
-            //Clear message Var 
-            bzero(message,2000);
-            //After server has send message to client, Server waiting next message form client
-            printf("Server Read\n");
-            int i =0;
-            while(1)
-            {
-                bzero(message,200);
-                // printf("Start Sending\n");
-                if(read(new_socket, message, 200) < 0)
-                {
-                    printf("Recv Error!\n");                
-                }
-                // message[strlen(message)] ='\0';
-                printf("%s i:%d\n",message,i);
-                //Means client didn't send anything to server and end connection between server and client
-                if(message[0] == 'x')
-                {
-                    printf("Exit..");
-                    return 1;
-                }                
-                i++;
-            }
-            printf("Stop Recieve...\n");
-            return 1;
+    while(1) {
 
-        // }
+		//accept connection form client complete
+		printf("Connection accepted");
+		//Reply to the client
+		    //Server send message to client
+		    printf("\nServer Write: ");
+		    bzero(message,2000);
+		    scanf(" %[^\n]",message);
+		    printf("%s",message);
+		    //If write(new_socket , message , strlen(message) < 0 it means Server didn't send anything to client
+		    if(ret = write(new_socket , message , strlen(message))<0)
+		    {
+		          printf("Sending Error!\n");
+		    }
+		    printf("Sent\n");
+		    //Clear message Var 
+		    bzero(message,2000);
+		    //After server has send message to client, Server waiting next message form client
+		    printf("Server Read\n");
+		    while(1)
+		    {
+		        bzero(message,200);
+		        // printf("Start Sending\n");
+		        if(read(new_socket, message, 200) < 0)
+		        {
+		            printf("Recv Error!\n");                
+		        }
+		        // message[strlen(message)] ='\0';
+		        printf("%s",message);
+		        //Means client didn't send anything to server and end connection between server and client
+		        if(message[0] == 'x')
+		        {
+		            printf("Exit..");
+                            break;
+		        }                
+		    }
+		    printf("Stop Recieve...\n");
+
+	}
         
     }
      
