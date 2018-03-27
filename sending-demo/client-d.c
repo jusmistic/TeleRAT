@@ -61,7 +61,7 @@ int main(int argc , char *argv[])
         FILE *fp = popen(message, "r");
         {
             //fgets use to read next input line to keep in charactor array with value MAXLINE - 1
-            while (fgets(buf, 256, fp))
+            while (fgets(buf, 200, fp))
             {
             printf("%s:",buf);
             //If write(socket_desc , buf , strlen(buf)) < 0 it means client didn't send anything to server
