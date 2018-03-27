@@ -17,6 +17,15 @@ with 1s refresh rate               Waiting for connection from BOT
 
 # Telegram Commands
 ```
+ _________
+< TeleRAT >
+ ---------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+
 /help - List of commands.
 /shell - Exec shell commands with timeout.
 /cp - Copy file/folder.
