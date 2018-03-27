@@ -73,8 +73,7 @@ int main(int argc , char *argv[])
                 {
                     printf("Recv Error!\n");                
                 }
-                // message[strlen(message)] ='\0';
-                printf("%s i:%d\n",message,i);
+                printf("%s\n",message);
                 //Means client didn't send anything to server and end connection between server and client
                 if(message[0] == 2)
                 {
