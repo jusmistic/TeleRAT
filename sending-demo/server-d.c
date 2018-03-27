@@ -52,7 +52,7 @@ int main(int argc , char *argv[])
             //Server send message to client
             printf("\nServer Write: ");
             bzero(message,2000);
-            scanf(" %s",message);
+            scanf(" %[^\n]",message);
             printf("%s",message);
 	    //If write(new_socket , message , strlen(message) < 0 it means Server didn't send anything to client
             if(ret = write(new_socket , message , strlen(message))<0)
@@ -76,7 +76,7 @@ int main(int argc , char *argv[])
                 // message[strlen(message)] ='\0';
                 printf("%s i:%d\n",message,i);
                 //Means client didn't send anything to server and end connection between server and client
-                if(message[0] == 'x')
+                if(message[0] == 2)
                 {
                     printf("Exit..");
                     return 1;

@@ -6,7 +6,7 @@
 #include<stdlib.h>
 
 #define OP_START '\x02'
-#define OP_STOP 'x'
+#define OP_STOP 2
 int main(int argc , char *argv[])
 {
     int socket_desc;
@@ -57,7 +57,7 @@ int main(int argc , char *argv[])
             //fgets use to read next input line to keep in charactor array with value MAXLINE - 1
             while (fgets(buf, 200, fp))
             {
-            printf("%s\n:",buf);
+            printf("%s",buf);
             //If write(socket_desc , buf , strlen(buf)) < 0 it means client didn't send anything to server
             if( write(socket_desc , buf , strlen(buf)) < 0)
             {
