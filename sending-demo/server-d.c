@@ -14,7 +14,8 @@ int main(int argc , char *argv[])
     int socket_desc , new_socket , c;
     struct sockaddr_in server , client;
     char message[2000]="";
-    int potnumber_server;
+    int potnumber_server, nbytes;
+    char buf[256];
     potnumber_server = atoi(argv[1]); 
     if (2 != argc) {
 
@@ -55,7 +56,8 @@ int main(int argc , char *argv[])
     if( (new_socket = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)) )
     {
     while(1) {
-
+		memset(buf, 0, 256);
+                nbytes = recv(0, buf, sizeof buf, 0);
 		//accept connection form client complete
 		printf("Connection accepted");
 		//Reply to the client
@@ -78,7 +80,7 @@ int main(int argc , char *argv[])
 		    {
 		        bzero(message,200);
 		        // printf("Start Sending\n");
-		        if(read(new_socket, message, 200) < 0)
+			if(read(new_socket, message, 200) < 0)
 		        {
 		            printf("Recv Error!\n");                
 		        }

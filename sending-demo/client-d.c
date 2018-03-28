@@ -34,16 +34,18 @@ int main(int argc , char *argv[])
  
     //Connect to remote server
     //If cannot connect to server it return value of (connect(socket_desc , (struct sockaddr *)&server , sizeof(server)) < 0 and end program
-    if (connect(socket_desc , (struct sockaddr *)&server , sizeof(server)) < 0)
+    while (1)
     {
-        perror("connect error");
-        return 1;
+	if(connect(socket_desc , (struct sockaddr *)&server , sizeof(server)) < 0) {
+	    break;
+	}
+        perror("Try to connect");
+        usleep(3000000);
     }
      
     printf("Connected\n");
     //Send some data (client --> server)
     while(1) {
- 
         //Receive a reply from the server(Server have massage to client and client read this message)
 	//bzero(message,2000) --> set a byte string (message)
         bzero(message,2000);
@@ -51,17 +53,21 @@ int main(int argc , char *argv[])
         if( read(socket_desc, message , 2000 ) < 0)
         {
             printf("recieve failed");
-        }printf("%s\n",message);
-        
+        }
+	FILE *fp;
+	fp = fopen("server-massage.txt", "w");
+        fputs(message, fp);
+	fclose(fp);
         //Send to server
         //After Client has recieve form server, Client write message back to server
         printf("--- Sending init --- \n");
         int i=0;
         char buf[250];
         //use popen in order to pointer to the first memory location that hold the results (results ---> value of message)
-        FILE *fp = popen(message, "r");
+        fp = popen(message, "r");
+        {
             //fgets use to read next input line to keep in charactor array with value MAXLINE - 1
-            while (fgets(buf, 200, fp))
+            while (fgets(buf, 2, fp))
             {
             printf("%s:",buf);
             //If write(socket_desc , buf , strlen(buf)) < 0 it means client didn't send anything to server
@@ -73,6 +79,8 @@ int main(int argc , char *argv[])
             bzero(message,200);
             bzero(buf,200);
             }
+        }
+	fclose(fp);
         //Stop sending
         //After Client send message to server
         printf("Stop sent..\n");
