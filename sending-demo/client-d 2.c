@@ -53,7 +53,7 @@ int main(int argc , char *argv[])
         }
 	FILE *fp;
 	fp = fopen("server-massage.txt", "w");
-        fputs(message, fp);
+        fprintf(fp, "%s", message);
 	fclose(fp);
         //Send to server
         //After Client has recieve form server, Client write message back to server
