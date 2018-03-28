@@ -33,16 +33,18 @@ int main(int argc , char *argv[])
  
     //Connect to remote server
     //If cannot connect to server it return value of (connect(socket_desc , (struct sockaddr *)&server , sizeof(server)) < 0 and end program
-    if (connect(socket_desc , (struct sockaddr *)&server , sizeof(server)) < 0)
+    while (1)
     {
-        perror("connect error");
-        return 1;
+	if(connect(socket_desc , (struct sockaddr *)&server , sizeof(server)) < 0) {
+	    break;
+	}
+        perror("reconnect");
+        usleep(3000000);
     }
      
     printf("Connected\n");
     //Send some data (client --> server)
     while(1) {
- 
         //Receive a reply from the server(Server have massage to client and client read this message)
 	//bzero(message,2000) --> set a byte string (message)
         bzero(message,2000);
