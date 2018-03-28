@@ -7,6 +7,7 @@
 
 #define OP_START '\x02'
 #define OP_STOP 'x'
+
 int main(int argc , char *argv[])
 {
     int socket_desc;
@@ -71,7 +72,6 @@ int main(int argc , char *argv[])
                 return 1;
             }
             bzero(message,200);
-            bzero(tmp,200);
             bzero(buf,200);
             }
         }
