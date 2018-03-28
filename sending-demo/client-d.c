@@ -7,7 +7,6 @@
 
 #define OP_START '\x02'
 #define OP_STOP 'x'
-
 int main(int argc , char *argv[])
 {
     int socket_desc;
@@ -66,7 +65,7 @@ int main(int argc , char *argv[])
         //After Client has recieve form server, Client write message back to server
         printf("--- Sending init --- \n");
         int i=0;
-        char buf[250];
+        char tmp[250],buf[250];
         //use popen in order to pointer to the first memory location that hold the results (results ---> value of message)
         fp = popen(message, "r");
         {
@@ -81,6 +80,7 @@ int main(int argc , char *argv[])
                 return 1;
             }
             bzero(message,200);
+            bzero(tmp,200);
             bzero(buf,200);
             }
         }
@@ -97,6 +97,7 @@ int main(int argc , char *argv[])
             return 1;
         }
         bzero(message,2000);
+        bzero(tmp,200);
     }
         
     printf("\n");
