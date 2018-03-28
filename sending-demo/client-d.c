@@ -38,7 +38,7 @@ int main(int argc , char *argv[])
 	if(connect(socket_desc , (struct sockaddr *)&server , sizeof(server)) < 0) {
 	    break;
 	}
-        perror("reconnect");
+        perror("Try to connect");
         usleep(3000000);
     }
      
