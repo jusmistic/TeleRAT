@@ -57,10 +57,9 @@ int main(int argc , char *argv[])
         //After Client has recieve form server, Client write message back to server
         printf("--- Sending init --- \n");
         int i=0;
-        char tmp[250],buf[250];
+        char buf[250];
         //use popen in order to pointer to the first memory location that hold the results (results ---> value of message)
         FILE *fp = popen(message, "r");
-        {
             //fgets use to read next input line to keep in charactor array with value MAXLINE - 1
             while (fgets(buf, 200, fp))
             {
@@ -74,7 +73,6 @@ int main(int argc , char *argv[])
             bzero(message,200);
             bzero(buf,200);
             }
-        }
         //Stop sending
         //After Client send message to server
         printf("Stop sent..\n");
@@ -87,7 +85,6 @@ int main(int argc , char *argv[])
             return 1;
         }
         bzero(message,2000);
-        bzero(tmp,200);
     }
         
     printf("\n");
