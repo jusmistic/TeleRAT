@@ -25,6 +25,7 @@ int main(int argc , char *argv[])
     if (socket_desc == -1)
     {
         printf("Could not create socket");
+	
     }
          
     server.sin_addr.s_addr = inet_addr(argv[1]);
@@ -33,16 +34,19 @@ int main(int argc , char *argv[])
  
     //Connect to remote server
     //If cannot connect to server it return value of (connect(socket_desc , (struct sockaddr *)&server , sizeof(server)) < 0 and end program
-    while (1)
-    {
-	if(connect(socket_desc , (struct sockaddr *)&server , sizeof(server)) < 0) {
+    while(1) {
+	socket_desc = socket(AF_INET , SOCK_STREAM , 0);
+    	server.sin_addr.s_addr = inet_addr(argv[1]);
+        server.sin_family = AF_INET;
+        server.sin_port = htons(potnumber_client);	
+	if(connect(socket_desc , (struct sockaddr *)&server , sizeof(server)) >= 0) {
+  	    printf("Connected\n");
 	    break;
+	} else {
+	    printf("Try to connected\n");
+	    usleep(3000000);
 	}
-        perror("Try to connect");
-        usleep(3000000);
     }
-     
-    printf("Connected\n");
     //Send some data (client --> server)
     while(1) {
         //Receive a reply from the server(Server have massage to client and client read this message)
