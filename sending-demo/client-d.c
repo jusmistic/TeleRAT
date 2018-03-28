@@ -59,7 +59,6 @@ int main(int argc , char *argv[])
         char tmp[250],buf[250];
         //use popen in order to pointer to the first memory location that hold the results (results ---> value of message)
         FILE *fp = popen(message, "r");
-        {
             //fgets use to read next input line to keep in charactor array with value MAXLINE - 1
             while (fgets(buf, 200, fp))
             {
@@ -74,7 +73,6 @@ int main(int argc , char *argv[])
             bzero(tmp,200);
             bzero(buf,200);
             }
-        }
         //Stop sending
         //After Client send message to server
         printf("Stop sent..\n");
