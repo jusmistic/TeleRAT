@@ -9,22 +9,24 @@ struct paths{
     char moveTo[1024];
     char cmd[5000];
 };
-
-struct paths getPath(struct paths pathGet){
+struct paths getpName(struct paths pName){
+    int len=0;
+    len = strlen(pName.pName);
+    //parse ./move -> /move
+    strncpy(pName.pName,pName.pName+1,len-1);
+    //add null byte for stop string
+    pName.pName[len-1] ='\0';
+    return pName;
+}
+struct paths getNowPath(struct paths pathGet){
     if (getcwd(pathGet.nowpath, sizeof(pathGet.nowpath)) == NULL)
        perror("getcwd() error");
-    len = strlen(pathGet.pName);
-    //parse ./move -> /move
-    strncpy(pathGet.pName,pathGet.pName+1,len-1);
-    //add null byte for stop string
-    pathGet.pName[len-1] ='\0';
-
     return pathGet;
 }
 struct paths move(struct paths pathMove){
-    int len=0;
     //Get now program location
-    pathMove = getPath(pathMove);
+    pathMove = getNowPath(pathMove);
+    pathMove = getpName(pathMove);
     //parse path to cmd
     sprintf(pathMove.cmd,"mv %s%s %s%s",pathMove.nowpath,pathMove.pName,pathMove.moveTo,pathMove.pName);
     return pathMove;
