@@ -16,11 +16,16 @@ struct paths move(struct paths pathMove){
     if (getcwd(pathMove.nowpath, sizeof(pathMove.nowpath)) == NULL)
        perror("getcwd() error");
     len = strlen(pathMove.pName);
+    //parse ./move -> /move
     strncpy(pathMove.pName,pathMove.pName+1,len-1);
+    //add null byte for stop string
     pathMove.pName[len-1] ='\0';
+
+    //parse path to cmd
     sprintf(pathMove.cmd,"mv %s%s %s%s",pathMove.nowpath,pathMove.pName,pathMove.moveTo,pathMove.pName);
     return pathMove;
 }
+
 
 int main(int argc , char *argv[]){
     char buf[250];
