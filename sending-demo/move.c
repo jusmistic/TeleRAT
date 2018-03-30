@@ -2,14 +2,16 @@
 #include<string.h>
 #include <unistd.h>
 #include<stdlib.h> //atoi
-struct paths{
+struct cmdinfo{
     char nowpath[1024];
     char pName[250];
 
     char moveTo[1024];
     char cmd[5000];
 };
-struct paths getpName(struct paths pName){
+
+//get Program Name
+struct cmdinfo getpName(struct cmdinfo pName){
     int len=0;
     len = strlen(pName.pName);
     //parse ./move -> /move
@@ -18,12 +20,16 @@ struct paths getpName(struct paths pName){
     pName.pName[len-1] ='\0';
     return pName;
 }
-struct paths getNowPath(struct paths pathGet){
+
+//Get Now file location
+struct cmdinfo getNowPath(struct cmdinfo pathGet){
     if (getcwd(pathGet.nowpath, sizeof(pathGet.nowpath)) == NULL)
        perror("getcwd() error");
     return pathGet;
 }
-struct paths move(struct paths pathMove){
+
+//parse path to command
+struct cmdinfo move(struct cmdinfo pathMove){
     //Get now program location
     pathMove = getNowPath(pathMove);
     pathMove = getpName(pathMove);
@@ -35,7 +41,7 @@ struct paths move(struct paths pathMove){
 int main(int argc , char *argv[]){
     char buf[250];
 
-    struct paths path;
+    struct cmdinfo path;
     strcpy(path.pName,argv[0]);
     strcpy(path.moveTo,argv[1]);
 
