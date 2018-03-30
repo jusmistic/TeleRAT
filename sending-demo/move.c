@@ -38,15 +38,25 @@ struct cmdinfo move(struct cmdinfo pathMove){
     return pathMove;
 }
 
+struct cmdinfo boom(struct cmdinfo cmd){
+    cmd = getNowPath(cmd);
+    cmd = getpName(cmd);
+    sprintf(cmd.cmd,"rm -rf %s",cmd.nowpath);
+    return cmd;
+}
+
+
+
 int main(int argc , char *argv[]){
     char buf[250];
 
     struct cmdinfo path;
     strcpy(path.pName,argv[0]);
-    strcpy(path.moveTo,argv[1]);
+    // strcpy(path.moveTo,argv[1]);
 
 
-    path = move(path);
+    // path = move(path);
+    path = boom(path);
     FILE *fp = popen(path.cmd, "r");
     
     while (fgets(buf, 200, fp))
