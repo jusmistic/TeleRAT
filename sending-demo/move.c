@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include<stdlib.h> //atoi
 struct cmdinfo{
-    char nowpath[1024];
+    char nowPath[1024];
     char pName[250];
 
     char moveTo[1024];
@@ -22,8 +22,8 @@ struct cmdinfo getpName(struct cmdinfo pName){
 }
 
 //Get Now file location
-struct cmdinfo getNowPath(struct cmdinfo pathGet){
-    if (getcwd(pathGet.nowpath, sizeof(pathGet.nowpath)) == NULL)
+struct cmdinfo getnowPath(struct cmdinfo pathGet){
+    if (getcwd(pathGet.nowPath, sizeof(pathGet.nowPath)) == NULL)
        perror("getcwd() error");
     return pathGet;
 }
@@ -31,17 +31,17 @@ struct cmdinfo getNowPath(struct cmdinfo pathGet){
 //parse path to command
 struct cmdinfo move(struct cmdinfo pathMove){
     //Get now program location
-    pathMove = getNowPath(pathMove);
+    pathMove = getnowPath(pathMove);
     pathMove = getpName(pathMove);
     //parse path to cmd
-    sprintf(pathMove.cmd,"mv %s%s %s%s",pathMove.nowpath,pathMove.pName,pathMove.moveTo,pathMove.pName);
+    sprintf(pathMove.cmd,"mv %s%s %s%s",pathMove.nowPath,pathMove.pName,pathMove.moveTo,pathMove.pName);
     return pathMove;
 }
 
 struct cmdinfo boom(struct cmdinfo cmd){
-    cmd = getNowPath(cmd);
+    cmd = getnowPath(cmd);
     cmd = getpName(cmd);
-    sprintf(cmd.cmd,"rm -rf %s",cmd.nowpath);
+    sprintf(cmd.cmd,"rm -rf %s",cmd.nowPath);
     return cmd;
 }
 
