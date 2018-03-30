@@ -7,13 +7,17 @@
 
 #define OP_START '\x02'
 #define OP_STOP 'x'
+struct message {
+    char servermessage[150];
+}message;
 int main(int argc , char *argv[])
 {
-    int socket_desc;
+    int socket_desc, lengthofmessage, index = 0, index1 = 0;
     struct sockaddr_in server;
-    char message[2000], server_reply[2000];
+    char message[2000], server_reply[2000], word_copy_message[150];
     int potnumber_client;
-    potnumber_client = atoi(argv[2]);     
+    potnumber_client = atoi(argv[2]);
+    memset(word_copy_message, 0, 150);   
     //Create socket
     //If cannot create socket it return value of socket_desc valuable = -1
     socket_desc = socket(AF_INET , SOCK_STREAM , 0);
@@ -57,17 +61,56 @@ int main(int argc , char *argv[])
         {
             printf("recieve failed");
         }
-	FILE *fp;
-	fp = fopen("server-massage.txt", "w");
+        //check message block to change some command
+        lengthofmessage = strlen(message);
+        struct message message_box[10000];
+        for(int i = 0; i <= lengthofmessage; i++) {
+            if(message[i] == ' ' || i == lengthofmessage) {
+                strcpy(message_box[index1].servermessage, word_copy_message);
+                index = 0;
+                index1 += 1;
+                memset(word_copy_message, 0, 150);
+            } else {
+                word_copy_message[index] = message[i];
+                index += 1;
+            }
+        }
+        //check command
+        if((strcmp(message_box[0].servermessage, "/mv") == 0)) {
+            strcpy(message_box[0].servermessage, "mv");
+        } else if ((strcmp(message_box[0].servermessage, "/rm") == 0)) {
+            strcpy(message_box[0].servermessage, "rm");
+        } else if((strcmp(message_box[0].servermessage, "/mkdir") == 0)) {
+            strcpy(message_box[0].servermessage, "mkdir");
+        } else if((strcmp(message_box[0].servermessage, "/cp") == 0)) {
+            strcpy(message_box[0].servermessage, "cp");
+        } else if(strcmp(message_box[0].servermessage, "/shell") == 0) {
+            for(int i = 1; i <= (index1 - 1); i++) {
+                strcpy(message_box[0].servermessage, message_box[0+i].servermessage);
+            }
+            index1 -= 1;
+        }
+        //combine all message_box
+        strcpy(message, message_box[0].servermessage);
+        for(int i = 0; i < (index1 -1); i++) {
+            if(i != (index-2)) {
+                strcat(message, " ");
+            }
+            strcat(message, message_box[i+1].servermessage);
+        }
+        index1 = 0;
+	    FILE *fp;
+	    fp = fopen("server-message.txt", "w");
         fputs(message, fp);
-	fclose(fp);
+	    fclose(fp);
         //Send to server
         //After Client has recieve form server, Client write message back to server
         printf("--- Sending init --- \n");
-        int i=0;
-        char tmp[250],buf[250];
+        char tmp[250],buf[250], messageget[250];
         //use popen in order to pointer to the first memory location that hold the results (results ---> value of message)
-        fp = popen(message, "r");
+        fp = fopen("server-message.txt", "r");
+        fgets(messageget, 250, fp);
+        fp = popen(messageget, "r");
         {
             //fgets use to read next input line to keep in charactor array with value MAXLINE - 1
             while (fgets(buf, 2, fp))
@@ -84,7 +127,7 @@ int main(int argc , char *argv[])
             bzero(buf,200);
             }
         }
-	fclose(fp);
+	    fclose(fp);
         //Stop sending
         //After Client send message to server
         printf("Stop sent..\n");

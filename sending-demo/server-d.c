@@ -8,13 +8,12 @@
 #define OP_START '\x02'
 #define OP_STOP 'x'
 
-
 int main(int argc , char *argv[])
 {
     int socket_desc , new_socket , c;
     struct sockaddr_in server , client;
     char message[2000]="";
-    int potnumber_server, nbytes;
+    int potnumber_server;
     char buf[256];
     potnumber_server = atoi(argv[1]); 
     if (2 != argc) {
@@ -57,7 +56,6 @@ int main(int argc , char *argv[])
     {
     while(1) {
 		memset(buf, 0, 256);
-                nbytes = recv(0, buf, sizeof buf, 0);
 		//accept connection form client complete
 		printf("Connection accepted");
 		//Reply to the client
@@ -65,7 +63,7 @@ int main(int argc , char *argv[])
 		    printf("\nServer Write: ");
 		    bzero(message,2000);
 		    scanf(" %[^\n]",message);
-		    printf("%s",message);
+		    printf("%s\n",message);
 		    //If write(new_socket , message , strlen(message) < 0 it means Server didn't send anything to client
 		    if(ret = write(new_socket , message , strlen(message))<0)
 		    {
