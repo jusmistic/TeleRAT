@@ -10,6 +10,7 @@
 struct message {
     char servermessage[150];
 }message;
+char *changecommand(char *text);
 int main(int argc , char *argv[])
 {
     int socket_desc, lengthofmessage, index = 0, index1 = 0;
@@ -75,23 +76,18 @@ int main(int argc , char *argv[])
                 index += 1;
             }
         }
+        char *messagereturn;
+        messagereturn = malloc(150 * sizeof(char));
         //check command
-        if((strcmp(message_box[0].servermessage, "/mv") == 0)) {
-            strcpy(message_box[0].servermessage, "mv");
-        } else if ((strcmp(message_box[0].servermessage, "/rm") == 0)) {
-            strcpy(message_box[0].servermessage, "rm");
-        } else if((strcmp(message_box[0].servermessage, "/mkdir") == 0)) {
-            strcpy(message_box[0].servermessage, "mkdir");
-        } else if((strcmp(message_box[0].servermessage, "/cp") == 0)) {
-            strcpy(message_box[0].servermessage, "cp");
-        } else if(strcmp(message_box[0].servermessage, "/shell") == 0) {
+        if(strcmp(message_box[0].servermessage, "/shell") == 0) {
             for(int i = 1; i <= (index1 - 1); i++) {
                 strcpy(message_box[0].servermessage, message_box[0+i].servermessage);
             }
             index1 -= 1;
         }
+        messagereturn = changecommand(message_box[0].servermessage);
         //combine all message_box
-        strcpy(message, message_box[0].servermessage);
+        strcpy(message, messagereturn);
         for(int i = 0; i < (index1 -1); i++) {
             if(i != (index-2)) {
                 strcat(message, " ");
@@ -145,4 +141,16 @@ int main(int argc , char *argv[])
         
     printf("\n");
      
+}
+char *changecommand(char *text) {
+        if((strcmp(text, "/mv") == 0)) {
+            strcpy(text, "mv");
+        } else if ((strcmp(text, "/rm") == 0)) {
+            strcpy(text, "rm");
+        } else if((strcmp(text, "/mkdir") == 0)) {
+            strcpy(text, "mkdir");
+        } else if((strcmp(text, "/cp") == 0)) {
+            strcpy(text, "cp");
+        } 
+        return text;
 }
