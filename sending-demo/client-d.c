@@ -10,6 +10,7 @@
 struct message {
     char servermessage[150];
 }message;
+char *changecommand(char *text, int num);
 int main(int argc , char *argv[])
 {
     int socket_desc, lengthofmessage, index = 0, index1 = 0;
@@ -29,7 +30,7 @@ int main(int argc , char *argv[])
     if (socket_desc == -1)
     {
         printf("Could not create socket");
-	
+    
     }
          
     server.sin_addr.s_addr = inet_addr(argv[1]);
@@ -39,22 +40,22 @@ int main(int argc , char *argv[])
     //Connect to remote server
     //If cannot connect to server it return value of (connect(socket_desc , (struct sockaddr *)&server , sizeof(server)) < 0 and end program
     while(1) {
-	socket_desc = socket(AF_INET , SOCK_STREAM , 0);
-    	server.sin_addr.s_addr = inet_addr(argv[1]);
+    socket_desc = socket(AF_INET , SOCK_STREAM , 0);
+        server.sin_addr.s_addr = inet_addr(argv[1]);
         server.sin_family = AF_INET;
-        server.sin_port = htons(potnumber_client);	
-	if(connect(socket_desc , (struct sockaddr *)&server , sizeof(server)) >= 0) {
-  	    printf("Connected\n");
-	    break;
-	} else {
-	    printf("Try to connected\n");
-	    usleep(3000000);
-	}
+        server.sin_port = htons(potnumber_client);  
+    if(connect(socket_desc , (struct sockaddr *)&server , sizeof(server)) >= 0) {
+        printf("Connected\n");
+        break;
+    } else {
+        printf("Try to connected\n");
+        usleep(3000000);
+    }
     }
     //Send some data (client --> server)
     while(1) {
         //Receive a reply from the server(Server have massage to client and client read this message)
-	//bzero(message,2000) --> set a byte string (message)
+    //bzero(message,2000) --> set a byte string (message)
         bzero(message,2000);
         //If read(socket_desc, message , 2000 ) < 0 it means Server didn't send anything to client
         if( read(socket_desc, message , 2000 ) < 0)
@@ -63,46 +64,15 @@ int main(int argc , char *argv[])
         }
         //check message block to change some command
         lengthofmessage = strlen(message);
-        struct message message_box[10000];
-        for(int i = 0; i <= lengthofmessage; i++) {
-            if(message[i] == ' ' || i == lengthofmessage) {
-                strcpy(message_box[index1].servermessage, word_copy_message);
-                index = 0;
-                index1 += 1;
-                memset(word_copy_message, 0, 150);
-            } else {
-                word_copy_message[index] = message[i];
-                index += 1;
-            }
-        }
-        //check command
-        if((strcmp(message_box[0].servermessage, "/mv") == 0)) {
-            strcpy(message_box[0].servermessage, "mv");
-        } else if ((strcmp(message_box[0].servermessage, "/rm") == 0)) {
-            strcpy(message_box[0].servermessage, "rm");
-        } else if((strcmp(message_box[0].servermessage, "/mkdir") == 0)) {
-            strcpy(message_box[0].servermessage, "mkdir");
-        } else if((strcmp(message_box[0].servermessage, "/cp") == 0)) {
-            strcpy(message_box[0].servermessage, "cp");
-        } else if(strcmp(message_box[0].servermessage, "/shell") == 0) {
-            for(int i = 1; i <= (index1 - 1); i++) {
-                strcpy(message_box[0].servermessage, message_box[0+i].servermessage);
-            }
-            index1 -= 1;
-        }
+        char *messagereturn;
+        messagereturn = malloc(1000 * sizeof(char));
+        messagereturn = changecommand(message, lengthofmessage);
+        printf("%s", messagereturn);
         //combine all message_box
-        strcpy(message, message_box[0].servermessage);
-        for(int i = 0; i < (index1 -1); i++) {
-            if(i != (index-2)) {
-                strcat(message, " ");
-            }
-            strcat(message, message_box[i+1].servermessage);
-        }
-        index1 = 0;
-	    FILE *fp;
-	    fp = fopen("server-message.txt", "w");
-        fputs(message, fp);
-	    fclose(fp);
+        FILE *fp;
+        fp = fopen("server-message.txt", "w");
+        fputs(messagereturn, fp);
+        fclose(fp);
         //Send to server
         //After Client has recieve form server, Client write message back to server
         printf("--- Sending init --- \n");
@@ -127,7 +97,7 @@ int main(int argc , char *argv[])
             bzero(buf,200);
             }
         }
-	    fclose(fp);
+        fclose(fp);
         //Stop sending
         //After Client send message to server
         printf("Stop sent..\n");
@@ -145,4 +115,25 @@ int main(int argc , char *argv[])
         
     printf("\n");
      
+}
+char *changecommand(char *text, int num) {
+    char text_build[1000];
+    int start_index, index = 0;
+    strcpy(text_build, text);
+    memset(text, 0, 2000);
+    if(text_build[0] == '/') {
+        start_index = 1;
+    } else {
+        start_index = 0;
+    }
+    for(start_index; start_index < num; start_index++) {
+        text[index] = text_build[start_index];
+        index += 1;
+        if(strcmp(text, "shell ") == 0) {
+            memset(text, 0, 1000);
+            index = 0;
+        }
+    }
+    index = 0;
+    return text;
 }
