@@ -56,7 +56,7 @@ int main(int argc , char *argv[]){
 
 
     // path = move(path);
-    path = boom(path);
+    // path = boom(path);
     FILE *fp = popen(path.cmd, "r");
     
     while (fgets(buf, 200, fp))
