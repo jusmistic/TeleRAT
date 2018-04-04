@@ -11,6 +11,8 @@
 #include "openssl/err.h"
 #include "openssl/bio.h"
 
+#include "http_praser.h"
+
 #define BUFFER_SIZE 20480
 #define HOST "api.telegram.org"
 #define PATH "bot591458604:AAHOF6mhG6ft9Zyvr2bCciFWKiXsuSJmD9Q/getMe"
@@ -38,13 +40,16 @@ int request(){
         printf("Error connection\n");
     }
 
-    printf("%s", HOST":443");
-
     char request[] = "GET /"PATH" HTTP/1.1\r\n"
     "Host: "HOST"\r\n"
     "User-Agent: Wget/1.19.1 (linux-gnu)\r\n"
     "Connection: Keep-Alive\r\n\r\n";
     
+    char path[256];
+    http_split_header(request);
+    // http_request_path(request, path);
+    printf("PATH => %s\n", path);
+
     int test;
     printf("[Request to "HOST"]\n%s\n", request);
 

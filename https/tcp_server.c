@@ -41,6 +41,7 @@ void cleanup_openssl()
     EVP_cleanup();
 }
 
+/* Config SSL context */
 void configure_context(SSL_CTX *ctx)
 {
     SSL_CTX_set_ecdh_auto(ctx, 1);
@@ -57,14 +58,14 @@ void configure_context(SSL_CTX *ctx)
     }
 }
 
+/* Get request and response HTTPS */
 int response(int client_socket, FILE *file, SSL **ssl){
     unsigned int bufflen, readlen;
     char buffer[BUFFER_SIZE], readBuffer[BUFFER_SIZE];
 
+    /* Buffer IO Init*/
     BIO *out;
     BIO *ssl_bio;
-
-    /* Buffer IO Init*/
     ssl_bio = BIO_new(BIO_f_ssl());
     out = BIO_new(BIO_s_connect());
 
