@@ -4,28 +4,14 @@
 #include <unistd.h>
 
 #include <sys/socket.h>
-#include <netinet/in.h>
+#include <arpa/inet.h>
 
 // openSSL
 #include "openssl/ssl.h"
 #include "openssl/err.h"
 #include "openssl/bio.h"
 
-#define BUFFER_SIZE 2048
-#define READBUFF_SIZE 20480
-#define HOST "api.telegram.org"
-#define PATH "bot591458604:AAHOF6mhG6ft9Zyvr2bCciFWKiXsuSJmD9Q/getMe"
-
-void init_openssl(){
-    SSL_load_error_strings();	
-    OpenSSL_add_ssl_algorithms();
-    SSL_library_init();
-}
-
-void cleanup_openssl()
-{
-    EVP_cleanup();
-}
+#define BUFFER_SIZE 20480
 
 SSL_CTX *create_context()
 {
@@ -44,6 +30,17 @@ SSL_CTX *create_context()
     return ctx;
 }
 
+void init_openssl(){
+    SSL_load_error_strings();	
+    OpenSSL_add_ssl_algorithms();
+    SSL_library_init();
+}
+
+void cleanup_openssl()
+{
+    EVP_cleanup();
+}
+
 void configure_context(SSL_CTX *ctx)
 {
     SSL_CTX_set_ecdh_auto(ctx, 1);
@@ -51,74 +48,19 @@ void configure_context(SSL_CTX *ctx)
     /* Set the key and cert */
     if (SSL_CTX_use_certificate_file(ctx, "cert.pem", SSL_FILETYPE_PEM) <= 0) {
         ERR_print_errors_fp(stderr);
-	exit(EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     }
 
     if (SSL_CTX_use_PrivateKey_file(ctx, "key.pem", SSL_FILETYPE_PEM) <= 0 ) {
         ERR_print_errors_fp(stderr);
-	exit(EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     }
 }
 
-void request(){
-    BIO * request_bio;
-    char read_buffer[READBUFF_SIZE];
-
-    SSL_CTX *request_ctx = SSL_CTX_new(SSLv23_client_method());
-    if (request_ctx == NULL) {
-        printf("errored; unable to load context.\n");
-        ERR_print_errors_fp(stderr);
-        return;
-    }
-
-    SSL *request_ssl;
-
-    request_bio = BIO_new_ssl_connect(request_ctx);
-    BIO_get_ssl(request_bio, &request_ssl);
-    SSL_set_mode(request_ssl, SSL_MODE_AUTO_RETRY);
-
-    BIO_set_conn_hostname(request_bio, HOST":443");
-
-    if(BIO_do_connect(request_bio) <= 0){
-        printf("Error connection\n");
-    }
-
-    printf("%s", HOST":443");
-
-    char request[] = "GET /"PATH" HTTP/1.1\r\n"
-    "Host: "HOST"\r\n"
-    "User-Agent: Wget/1.19.1 (linux-gnu)\r\n"
-    "Connection: Keep-Alive\r\n\r\n";
-    
-    int test;
-    printf("[Request to "HOST"]\n%s\n", request);
-
-    if((test = BIO_write(request_bio, request, strlen(request))) <= 0){
-        BIO_free_all(request_bio);
-        printf("errored; unable to write.\n");
-        ERR_print_errors_fp(stderr);
-        return;
-    }
-
-    while(1){
-        int res = BIO_read(request_bio, read_buffer, READBUFF_SIZE);
-        if(res < 0){
-            if(!BIO_should_retry(request_bio)){
-                printf("Error: read failed");
-                ERR_print_errors_fp(stderr);
-                break;
-            }
-        }
-        else{
-            printf("[Response from "HOST"]\n%s\n", read_buffer);
-            break;
-        }
-    }
-}
-
-void response(int client_socket, FILE *file, SSL **ssl){
+int response(int client_socket, FILE *file, SSL **ssl){
     unsigned int bufflen, readlen;
     char buffer[BUFFER_SIZE], readBuffer[BUFFER_SIZE];
+
     BIO *out;
     BIO *ssl_bio;
 
@@ -131,12 +73,16 @@ void response(int client_socket, FILE *file, SSL **ssl){
 
     out = BIO_push(ssl_bio, out);
 
-    readlen = BIO_read(ssl_bio, readBuffer, BUFFER_SIZE);
-    printf("[HTTP Request]\n %s\n", readBuffer);
-
-    if(readlen <= 1){
-        return;
+    readlen = BIO_read(ssl_bio, readBuffer, sizeof(readBuffer));
+    if(readlen > 0){
+        printf("[HTTP Request] | readlen = %d\n", readlen);
+        printf("%s\n\n", readBuffer);
+        printf("=== End Request ===\n");
     }
+    else{
+        return -1;
+    }
+    bzero(readBuffer, sizeof(readBuffer));
 
     // HTTP 1.1 Header
     char http_header[] = 
@@ -164,6 +110,10 @@ void response(int client_socket, FILE *file, SSL **ssl){
         while((bufflen = fread(buffer, 1, BUFFER_SIZE, file)) > 0){
             BIO_write(out, &buffer, bufflen);
         }
+
+        printf("==== End Response ===\n");
+
+        return 1;
     }
 }
 
@@ -185,10 +135,8 @@ int main(){
 
     struct sockaddr_in server_address;
     server_address.sin_family = AF_INET;
-    server_address.sin_port = htons(4080);
+    server_address.sin_port = htons(8443);
     server_address.sin_addr.s_addr = htonl(INADDR_ANY);
-
-    request(ctx, ssl);
 
     if(bind(server_socket, (struct sockaddr *) &server_address, sizeof(server_address)) < 0){
         perror("Unable to bind");
