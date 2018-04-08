@@ -11,6 +11,8 @@
 #include "openssl/err.h"
 #include "openssl/bio.h"
 
+#include "http_helper.h"
+
 #define BUFFER_SIZE 20480
 
 SSL_CTX *create_context()
@@ -47,12 +49,12 @@ void configure_context(SSL_CTX *ctx)
     SSL_CTX_set_ecdh_auto(ctx, 1);
 
     /* Set the key and cert */
-    if (SSL_CTX_use_certificate_file(ctx, "cert.pem", SSL_FILETYPE_PEM) <= 0) {
+    if (SSL_CTX_use_certificate_file(ctx, "public.pem", SSL_FILETYPE_PEM) <= 0) {
         ERR_print_errors_fp(stderr);
         exit(EXIT_FAILURE);
     }
 
-    if (SSL_CTX_use_PrivateKey_file(ctx, "key.pem", SSL_FILETYPE_PEM) <= 0 ) {
+    if (SSL_CTX_use_PrivateKey_file(ctx, "private.pem", SSL_FILETYPE_PEM) <= 0 ) {
         ERR_print_errors_fp(stderr);
         exit(EXIT_FAILURE);
     }
@@ -85,26 +87,29 @@ int response(int client_socket, FILE *file, SSL **ssl){
     }
     bzero(readBuffer, sizeof(readBuffer));
 
-    // HTTP 1.1 Header
-    char http_header[] = 
-        "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n";
+    char *http_header;
+    struct http_response response = {
+        .version = "HTTP/1.1",
+        .status_code = 200,
+        .status = "OK",
+        .content_type = "text/html",
+        .charset = "utf-8"
+    };
 
     if(file){
         unsigned int content_length = 0;
 
         // Content-Length
         while((bufflen = fread(buffer, 1, BUFFER_SIZE, file)) > 0){
-            content_length += bufflen;
+            response.content_length += bufflen;
         }
 
-        char header_content_length[1024];
-        sprintf(header_content_length, "Content-Length: %d\r\n\r\n", content_length);
+        response_header(&response, &http_header);
 
         strcpy(buffer, http_header);
-        strcat(buffer, header_content_length);
 
-        printf("[HTTP Response]\n %s\n", buffer);
-        BIO_write(out, &buffer, strlen(buffer));
+        printf("[HTTP Response]\n%s", buffer);
+        BIO_write(out, http_header, strlen(http_header));
         rewind(file);
 
         // read file and sent response
