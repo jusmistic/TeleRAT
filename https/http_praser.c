@@ -125,5 +125,36 @@ void prase_response(struct http_response *response, char *http_response_str){
     }
 
     free(http_header);
-    printf("debug ==> %s\n", response->content_type);
+}
+
+void get_body(char *destination, char *http_data){
+    int start_index = search(http_data, "\r\n\r\n");
+
+    for(int i = start_index, j=0; http_data[i] != '\0'; i++, j++){
+        destination[j] = http_data[i];
+    }
+}
+
+int search(char *str, char *target){
+    int found = 0;
+
+    for(int i = 0, j = 0; str[i] != '\0'; i++){
+        if(str[i] == target[j]){
+            for(j = 0; j < strlen(target); j++){
+                if(str[i+j] != target[j]){
+                    found = 0;
+                    break;
+                }
+                else{
+                    found = 1;
+                }
+            }
+
+            if(found){
+                return i+strlen(target);
+            }
+        }
+    }
+    
+    return 0;
 }

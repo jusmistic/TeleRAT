@@ -72,8 +72,12 @@ int request(){
         }
         else{
             printf("[Response from "HOST"]\n%s\n", read_buffer);
-            struct http_response response;
-            prase_response(&response, read_buffer);
+            int tee = search(read_buffer, "\r\n\r\n");
+            char http_body[1000];
+            get_body(http_body, read_buffer);
+            printf("This is body =>\n%s\n", http_body);
+            // printf("Search found => %d\n", tee);
+            // printf("Found Char => %c\n", read_buffer[tee]);
             break;
         }
     }

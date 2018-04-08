@@ -25,10 +25,7 @@ struct http_response{
 
 void prase_request(struct http_request *request, char *http_request_str);
 void prase_response(struct http_response *response, char *http_response_str);
-
-// void http_split_header(char http_response[]);
-// void http_request_path(char *http_request, char *path);
-// int http_content_length(char *http_response);
-// int http_reponse_body(char *http_response, char *body);
+void get_body(char *destination, char *http_data);
+int search(char *str, char *target);
 
 #endif
