@@ -11,6 +11,8 @@
 #include "openssl/err.h"
 #include "openssl/bio.h"
 
+#include "http_praser.h"
+
 #define BUFFER_SIZE 20480
 #define HOST "api.telegram.org"
 #define PATH "bot591458604:AAHOF6mhG6ft9Zyvr2bCciFWKiXsuSJmD9Q/getMe"
@@ -38,19 +40,22 @@ int request(){
         printf("Error connection\n");
     }
 
-    printf("%s", HOST":443");
+    struct http_request test_request;
 
     char request[] = "GET /"PATH" HTTP/1.1\r\n"
     "Host: "HOST"\r\n"
     "User-Agent: Wget/1.19.1 (linux-gnu)\r\n"
     "Connection: Keep-Alive\r\n\r\n";
-    
+
+    // prase_request(&test_request, request);
+
     int test;
     printf("[Request to "HOST"]\n%s\n", request);
 
     if((test = BIO_write(request_bio, request, strlen(request))) <= 0){
-        BIO_free_all(request_bio);
         printf("errored; unable to write.\n");
+        BIO_free_all(request_bio);
+        
         ERR_print_errors_fp(stderr);
         return -1;
     }
@@ -67,6 +72,8 @@ int request(){
         }
         else{
             printf("[Response from "HOST"]\n%s\n", read_buffer);
+            struct http_response response;
+            prase_response(&response, read_buffer);
             break;
         }
     }
