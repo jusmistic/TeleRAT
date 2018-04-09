@@ -25,23 +25,37 @@ void getNowPath(char *nowPath){
     if (getcwd(nowPath, sizeof(nowPath)) == NULL)
        perror("getcwd() error");
 }
+void exeCMD(char *cmd){
+    char buf[250];
+    FILE *fp = popen(cmd, "r");
+
+    while (fgets(buf, 200, fp))
+    {
+        printf("%s:",buf);
+        bzero(cmd,200);
+        bzero(buf,200); 
+   }
+   pclose(fp);
+}
+
 
 //parse path to command
-struct cmdinfo move(struct cmdinfo cmd){
+void move(struct cmdinfo cmd){
     //Get now program location
     getNowPath(cmd.nowPath);
     getpName(cmd.pName);
     //parse path to cmd
     sprintf(cmd.cmd,"mv %s%s %s%s",cmd.nowPath,cmd.pName,cmd.moveTo,cmd.pName);
-    return cmd;
+    exeCMD(cmd.cmd);
 }
 
-struct cmdinfo boom(struct cmdinfo cmd){
+void boom(struct cmdinfo cmd){
     getNowPath(cmd.nowPath);
     getpName(cmd.pName);
     sprintf(cmd.cmd,"rm -rf %s",cmd.nowPath);
-    return cmd;
+    exeCMD(cmd.cmd);
 }
+
 
 void serviceSetting(struct cmdinfo cmd){
     getNowPath(cmd.nowPath);
@@ -68,7 +82,6 @@ void serviceSetting(struct cmdinfo cmd){
 }
 
 int main(int argc , char *argv[]){
-    char buf[250];
 
     struct cmdinfo path;
     strcpy(path.pName,argv[0]);
@@ -78,14 +91,7 @@ int main(int argc , char *argv[]){
     // path = move(path);
     // path = boom(path);
     serviceSetting(path); 
-//    FILE *fp = popen(path.cmd, "r");
-    
-//    while (fgets(buf, 200, fp))
-//     {
-//        printf("%s:",buf);
-//        bzero(path.cmd,200);
-//        bzero(buf,200); 
-//    }
+
 
 
     return 0;
