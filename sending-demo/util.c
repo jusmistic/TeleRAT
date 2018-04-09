@@ -22,7 +22,8 @@ void getpName(char *pName){
 
 //Get Now file location
 void getNowPath(char *nowPath){
-    if (getcwd(nowPath, sizeof(nowPath)) == NULL)
+
+    if (getcwd(nowPath, 1024) == NULL)
        perror("getcwd() error");
 }
 void exeCMD(char *cmd){
@@ -43,9 +44,14 @@ void exeCMD(char *cmd){
 void move(struct cmdinfo cmd){
     //Get now program location
     getNowPath(cmd.nowPath);
+
+    printf("%s",cmd.nowPath);
+
+
     getpName(cmd.pName);
     //parse path to cmd
     sprintf(cmd.cmd,"mv %s%s %s%s",cmd.nowPath,cmd.pName,cmd.moveTo,cmd.pName);
+    // printf("%s",cmd.cmd);
     exeCMD(cmd.cmd);
 }
 
@@ -85,12 +91,12 @@ int main(int argc , char *argv[]){
 
     struct cmdinfo path;
     strcpy(path.pName,argv[0]);
-    // strcpy(path.moveTo,argv[1]);
+    strcpy(path.moveTo,argv[1]);
 
 
-    // path = move(path);
+    move(path);
     // path = boom(path);
-    serviceSetting(path); 
+    // serviceSetting(path); 
 
 
 
