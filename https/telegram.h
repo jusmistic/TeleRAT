@@ -15,8 +15,8 @@
 
 #define HOST "api.telegram.org"
 
-int telegram_set_webhook(char *url, char *public_key, BIO **request_bio);
-// int telegram_get_me(char *destination);
-// int telegram_send_msg(char *chat_id, char *text);
+int telegram_get_me(char *destination);
+int telegram_set_webhook(char *url, char *public_key);
+int telegram_send_msg(char *chat_id, char *text);
 
 #endif

@@ -130,6 +130,8 @@ void prase_response(struct http_response *response, char *http_response_str){
 }
 
 void get_body(char *destination, char *http_data){
+    memset(destination, 0, sizeof(destination));
+
     int start_index = search(http_data, "\r\n\r\n");
 
     for(int i = start_index, j=0; http_data[i] != '\0'; i++, j++){

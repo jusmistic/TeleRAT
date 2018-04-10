@@ -1,7 +1,6 @@
 #include "http_helper.h"
 
 void request_header(struct http_request *request, char *buffer){
-    // *buffer = (char *) malloc(1024);
     char *temp = (char *) malloc(256);
 
     memset(buffer, 0, sizeof(buffer));
@@ -13,7 +12,6 @@ void request_header(struct http_request *request, char *buffer){
     strcat(buffer, "Cache-Control: max-age=0\r\n");
 
     sprintf(temp, "User-Agent: %s\r\n", USER_AGENT);
-    // strcat(buffer, temp);
 
     if(strlen(request->content_type) > 0){
         if(strcmp(request->content_type, "multipart/form-data") == 0){
@@ -35,10 +33,8 @@ void request_header(struct http_request *request, char *buffer){
 }
 
 void response_header(struct http_response *response, char *buffer){
-    // *buffer = (char *) malloc(1024);
     char *temp = (char *) malloc(256);
 
-    // memset(*buffer, 0, sizeof(*buffer));
     sprintf(buffer, "%s %d %s\r\n", response->version, response->status_code, response->status);
 
     sprintf(temp, "Server : "SERVER"\r\n");
@@ -56,7 +52,6 @@ void response_header(struct http_response *response, char *buffer){
 }
 
 void create_boundary(char **buffer, char *data, char *input_name){
-    // *buffer = (char *) malloc(2048);
     char *temp = (char *) malloc(256);
 
     memset(*buffer, 0, sizeof(*buffer));
@@ -73,7 +68,6 @@ void create_boundary(char **buffer, char *data, char *input_name){
 }
 
 void create_file_boundary(char **buffer, char *file_path, char *input_name){
-    // *buffer = (char *) malloc(2048);
     char *temp = (char *) malloc(256);
 
     memset(*buffer, 0, sizeof(*buffer));
@@ -94,6 +88,43 @@ void create_file_boundary(char **buffer, char *file_path, char *input_name){
     sprintf(temp, "Content-Disposition: form-data; name=\"%s\"; filename=\"%s\"\r\n", input_name, filename);
     strcat(*buffer, temp);
     strcat(*buffer, "\r\n");
+}
+
+void add_post(char *buffer, char *data, char *field){
+    char *temp = (char *) malloc(1024);
+    memset(temp, 0, sizeof(temp));
+
+    create_boundary(&temp, data, field);
+    strcat(buffer, temp);
+
+    free(temp);
+}
+
+void add_file_post(char *buffer, char *filepath, char *field){
+    FILE *fp;
+    char *temp = (char *) malloc(512);
+    memset(temp, 0, sizeof(temp));
+
+    create_file_boundary(&temp, filepath, field);
+    strcat(buffer, temp);
+
+    fp = fopen(filepath, "r");
+    if(fp != NULL){
+        while(!feof(fp)){
+            int bufflen = fread(temp, 1, sizeof(temp), fp);
+            temp[bufflen] = 0;
+            strcat(buffer, temp);
+        }
+        fclose(fp);
+    }
+
+    strcat(buffer, "\r\n");
+
+    free(temp);
+}
+
+void end_post(char **buffer){
+    strcat(*buffer, "--"BOUNDARY"--");
 }
 
 void reverse_str(char *destination, char *source){
