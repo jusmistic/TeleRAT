@@ -6,7 +6,7 @@
 #include<stdlib.h> //exit, atoi
 
 #define OP_START '\x02'
-#define OP_STOP 'x'
+#define OP_STOP '\x03'
 
 int main(int argc , char *argv[])
 {

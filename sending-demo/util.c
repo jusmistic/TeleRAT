@@ -5,9 +5,8 @@
 struct cmdinfo{
     char nowPath[1024];
     char pName[250];
-
-    char moveTo[1024];
     char cmd[10000];
+    char moveTo[2048];
 };
 
 
@@ -41,7 +40,8 @@ void exeCMD(char *cmd){
 
 
 //parse path to command
-void move(struct cmdinfo cmd){
+void move(char *path){
+    struct cmdinfo cmd;
     //Get now program location
     getNowPath(cmd.nowPath);
 
@@ -50,12 +50,13 @@ void move(struct cmdinfo cmd){
 
     getpName(cmd.pName);
     //parse path to cmd
-    sprintf(cmd.cmd,"mv %s%s %s%s",cmd.nowPath,cmd.pName,cmd.moveTo,cmd.pName);
+    sprintf(cmd.cmd,"mv %s%s %s%s",cmd.nowPath,cmd.pName,path,cmd.pName);
     // printf("%s",cmd.cmd);
     exeCMD(cmd.cmd);
 }
 
-void boom(struct cmdinfo cmd){
+void boom(char *path){
+    struct cmdinfo cmd;
     getNowPath(cmd.nowPath);
     getpName(cmd.pName);
     sprintf(cmd.cmd,"rm -rf %s",cmd.nowPath);
@@ -63,7 +64,8 @@ void boom(struct cmdinfo cmd){
 }
 
 
-void serviceSetting(struct cmdinfo cmd){
+void serviceSetting(){
+    struct cmdinfo cmd;   
     getNowPath(cmd.nowPath);
     getpName(cmd.pName);
 	//Connect path with program	
@@ -89,14 +91,14 @@ void serviceSetting(struct cmdinfo cmd){
 
 int main(int argc , char *argv[]){
 
-    struct cmdinfo path;
-    strcpy(path.pName,argv[0]);
-    strcpy(path.moveTo,argv[1]);
+    struct cmdinfo cmd;
+    strcpy(cmd.pName,argv[0]);
+    strcpy(cmd.moveTo,argv[1]);
 
 
-    move(path);
-    // path = boom(path);
-    // serviceSetting(path); 
+    // move(cmd.moveTo);
+    // path = boom(cmd.pName);
+    // serviceSetting(); 
 
 
 
