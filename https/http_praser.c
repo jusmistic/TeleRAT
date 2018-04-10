@@ -13,6 +13,8 @@ void prase_request(struct http_request *request, char *http_request_str){
     }
     strcpy(request->method, temp);
 
+    request->content_length = 0;
+
     splited = strtok(http_header, "\r\n");
     while(splited != NULL){
         if(strncmp(splited, request->method, strlen(request->method)) == 0){

@@ -4,9 +4,11 @@
 #include<arpa/inet.h> //inet_addr
 #include <unistd.h>
 #include<stdlib.h> //atoi
+#include <errno.h>
+#include <sys/stat.h>
 
 #define OP_START '\x02'
-#define OP_STOP 'x'
+#define OP_STOP '\x03'
 struct message {
     char servermessage[150];
 }message;
@@ -67,25 +69,30 @@ int main(int argc , char *argv[])
         char *messagereturn;
         messagereturn = malloc(1000 * sizeof(char));
         messagereturn = changecommand(message, lengthofmessage);
-        printf("%s", messagereturn);
         //combine all message_box
         FILE *fp;
-        fp = fopen("server-message.txt", "w");
+        fp = fopen("server-message.sh", "w");
         fputs(messagereturn, fp);
         fclose(fp);
+        char mode[4]="0777";
+        char buffer[100]="server-message.sh";
+        int i;
+        i = atoi(mode);
+        if (chmod (buffer,i) < 0)
+            printf("error in chmod\n");
         //Send to server
         //After Client has recieve form server, Client write message back to server
         printf("--- Sending init --- \n");
         char tmp[250],buf[250], messageget[250];
         //use popen in order to pointer to the first memory location that hold the results (results ---> value of message)
-        fp = fopen("server-message.txt", "r");
+        fp = fopen("server-message.sh", "r");
         fgets(messageget, 250, fp);
         fp = popen(messageget, "r");
         {
             //fgets use to read next input line to keep in charactor array with value MAXLINE - 1
             while (fgets(buf, 200, fp))
             {
-            printf("%s:",buf);
+            printf("%s:\n",buf);
             //If write(socket_desc , buf , strlen(buf)) < 0 it means client didn't send anything to server
             if( write(socket_desc , buf , strlen(buf)) < 0)
             {

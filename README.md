@@ -35,6 +35,5 @@ with 1s refresh rate               Waiting for connection from BOT
 /timeout - Set timeout for shell.
 /mvbot - Move bot to custom location.
 /getfile - Download file from bot.
-/reserve - Warning text that found in shell.
 /BOOM! - DESTROY ITSELF!
 ```

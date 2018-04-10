@@ -8,7 +8,7 @@
 
 #include "telegram.h"
 
-#define URL "https://ec2-18-219-162-217.us-east-2.compute.amazonaws.com:8443/"
+#define URL "https://ec2-18-219-162-217.us-east-2.compute.amazonaws.com:8443"
 
 int main(){
     BIO *request_bio;

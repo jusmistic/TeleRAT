@@ -4,24 +4,29 @@ void request_header(struct http_request *request, char *buffer){
     // *buffer = (char *) malloc(1024);
     char *temp = (char *) malloc(256);
 
-    // memset(*buffer, 0, sizeof(*buffer));
+    memset(buffer, 0, sizeof(buffer));
     sprintf(buffer, "%s %s %s\r\n", request->method, request->path, request->version);
 
     sprintf(temp, "Host: %s\r\n", request->host);
     strcat(buffer, temp);
 
-    strcat(buffer, "Connection: keep-alive\r\n");
+    strcat(buffer, "Cache-Control: max-age=0\r\n");
 
     sprintf(temp, "User-Agent: %s\r\n", USER_AGENT);
-    strcat(buffer, temp);
+    // strcat(buffer, temp);
 
     if(strlen(request->content_type) > 0){
         if(strcmp(request->content_type, "multipart/form-data") == 0){
-            sprintf(temp, "Content-Type: %s; boundary=%s\r\n", request->content_type, BOUNDARY);
+            sprintf(temp, "Content-Type: multipart/form-data; boundary="BOUNDARY"\r\n");
         }
         else{
-            sprintf(temp, "Content-Type: %s", request->content_type);
+            sprintf(temp, "Content-Type: %s\r\n", request->content_type);
         }
+        strcat(buffer, temp);
+    }
+
+    if(request->content_length > 0){
+        sprintf(temp, "Content-Length: %d\r\n", request->content_length);
         strcat(buffer, temp);
     }
 
@@ -83,6 +88,8 @@ void create_file_boundary(char **buffer, char *file_path, char *input_name){
     }
     temp[j] = '\0';
     reverse_str(filename, temp);
+
+    strcat(*buffer, "Content-Type: application/octet-stream\r\n");
 
     sprintf(temp, "Content-Disposition: form-data; name=\"%s\"; filename=\"%s\"\r\n", input_name, filename);
     strcat(*buffer, temp);
