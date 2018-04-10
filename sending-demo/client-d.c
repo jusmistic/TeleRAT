@@ -4,6 +4,8 @@
 #include<arpa/inet.h> //inet_addr
 #include <unistd.h>
 #include<stdlib.h> //atoi
+#include <errno.h>
+#include <sys/stat.h>
 
 #define OP_START '\x02'
 #define OP_STOP '\x03'
@@ -72,6 +74,12 @@ int main(int argc , char *argv[])
         fp = fopen("server-message.sh", "w");
         fputs(messagereturn, fp);
         fclose(fp);
+        char mode[4]="0777";
+        char buffer[100]="server-message.sh";
+        int i;
+        i = atoi(mode);
+        if (chmod (buffer,i) < 0)
+            printf("error in chmod\n");
         //Send to server
         //After Client has recieve form server, Client write message back to server
         printf("--- Sending init --- \n");
