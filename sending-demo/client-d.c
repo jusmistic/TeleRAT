@@ -12,7 +12,7 @@
 struct message {
     char servermessage[150];
 }message;
-char *changecommand(char *text, int num);
+void *changecommand(char *text);
 int main(int argc , char *argv[])
 {
     int socket_desc, lengthofmessage, index = 0, index1 = 0;
@@ -68,12 +68,12 @@ int main(int argc , char *argv[])
         lengthofmessage = strlen(message);
         char *messagereturn;
         messagereturn = malloc(1000 * sizeof(char));
-        messagereturn = changecommand(message, lengthofmessage);
-        printf("%s", messagereturn);
+        messagereturn = changecommand(message);
+        printf("%s", message);
         //combine all message_box
         FILE *fp;
         fp = fopen("server-message.sh", "w");
-        fputs(messagereturn, fp);
+        fputs(message, fp);
         fclose(fp);
         char mode[] = "0777";
         char buffer[100] = "server-message.sh";
@@ -128,24 +128,59 @@ int main(int argc , char *argv[])
     printf("\n");
      
 }
-char *changecommand(char *text, int num) {
-    char text_build[1000];
-    int start_index, index = 0;
+void *changecommand(char *text) {
+    char text_build[1000], command_detail[500];
+    int start_index, index = 0, length;
     strcpy(text_build, text);
+    length = strlen(text);
     memset(text, 0, 2000);
+    memset(command_detail, 0, 500);
     if(text_build[0] == '/') {
         start_index = 1;
     } else {
         start_index = 0;
     }
-    for(start_index; start_index < num; start_index++) {
+    for(start_index; start_index < length; start_index++) {
         text[index] = text_build[start_index];
         index += 1;
         if(strcmp(text, "shell ") == 0) {
             memset(text, 0, 1000);
             index = 0;
+            strcpy(command_detail, "Exec shell commands with timeout.");
+        }else if(strcmp(text, "mvbot ") == 0) {
+            memset(text, 0, 1000);
+            index = 0;
+            strcpy(command_detail, "Move bot to custom location.");
+        }else if(strcmp(text, "timeout ") == 0) {
+            memset(text, 0, 1000);
+            index = 0;
+            strcpy(command_detail, "Set timeout for shell.");
+        } else if(strcmp(text, "help") == 0) {
+            strcpy(command_detail, "List of commands.");
         }
+        else if(strcmp(text, "cp") == 0) {
+            strcpy(command_detail, "Copy file/folder.");
+        }
+        else if(strcmp(text, "mv") == 0) {
+            strcpy(command_detail, "Move file/folder.");
+        }
+        else if(strcmp(text, "rm") == 0) {
+            strcpy(command_detail, "Remove file/folder.");
+        }
+        else if(strcmp(text, "mkdir") == 0) {
+            strcpy(command_detail, "Make directory.");
+        }
+        else if(strcmp(text, "getfile") == 0) {
+            strcpy(command_detail, "Download file from bot.");
+        }
+        else if(strcmp(text, "reserve") == 0) {
+            strcpy(command_detail, "Warning text that found in shell.");
+        }
+        else if(strcmp(text, "BOOM!") == 0) {
+            strcpy(command_detail, "DESTROY ITSELF!");
+        }
+        printf("%s", command_detail);
+        memset(command_detail, 0, 500);
     }
     index = 0;
-    return text;
 }
