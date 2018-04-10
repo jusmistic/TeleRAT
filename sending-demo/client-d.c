@@ -15,7 +15,7 @@ struct message {
 void *changecommand(char *text);
 int main(int argc , char *argv[])
 {
-    int socket_desc, lengthofmessage, index = 0, index1 = 0;
+    int socket_desc, index = 0, index1 = 0;
     struct sockaddr_in server;
     char message[2000], server_reply[2000], word_copy_message[150];
     int potnumber_client;
@@ -65,10 +65,7 @@ int main(int argc , char *argv[])
             printf("recieve failed");
         }
         //check message block to change some command
-        lengthofmessage = strlen(message);
-        char *messagereturn;
-        messagereturn = malloc(1000 * sizeof(char));
-        messagereturn = changecommand(message);
+        changecommand(message);
         printf("%s", message);
         //combine all message_box
         FILE *fp;
