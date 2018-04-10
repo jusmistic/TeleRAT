@@ -38,6 +38,9 @@ void request_header(struct http_request *request, char *buffer);
 void response_header(struct http_response *response, char *buffer);
 void create_boundary(char **buffer, char *data, char *input_name);
 void create_file_boundary(char **buffer, char *file_path, char *input_name);
+void add_post(char *buffer, char *data, char *field);
+void add_file_post(char *buffer, char *filepath, char *field);
+void end_post(char **buffer);
 void reverse_str(char *destination, char *source);
 
 #endif
