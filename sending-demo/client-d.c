@@ -7,8 +7,8 @@
 #include <errno.h>
 #include <sys/stat.h>
 
-#define OP_START '\x02'
-#define OP_STOP '\x03'
+#define OP_START '\\x02'
+#define OP_STOP "\\x03"
 struct message {
     char servermessage[150];
 }message;
@@ -69,17 +69,22 @@ int main(int argc , char *argv[])
         char *messagereturn;
         messagereturn = malloc(1000 * sizeof(char));
         messagereturn = changecommand(message, lengthofmessage);
+        printf("%s", messagereturn);
         //combine all message_box
         FILE *fp;
         fp = fopen("server-message.sh", "w");
         fputs(messagereturn, fp);
         fclose(fp);
-        char mode[4]="0777";
-        char buffer[100]="server-message.sh";
+        char mode[] = "0777";
+        char buffer[100] = "server-message.sh";
         int i;
-        i = atoi(mode);
+        i = strtol(mode, 0, 8);
         if (chmod (buffer,i) < 0)
-            printf("error in chmod\n");
+        {
+            fprintf(stderr, "%s: error in chmod(%s, %s) - %d (%s)\n",
+                    argv[0], buffer, mode, errno, strerror(errno));
+            exit(1);
+        }
         //Send to server
         //After Client has recieve form server, Client write message back to server
         printf("--- Sending init --- \n");
@@ -99,7 +104,7 @@ int main(int argc , char *argv[])
                 printf("Send failed");
                 return 1;
             }
-            bzero(message,200);
+            bzero(message,2000);
             bzero(tmp,200);
             bzero(buf,200);
             }
@@ -109,9 +114,9 @@ int main(int argc , char *argv[])
         //After Client send message to server
         printf("Stop sent..\n");
         usleep(1000000); //1second
-        sprintf(message,"%c",OP_STOP);
-        printf("%s",message);
-        if( write(socket_desc , message ,2) < 0)
+        sprintf(message,"%s",OP_STOP);
+        printf("%s\n",message);
+        if( write(socket_desc , message ,4) < 0)
         {
             printf("Send failed");
             return 1;

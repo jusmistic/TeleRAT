@@ -5,8 +5,8 @@
 #include<unistd.h>    //write
 #include<stdlib.h> //exit, atoi
 
-#define OP_START '\x02'
-#define OP_STOP '\x03'
+#define OP_START '\\x02'
+#define OP_STOP '\\x03'
 
 int main(int argc , char *argv[])
 {
@@ -76,20 +76,19 @@ int main(int argc , char *argv[])
 		    printf("Server Read\n");
 		    while(1)
 		    {
-		        bzero(message,200);
+		        bzero(message,2000);
 		        // printf("Start Sending\n");
-			if(read(new_socket, message, 200) < 0)
+				if(read(new_socket, message, 200) < 0)
 		        {
 		            printf("Recv Error!\n");                
 		        }
-		        // message[strlen(message)] ='\0';
-		        printf("%s",message);
+		        printf("%s\n", message);
 		        //Means client didn't send anything to server and end connection between server and client
-		        if(message[0] == 'x')
+		        if(strcmp(message, "\\x03") == 0)
 		        {
 		            printf("Exit..");
                             break;
-		        }                
+		        }              
 		    }
 		    printf("Stop Recieve...\n");
 
