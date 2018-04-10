@@ -14,6 +14,9 @@ int main(){
     // telegram_set_webhook(URL, "public.pem");
     char *me = (char *) malloc(2048);
     telegram_get_me(me);
-    telegram_send_msg("407156442", "Test Telegram sendMessage Method");
+    telegram_send_msg("407156442", 
+    "*Title*\nmessage body\n"
+    "```python\nprint('Code here')\n```\n"
+    "[listen Shonichi](https://www.youtube.com/watch?v=IMx1ojx2fiE)");
     return 0;
 }

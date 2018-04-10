@@ -80,6 +80,7 @@ int telegram_send_msg(char *chat_id, char *text){
     /* create HTTP body */
     add_post(buffer, chat_id, "chat_id");
     add_post(buffer, text, "text");
+    add_post(buffer, "Markdown", "parse_mode");
     end_post(&buffer);
 
     request_struct.content_length = strlen(buffer);
