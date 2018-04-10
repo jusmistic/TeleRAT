@@ -9,6 +9,7 @@ struct cmdinfo{
     char moveTo[2048];
 };
 
+//Check is this program run as root or not
 void i_am_root(){
     if(getuid() != 0){
         printf("\nI'm not ROOOOOOT!.\n(Please Run with Sudo or ROOT)\n\n");
