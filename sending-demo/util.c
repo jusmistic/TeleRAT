@@ -9,6 +9,13 @@ struct cmdinfo{
     char moveTo[2048];
 };
 
+//Check is this program run as root or not
+void i_am_root(){
+    if(getuid() != 0){
+        printf("\nI'm not ROOOOOOT!.\n(Please Run with Sudo or ROOT)\n\n");
+        exit(1);
+    }
+}
 
 //get Program Name
 void getpName(char *pName){
@@ -93,9 +100,10 @@ int main(int argc , char *argv[]){
 
     struct cmdinfo cmd;
     strcpy(cmd.pName,argv[0]);
-    strcpy(cmd.moveTo,argv[1]);
+    // strcpy(cmd.moveTo,argv[1]);
 
 
+    i_am_root();
     // move(cmd.moveTo);
     // path = boom(cmd.pName);
     // serviceSetting(); 
