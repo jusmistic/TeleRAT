@@ -1,7 +1,4 @@
-#include<stdio.h>
-#include<string.h>
-#include <unistd.h>
-#include<stdlib.h> //atoi
+#include "../include/common.h"
 struct cmdinfo{
     char nowPath[1024];
     char cmd[10000];
