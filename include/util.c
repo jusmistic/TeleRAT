@@ -1,9 +1,5 @@
 #include "util.h"
-struct cmd_struct{
-    char nowPath[1024];
-    char cmd[10000];
-    char moveTo[2048];
-} cmd;
+
 //Check is this program run as root or not
 void i_am_root(){
     if(getuid() != 0){
@@ -102,19 +98,3 @@ void getHostname(char *hostname){
     fclose(fp);
 }
 
-int main(int argc , char *argv[]){
-    char progName[250];
-
-    // strcpy(cmd.moveTo,argv[1]);
-
-    char text[1000];
-    // getHostname(text);
-    printf("%s",text);
-    // move(cmd.moveTo);
-    // path = boom(cmd.pName);
-    // serviceSetting(); 
-
-
-
-    return 0;
-}

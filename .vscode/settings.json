@@ -10,6 +10,7 @@
         "http_helper.h": "c",
         "tcp_client.h": "c",
         "telegram.h": "c",
-        "inet.h": "c"
+        "inet.h": "c",
+        "util.h": "c"
     }
 }
