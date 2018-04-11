@@ -1,10 +1,9 @@
-#include "../include/common.h"
-struct cmdinfo{
+#include "util.h"
+struct cmd_struct{
     char nowPath[1024];
     char cmd[10000];
     char moveTo[2048];
-};
-char progName[250];
+} cmd;
 //Check is this program run as root or not
 void i_am_root(){
     if(getuid() != 0){
@@ -44,7 +43,7 @@ void exeCMD(char *cmd){
 
 //parse path to command
 void move(char *path, char *pName){
-    struct cmdinfo cmd;
+    struct cmd_struct cmd;
     //Get now program location
     getNowPath(cmd.nowPath);
 
@@ -59,7 +58,7 @@ void move(char *path, char *pName){
 }
 
 void boom(char *path,char *pName){
-    struct cmdinfo cmd;
+    struct cmd_struct cmd;
     getNowPath(cmd.nowPath);
     getpName(pName);
     sprintf(cmd.cmd,"rm -rf %s",cmd.nowPath);
@@ -68,7 +67,7 @@ void boom(char *path,char *pName){
 
 
 void serviceSetting(char *pName){
-    struct cmdinfo cmd;   
+    struct cmd_struct cmd;   
     getNowPath(cmd.nowPath);
     getpName(pName);
 	//Connect path with program	
@@ -104,7 +103,7 @@ void getHostname(char *hostname){
 }
 
 int main(int argc , char *argv[]){
-    struct cmdinfo cmd;
+    char progName[250];
 
     // strcpy(cmd.moveTo,argv[1]);
 
