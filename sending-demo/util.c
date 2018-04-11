@@ -96,6 +96,7 @@ void serviceSetting(char *pName){
 }
 
 void getHostname(char *hostname){
+    //Get hostname from this computer
     FILE *fp;
     fp = fopen("/etc/hostname","r");
     while (fgets(hostname, 1000, fp) != NULL)
