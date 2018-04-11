@@ -95,7 +95,15 @@ void serviceSetting(char *pName){
 	fprintf(f,"%s",cmd.cmd);
 }
 
-
+void getHostname(char *hostname){
+    FILE *fp;
+    fp = fopen("/etc/hostname","r");
+    while (fgets(hostname, 1000, fp) != NULL)
+    {
+        printf("%s", hostname);
+    }
+    fclose(fp);
+}
 
 int main(int argc , char *argv[]){
     struct cmdinfo cmd;
