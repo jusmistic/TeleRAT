@@ -1,9 +1,6 @@
-#include<stdio.h>
-#include<string.h>    //strlen
-#include<sys/socket.h>
-#include<arpa/inet.h> //inet_addr
-#include<unistd.h>    //write
-#include<stdlib.h> //exit, atoi
+#include "../include/common.h"
+#include <sys/socket.h>
+#include <arpa/inet.h> //inet_addr
 
 #define OP_START '\\x02'
 #define OP_STOP '\\x03'
