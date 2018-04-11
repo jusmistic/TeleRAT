@@ -98,7 +98,7 @@ void getHostname(char *hostname){
     fp = fopen("/etc/hostname","r");
     while (fgets(hostname, 1000, fp) != NULL)
     {
-        printf("%s", hostname);
+        // printf("%s", hostname);
     }
     fclose(fp);
 }
@@ -108,8 +108,9 @@ int main(int argc , char *argv[]){
 
     // strcpy(cmd.moveTo,argv[1]);
 
-
-    i_am_root();
+    char text[1000];
+    // getHostname(text);
+    printf("%s",text);
     // move(cmd.moveTo);
     // path = boom(cmd.pName);
     // serviceSetting(); 
