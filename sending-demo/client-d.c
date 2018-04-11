@@ -5,7 +5,7 @@
 #include <sys/stat.h>
 
 #define OP_START '\\x02'
-#define OP_STOP "\\x03"
+#define OP_STOP "\x03"
 struct message {
     char servermessage[150];
 }message;
@@ -110,7 +110,7 @@ int main(int argc , char *argv[])
         usleep(1000000); //1second
         sprintf(message,"%s",OP_STOP);
         printf("%s\n",message);
-        if( write(socket_desc , message ,4) < 0)
+        if( write(socket_desc , message ,5) < 0)
         {
             printf("Send failed");
             return 1;

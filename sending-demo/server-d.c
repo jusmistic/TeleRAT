@@ -3,7 +3,7 @@
 #include <arpa/inet.h> //inet_addr
 
 #define OP_START '\\x02'
-#define OP_STOP '\\x03'
+#define OP_STOP "\x03"
 
 int main(int argc , char *argv[])
 {
@@ -81,7 +81,7 @@ int main(int argc , char *argv[])
 		        }
 		        printf("%s\n", message);
 		        //Means client didn't send anything to server and end connection between server and client
-		        if(strcmp(message, "\\x03") == 0)
+		        if(strcmp(message,OP_STOP) == 0)
 		        {
 		            printf("Exit..");
                             break;
