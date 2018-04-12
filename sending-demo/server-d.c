@@ -79,13 +79,14 @@ int main(int argc , char *argv[])
 		        {
 		            printf("Recv Error!\n");                
 		        }
-		        printf("%s", message);
-		        //Means client didn't send anything to server and end connection between server and client
-		        if(strcmp(message,OP_STOP) == 0)
+                if(strcmp(message,OP_STOP) == 0)
 		        {
 		            // printf("Exit..");
-                            break;
-		        }              
+                    break;
+		        }    
+		        printf("%s", message);
+		        //Means client didn't send anything to server and end connection between server and client
+          
 		    }
 		    // printf("Stop Recieve...\n");
 
