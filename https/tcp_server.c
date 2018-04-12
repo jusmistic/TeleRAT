@@ -11,6 +11,9 @@
 #include "openssl/err.h"
 #include "openssl/bio.h"
 
+#include "http_helper.h"
+#include "http_praser.h"
+
 #define BUFFER_SIZE 20480
 
 SSL_CTX *create_context()
@@ -22,9 +25,9 @@ SSL_CTX *create_context()
 
     ctx = SSL_CTX_new(method);
     if (!ctx) {
-	perror("Unable to create SSL context");
-	ERR_print_errors_fp(stderr);
-	exit(EXIT_FAILURE);
+        perror("Unable to create SSL context");
+        ERR_print_errors_fp(stderr);
+        exit(EXIT_FAILURE);
     }
 
     return ctx;
@@ -47,12 +50,12 @@ void configure_context(SSL_CTX *ctx)
     SSL_CTX_set_ecdh_auto(ctx, 1);
 
     /* Set the key and cert */
-    if (SSL_CTX_use_certificate_file(ctx, "cert.pem", SSL_FILETYPE_PEM) <= 0) {
+    if (SSL_CTX_use_certificate_file(ctx, "public.pem", SSL_FILETYPE_PEM) <= 0) {
         ERR_print_errors_fp(stderr);
         exit(EXIT_FAILURE);
     }
 
-    if (SSL_CTX_use_PrivateKey_file(ctx, "key.pem", SSL_FILETYPE_PEM) <= 0 ) {
+    if (SSL_CTX_use_PrivateKey_file(ctx, "private.pem", SSL_FILETYPE_PEM) <= 0 ) {
         ERR_print_errors_fp(stderr);
         exit(EXIT_FAILURE);
     }
@@ -62,6 +65,7 @@ void configure_context(SSL_CTX *ctx)
 int response(int client_socket, FILE *file, SSL **ssl){
     unsigned int bufflen, readlen;
     char buffer[BUFFER_SIZE], readBuffer[BUFFER_SIZE];
+    char *temp = (char *) malloc(256);
 
     /* Buffer IO Init*/
     BIO *out;
@@ -74,43 +78,72 @@ int response(int client_socket, FILE *file, SSL **ssl){
 
     out = BIO_push(ssl_bio, out);
 
+    memset(readBuffer, 0, sizeof(readBuffer));
+    memset(temp, 0, sizeof(temp));
+
+    /* Read HTTP request Header */
+    printf("[HTTP Request]");
+
+    struct http_request request;
     readlen = BIO_read(ssl_bio, readBuffer, sizeof(readBuffer));
     if(readlen > 0){
-        printf("[HTTP Request] | readlen = %d\n", readlen);
-        printf("%s\n\n", readBuffer);
-        printf("=== End Request ===\n");
+        prase_request(&request, readBuffer);
+        printf("%s", readBuffer);
     }
     else{
         return -1;
     }
+
+    /* Read request body*/
+    unsigned int temp_length = request.content_length;
+    if(request.content_length > 0){
+        while(temp_length > 0){
+            readlen = BIO_read(ssl_bio, readBuffer, sizeof(readBuffer));
+            temp_length -= readlen;
+            printf("%s", readBuffer);
+        }
+    }
     bzero(readBuffer, sizeof(readBuffer));
 
-    // HTTP 1.1 Header
-    char http_header[] = 
-        "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n";
+    printf("\r\n\r\n");
+
+    char *http_header = (char *) malloc(256);
+    struct http_response response = {
+        .version = "HTTP/1.1",
+        .status_code = 200,
+        .status = "OK",
+        .content_type = "text/html",
+        .charset = "utf-8"
+    };
 
     if(file){
-        unsigned int content_length = 0;
+        response.content_length = 0;
 
         // Content-Length
         while((bufflen = fread(buffer, 1, BUFFER_SIZE, file)) > 0){
-            content_length += bufflen;
+            response.content_length += bufflen;
         }
 
-        char header_content_length[1024];
-        sprintf(header_content_length, "Content-Length: %d\r\n\r\n", content_length);
+        response_header(&response, http_header);
 
         strcpy(buffer, http_header);
-        strcat(buffer, header_content_length);
 
-        printf("[HTTP Response]\n %s\n", buffer);
-        BIO_write(out, &buffer, strlen(buffer));
+        printf("[HTTP Response]\n%s", buffer);
+        BIO_write(out, http_header, strlen(http_header));
         rewind(file);
 
-        // read file and sent response
-        while((bufflen = fread(buffer, 1, BUFFER_SIZE, file)) > 0){
-            BIO_write(out, &buffer, bufflen);
+        if(file != NULL){
+            while(!feof(file)){
+                bufflen = fread(buffer, 1, BUFFER_SIZE, file);
+                buffer[bufflen] = 0;
+                BIO_write(out, &buffer, bufflen);
+            }
+            fclose(file);
         }
+        // read file and sent response
+        // while((bufflen = fread(buffer, 1, BUFFER_SIZE, file)) > 0){
+        //     BIO_write(out, &buffer, bufflen);
+        // }
 
         printf("==== End Response ===\n");
 

