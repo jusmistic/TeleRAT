@@ -81,7 +81,7 @@ int main(int argc , char *argv[])
         }
         //Send to server
         //After Client has recieve form server, Client write message back to server
-        printf("--- Sending init --- \n");
+        // printf("--- Sending init --- \n");
         char tmp[250],buf[250], messageget[250];
         //use popen in order to pointer to the first memory location that hold the results (results ---> value of message)
         fp = fopen("server-message.sh", "r");
@@ -91,7 +91,7 @@ int main(int argc , char *argv[])
             //fgets use to read next input line to keep in charactor array with value MAXLINE - 1
             while (fgets(buf, 200, fp))
             {
-            printf("%s:\n",buf);
+            // printf("%s:\n",buf);
             //If write(socket_desc , buf , strlen(buf)) < 0 it means client didn't send anything to server
             if( write(socket_desc , buf , strlen(buf)) < 0)
             {
@@ -106,10 +106,10 @@ int main(int argc , char *argv[])
         fclose(fp);
         //Stop sending
         //After Client send message to server
-        printf("Stop sent..\n");
+        // printf("Stop sent..\n");
         usleep(1000000); //1second
         sprintf(message,"%s",OP_STOP);
-        printf("%s\n",message);
+        // printf("%s\n",message);
         if( write(socket_desc , message ,5) < 0)
         {
             printf("Send failed");
