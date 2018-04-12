@@ -51,10 +51,11 @@ int main(int argc , char *argv[])
     int ret;
     if( (new_socket = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)) )
     {
+    //accept connection form client complete
+	printf("Connection accepted");
     while(1) {
 		memset(buf, 0, 256);
-		//accept connection form client complete
-		printf("Connection accepted");
+
 		//Reply to the client
 		    //Server send message to client
 		    printf("\nServer Write: ");
