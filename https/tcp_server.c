@@ -84,7 +84,7 @@ int response(int client_socket, FILE *file, SSL **ssl){
     memset(temp, 0, sizeof(temp));
 
     /* Read HTTP request Header */
-    printf("[HTTP Request]");
+    // printf("[HTTP Request]\n");
 
     struct http_request request;
     readlen = BIO_read(ssl_bio, readBuffer, sizeof(readBuffer));
@@ -106,14 +106,16 @@ int response(int client_socket, FILE *file, SSL **ssl){
         }
     }
 
-    printf("%s", temp);
+    // printf("%s", temp);
     struct telegram_chat chat;
     get_telegram_chat(&chat, temp);
+
+    // printf("Text => %s\n", chat.text);
     telegram_send_msg(chat.id, chat.text);
 
     bzero(readBuffer, sizeof(readBuffer));
 
-    printf("\r\n\r\n");
+    // printf("\r\n\r\n");
 
     char *http_header = (char *) malloc(256);
     struct http_response response = {

@@ -7,6 +7,9 @@ void get_telegram_chat(struct telegram_chat *chat, char *json){
     char *index1, *index2;
 
     // index1 = strstr(json, target1);
+    memset(chat->id, 0, sizeof(chat->id));
+    memset(chat->text, 0, sizeof(chat->text));
+
     index2 = strstr(json, target_id);
 
     while(index2 != NULL){

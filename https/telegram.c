@@ -6,6 +6,9 @@ int telegram_get_me(char *destination){
     char *response = (char *) malloc(2048);
     char *response_body = (char *) malloc(2048);
 
+    memset(response_body, 0, sizeof(response_body));
+    memset(response, 0, sizeof(response));
+
     struct http_request request_struct = {
         .method = "GET",
         .path = "/bot591458604:AAHOF6mhG6ft9Zyvr2bCciFWKiXsuSJmD9Q/getMe",
@@ -20,6 +23,8 @@ int telegram_get_me(char *destination){
     printf("\n\n[Response from Telegram]\n\n%s\n\n[End Telegram response]\n\n", response_body);
 
     strcpy(destination, response_body);
+
+    free(response_body);
 }
 
 int telegram_set_webhook(char *url, char *public_key){
@@ -38,6 +43,8 @@ int telegram_set_webhook(char *url, char *public_key){
     };
 
     memset(buffer, 0, sizeof(buffer));
+    memset(response, 0, sizeof(response));
+    memset(response_body, 0, sizeof(response_body));
 
     add_post(buffer, url, "url");
     add_file_post(buffer, public_key, "certificate");
@@ -76,6 +83,8 @@ int telegram_send_msg(char *chat_id, char *text){
     char *response_body = (char *) malloc(2048);
 
     memset(buffer, 0, sizeof(buffer));
+    memset(response, 0, sizeof(response));
+    memset(response_body, 0, sizeof(response_body));
 
     /* create HTTP body */
     add_post(buffer, chat_id, "chat_id");
@@ -88,7 +97,7 @@ int telegram_send_msg(char *chat_id, char *text){
     /* create HTTP Header message */
     create_request(header, &request_bio, &request_struct);
     write_request(&request_bio, header, strlen(header));
-    write_request(&request_bio, buffer, request_struct.content_length);
+    write_request(&request_bio, buffer, strlen(buffer));
     get_response(&request_bio, response);
     get_body(response_body, response);
 
