@@ -1,16 +1,19 @@
 #include "include/common.h"
 #include <sys/socket.h>
 #include <arpa/inet.h> //inet_addr
+#include <pthread.h>
 
 #define OP_START '\\x02'
 #define OP_STOP "\x03"
 
-void connect_handle(void * tmp_sock);
-
-
+void *connect_handle(void * temp_struct);
+struct sendto_function {
+    int *client_soc;
+    char *ip_client;
+}sendto_function;
 int main(int argc , char *argv[])
 {
-    int socket_desc , new_socket , c;
+    int socket_desc , client_sock , c, *new_sock;
     struct sockaddr_in server , client;
     
     int potnumber_server;
@@ -51,15 +54,22 @@ int main(int argc , char *argv[])
     //Accept and incoming connection
     printf("Waiting for incoming connections...\n");
     c = sizeof(struct sockaddr_in);
+    struct sendto_function send_to_function;
 
-    if( (new_socket = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)) )
+    while ( (client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)) )
     {
-    //accept connection form client complete
-	connect_handle((void*) &new_socket);
-        
-    }
-     
-    if (new_socket<0)
+        //accept connection form client complete
+        pthread_t server_serv;
+        send_to_function.ip_client = inet_ntoa(client.sin_addr);
+        send_to_function.client_soc = malloc(sizeof *send_to_function.client_soc);
+        *send_to_function.client_soc = client_sock;
+        if( pthread_create( &server_serv , NULL ,  connect_handle , (void*) &send_to_function) < 0)
+        {
+            perror("could not create thread");
+            return 1;
+        }
+    } 
+    if (client_sock<0)
     {
         printf("accept failed");
         return 1;
@@ -69,20 +79,21 @@ int main(int argc , char *argv[])
 }
 
 
-void connect_handle(void * tmp_sock){
-    printf("Connection accepted");
-    int new_socket = *((int *) tmp_sock);
+void *connect_handle(void * temp_struct){
+    struct sendto_function socket_struct = *(struct sendto_function *) temp_struct;
+    printf("Connection accepted ");
+    int new_socket = *socket_struct.client_soc;
     char message[2000]="";
     int ret;
-    char buf[256];
+    char buf[256], ipclient = *socket_struct.ip_client;
+    printf("Client socket: %d\nIP: %s\n", new_socket, ipclient);
     while(1) {
 		memset(buf, 0, 256);
 
 		//Reply to the client
 		    //Server send message to client
-		    printf("\nServer Write: ");
 		    bzero(message,2000);
-		    scanf(" %[^\n]",message);
+		    // scanf(" %[^\n]",message);
 		    // printf("%s\n",message);
 		    //If write(new_socket , message , strlen(message) < 0 it means Server didn't send anything to client
 		    if(ret = write(new_socket , message , strlen(message))<0)
