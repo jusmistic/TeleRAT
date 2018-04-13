@@ -23,6 +23,8 @@ void request_header(struct http_request *request, char *buffer){
         strcat(buffer, temp);
     }
 
+    strcat(buffer, "Connection: keep-alive\r\n");
+
     if(request->content_length > 0){
         sprintf(temp, "Content-Length: %d\r\n", request->content_length);
         strcat(buffer, temp);

@@ -51,16 +51,21 @@ int get_response(BIO **request_bio, char *response){
     int res;
     char read_buffer[BUFFER_SIZE];
     res = BIO_read(*request_bio, read_buffer, BUFFER_SIZE);
-    if(res < 0){
-        if(!BIO_should_retry(*request_bio)){
-            printf("Error: read failed");
-            ERR_print_errors_fp(stderr);
-            return -1;
+
+    while(1){
+        if(res < 0){
+            if(!BIO_should_retry(*request_bio)){
+                printf("Error: read failed");
+                ERR_print_errors_fp(stderr);
+                return -1;
+            }else{
+                printf("retry..\n");
+            }
         }
-    }
-    else{
-        read_buffer[res] = 0;
-        strcpy(response, read_buffer);
-        return 1;
+        else{
+            read_buffer[res] = 0;
+            strcpy(response, read_buffer);
+            return 1;
+        }
     }
 }
