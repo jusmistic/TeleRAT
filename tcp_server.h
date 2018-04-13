@@ -4,13 +4,13 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
-#include "common.h"
-#include "openssl.h"
+#include "Telegram/common.h"
+#include "Telegram/openssl.h"
 
-#include "http_helper.h"
-#include "http_praser.h"
-#include "telegram.h"
-#include "json_helper.h"
+#include "Telegram/http_helper.h"
+#include "Telegram/http_praser.h"
+#include "Telegram/telegram.h"
+#include "Telegram/json_helper.h"
 
 #define BUFFER_SIZE 20480
 

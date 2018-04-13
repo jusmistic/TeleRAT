@@ -3,7 +3,7 @@ cflags = -g
 output_path = includes/
 
 all: http_helper.o http_praser.o json_helper.o tcp_client.o telegram.o telegram.a \
-	 tcp_server.o tcp_server.a main
+	 helper.a main
 
 http_helper.o: http_helper.c
 	$(cc) $(cflags) -c $^ -o $(output_path)$@
@@ -24,11 +24,11 @@ telegram.a: $(output_path)telegram.o $(output_path)http_helper.o \
 			$(output_path)http_praser.o $(output_path)tcp_client.o
 	ar rcs $@ $^
 
-tcp_server.o: tcp_server.c
-	$(cc) $(cflags) -c $^ -o $(output_path)$@
+# tcp_server.o: tcp_server.c
+# 	$(cc) $(cflags) -c $^ -o $(output_path)$@
 
-tcp_server.a: $(output_path)tcp_server.o $(output_path)telegram.o $(output_path)http_helper.o \
-			$(output_path)http_praser.o $(output_path)json_helper.o $(output_path)tcp_client.o
+helper.a: $(output_path)telegram.o $(output_path)http_helper.o \
+		$(output_path)http_praser.o $(output_path)json_helper.o $(output_path)tcp_client.o
 	ar rcs $@ $^
 
 main: main.c telegram.a
