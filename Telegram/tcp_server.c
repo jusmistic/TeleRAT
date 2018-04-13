@@ -150,7 +150,7 @@ int tcp_server(){
     int server_socket = socket(AF_INET, SOCK_STREAM, 0);
     if(server_socket < 0){
         perror("Unable to create socket");
-        exit(EXIT_FAILURE);
+        return EXIT_FAILURE;
     }
 
     struct sockaddr_in server_address;
@@ -160,12 +160,12 @@ int tcp_server(){
 
     if(bind(server_socket, (struct sockaddr *) &server_address, sizeof(server_address)) < 0){
         perror("Unable to bind");
-        exit(EXIT_FAILURE);
+        return EXIT_FAILURE;
     }
 
     if(listen(server_socket, 5) < 0){
         perror("Unable to listen");
-        exit(EXIT_FAILURE);
+        return EXIT_FAILURE;
     }
 
     while(1){
@@ -175,7 +175,7 @@ int tcp_server(){
         int client_socket = accept(server_socket, (struct sockaddr *) &client_address, &len);
         if (client_socket < 0) {
             perror("Unable to accept");
-            exit(EXIT_FAILURE);
+            return EXIT_FAILURE;
         }
 
         fp = fopen("htdocs/index.html", "r");
