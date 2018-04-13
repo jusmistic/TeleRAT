@@ -1,9 +1,7 @@
 #ifndef JSON_HELPER_
 #define JSON_HELPER_
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+#include "common.h"
 
 struct telegram_chat{
     char id[15];
