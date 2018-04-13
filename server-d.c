@@ -5,13 +5,16 @@
 #define OP_START '\\x02'
 #define OP_STOP "\x03"
 
+void connect_handle(void * tmp_sock);
+
+
 int main(int argc , char *argv[])
 {
     int socket_desc , new_socket , c;
     struct sockaddr_in server , client;
-    char message[2000]="";
+    
     int potnumber_server;
-    char buf[256];
+
     potnumber_server = atoi(argv[1]); 
     if (2 != argc) {
 
@@ -48,11 +51,30 @@ int main(int argc , char *argv[])
     //Accept and incoming connection
     printf("Waiting for incoming connections...\n");
     c = sizeof(struct sockaddr_in);
-    int ret;
+
     if( (new_socket = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)) )
     {
     //accept connection form client complete
-	printf("Connection accepted");
+	connect_handle((void*) &new_socket);
+        
+    }
+     
+    if (new_socket<0)
+    {
+        printf("accept failed");
+        return 1;
+    }
+     
+    return 0;
+}
+
+
+void connect_handle(void * tmp_sock){
+    printf("Connection accepted");
+    int new_socket = *((int *) tmp_sock);
+    char message[2000]="";
+    int ret;
+    char buf[256];
     while(1) {
 		memset(buf, 0, 256);
 
@@ -92,14 +114,4 @@ int main(int argc , char *argv[])
 		    // printf("Stop Recieve...\n");
 
 	}
-        
-    }
-     
-    if (new_socket<0)
-    {
-        printf("accept failed");
-        return 1;
-    }
-     
-    return 0;
 }
