@@ -1,9 +1,7 @@
 #ifndef HTTP_PRASER_
 #define HTTP_PRASER_
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+#include "common.h"
 #include "http_helper.h"
 
 void prase_request(struct http_request *request, char *http_request_str);

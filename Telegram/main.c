@@ -1,7 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
+#include "common.h"
 #include "telegram.h"
 
 #define URL "https://ec2-13-229-209-129.ap-southeast-1.compute.amazonaws.com:8443/"

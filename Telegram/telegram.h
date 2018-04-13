@@ -1,12 +1,8 @@
 #ifndef TELEGRAM_
 #define TELEGRAM_
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+#include "common.h"
 
-#include "openssl/ssl.h"
-#include "openssl/err.h"
 #include "openssl/bio.h"
 
 #include "http_helper.h"

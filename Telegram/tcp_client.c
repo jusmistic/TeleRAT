@@ -23,7 +23,7 @@ int create_connection(BIO **request_bio, char *host){
     return 1;
 }
 
-int create_request(char *buffer, BIO **request_bio, struct http_request *request_struct){
+void create_request(char *buffer, BIO **request_bio, struct http_request *request_struct){
     SSL *request_ssl;
     strcpy(request_struct->version, "HTTP/1.1");
 
@@ -50,19 +50,17 @@ int write_request(BIO **request_bio, char *request, unsigned int len){
 int get_response(BIO **request_bio, char *response){
     int res;
     char read_buffer[BUFFER_SIZE];
-    while(1){
-        res = BIO_read(*request_bio, read_buffer, BUFFER_SIZE);
-        if(res < 0){
-            if(!BIO_should_retry(*request_bio)){
-                printf("Error: read failed");
-                ERR_print_errors_fp(stderr);
-                return -1;
-            }
+    res = BIO_read(*request_bio, read_buffer, BUFFER_SIZE);
+    if(res < 0){
+        if(!BIO_should_retry(*request_bio)){
+            printf("Error: read failed");
+            ERR_print_errors_fp(stderr);
+            return -1;
         }
-        else{
-            read_buffer[res] = 0;
-            strcpy(response, read_buffer);
-            return 1;
-        }
+    }
+    else{
+        read_buffer[res] = 0;
+        strcpy(response, read_buffer);
+        return 1;
     }
 }
