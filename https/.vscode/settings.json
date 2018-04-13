@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "err.h": "c",
-        "cstdlib": "c",
-        "http_praser.h": "c"
-    }
-}

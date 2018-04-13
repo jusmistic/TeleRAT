@@ -45,7 +45,6 @@ int write_request(BIO **request_bio, char *request, unsigned int len){
         ERR_print_errors_fp(stderr);
         return -1;
     }
-    printf("%s", request);
 }
 
 int get_response(BIO **request_bio, char *response){
@@ -61,6 +60,7 @@ int get_response(BIO **request_bio, char *response){
             }
         }
         else{
+            read_buffer[res] = 0;
             strcpy(response, read_buffer);
             return 1;
         }

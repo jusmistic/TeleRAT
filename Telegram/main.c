@@ -2,13 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "openssl/ssl.h"
-#include "openssl/err.h"
-#include "openssl/bio.h"
-
 #include "telegram.h"
 
-#define URL "https://ec2-18-219-162-217.us-east-2.compute.amazonaws.com:8443"
+#define URL "https://ec2-13-229-209-129.ap-southeast-1.compute.amazonaws.com:8443/"
 
 int main(){
     // telegram_set_webhook(URL, "public.pem");
@@ -18,5 +14,6 @@ int main(){
     "*Title*\nmessage body\n"
     "```python\nprint('Code here')\n```\n"
     "[listen Shonichi](https://www.youtube.com/watch?v=IMx1ojx2fiE)");
+    // tcp_server();
     return 0;
 }

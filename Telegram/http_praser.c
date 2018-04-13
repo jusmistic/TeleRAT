@@ -134,9 +134,12 @@ void get_body(char *destination, char *http_data){
 
     int start_index = search(http_data, "\r\n\r\n");
 
-    for(int i = start_index, j=0; http_data[i] != '\0'; i++, j++){
+    int i = 0, j;
+    for(i = start_index, j=0; http_data[i] != '\0'; i++, j++){
         destination[j] = http_data[i];
     }
+
+    destination[j] = 0;
 }
 
 int search(char *str, char *target){

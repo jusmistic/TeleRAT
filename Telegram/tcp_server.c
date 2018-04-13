@@ -1,20 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-
-#include <sys/socket.h>
-#include <arpa/inet.h>
-
-// openSSL
-#include "openssl/ssl.h"
-#include "openssl/err.h"
-#include "openssl/bio.h"
-
-#include "http_helper.h"
-#include "http_praser.h"
-
-#define BUFFER_SIZE 20480
+#include "tcp_server.h"
 
 SSL_CTX *create_context()
 {
@@ -65,7 +49,7 @@ void configure_context(SSL_CTX *ctx)
 int response(int client_socket, FILE *file, SSL **ssl){
     unsigned int bufflen, readlen;
     char buffer[BUFFER_SIZE], readBuffer[BUFFER_SIZE];
-    char *temp = (char *) malloc(256);
+    char *temp = (char *) malloc(1024);
 
     /* Buffer IO Init*/
     BIO *out;
@@ -82,13 +66,13 @@ int response(int client_socket, FILE *file, SSL **ssl){
     memset(temp, 0, sizeof(temp));
 
     /* Read HTTP request Header */
-    printf("[HTTP Request]");
+    // printf("[HTTP Request]\n");
 
     struct http_request request;
     readlen = BIO_read(ssl_bio, readBuffer, sizeof(readBuffer));
     if(readlen > 0){
         prase_request(&request, readBuffer);
-        printf("%s", readBuffer);
+        // printf("%s", readBuffer);
     }
     else{
         return -1;
@@ -100,12 +84,20 @@ int response(int client_socket, FILE *file, SSL **ssl){
         while(temp_length > 0){
             readlen = BIO_read(ssl_bio, readBuffer, sizeof(readBuffer));
             temp_length -= readlen;
-            printf("%s", readBuffer);
+            strcat(temp, readBuffer);
         }
     }
+
+    // printf("%s", temp);
+    struct telegram_chat chat;
+    get_telegram_chat(&chat, temp);
+
+    // printf("Text => %s\n", chat.text);
+    telegram_send_msg(chat.id, chat.text);
+
     bzero(readBuffer, sizeof(readBuffer));
 
-    printf("\r\n\r\n");
+    // printf("\r\n\r\n");
 
     char *http_header = (char *) malloc(256);
     struct http_response response = {
@@ -128,7 +120,7 @@ int response(int client_socket, FILE *file, SSL **ssl){
 
         strcpy(buffer, http_header);
 
-        printf("[HTTP Response]\n%s", buffer);
+        // printf("[HTTP Response]\n%s", buffer);
         BIO_write(out, http_header, strlen(http_header));
         rewind(file);
 
@@ -140,18 +132,12 @@ int response(int client_socket, FILE *file, SSL **ssl){
             }
             fclose(file);
         }
-        // read file and sent response
-        // while((bufflen = fread(buffer, 1, BUFFER_SIZE, file)) > 0){
-        //     BIO_write(out, &buffer, bufflen);
-        // }
-
-        printf("==== End Response ===\n");
 
         return 1;
     }
 }
 
-int main(){
+int tcp_server(){
     SSL *ssl;
     SSL_CTX *ctx;
     init_openssl();
