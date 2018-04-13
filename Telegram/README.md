@@ -20,7 +20,7 @@ This is Telegram API Library. It require OPENSSL for connecting to Telegram API.
     * text : message you want to send.
     this function return `1` for success and `0` or `1` for failed.
 
-* **int telegram_send_act(char *chat_id, char *action)**
+* **int telegram_send_act(char \*chat_id, char \*action)**
     use for send chat action like typing, uploading file.
     **argument**
     * chat_id : Unique identifier for the target chat.
