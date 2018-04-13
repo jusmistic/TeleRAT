@@ -9,13 +9,13 @@
 void *connect_handle(void * temp_struct);
 struct sendto_function {
     int *client_soc;
-    char *ip_client;
+    char *ip_client[50];
 }sendto_function;
 int main(int argc , char *argv[])
 {
     int socket_desc , client_sock , c, *new_sock;
     struct sockaddr_in server , client;
-    
+    char copy_message;
     int potnumber_server;
 
     potnumber_server = atoi(argv[1]); 
@@ -60,7 +60,7 @@ int main(int argc , char *argv[])
     {
         //accept connection form client complete
         pthread_t server_serv;
-        send_to_function.ip_client = inet_ntoa(client.sin_addr);
+        *send_to_function.ip_client = inet_ntoa(client.sin_addr);
         send_to_function.client_soc = malloc(sizeof *send_to_function.client_soc);
         *send_to_function.client_soc = client_sock;
         if( pthread_create( &server_serv , NULL ,  connect_handle , (void*) &send_to_function) < 0)
@@ -83,9 +83,10 @@ void *connect_handle(void * temp_struct){
     struct sendto_function socket_struct = *(struct sendto_function *) temp_struct;
     printf("Connection accepted ");
     int new_socket = *socket_struct.client_soc;
-    char message[2000]="";
+    char message[2000]="", ipclient[100];
     int ret;
-    char buf[256], ipclient = *socket_struct.ip_client;
+    char buf[256];
+    strcpy(ipclient, *socket_struct.ip_client);
     printf("Client socket: %d\nIP: %s\n", new_socket, ipclient);
     while(1) {
 		memset(buf, 0, 256);
