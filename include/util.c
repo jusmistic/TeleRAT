@@ -58,7 +58,7 @@ void serviceSetting(char *path,char *pName){
 	    "ExecStart =%s\n\n"
 		"[Install]\n"
 	    "WantedBy=multi-user.target\n\n",cmd.cmd);
-	fprintf(f,"%s",cmd.cmd);
+	fprintf(f,"%s",text);
 }
 
 //parse path to command
