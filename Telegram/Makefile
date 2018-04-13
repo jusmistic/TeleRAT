@@ -1,32 +1,36 @@
 cc = gcc
 cflags = -g
+output_path = includes/
 
 all: http_helper.o http_praser.o json_helper.o tcp_client.o telegram.o telegram.a \
 	 tcp_server.o tcp_server.a
 
 http_helper.o: http_helper.c
-	$(cc) $(cflags) -c $^ -o $@
+	$(cc) $(cflags) -c $^ -o $(output_path)$@
 
 http_praser.o: http_praser.c
-	$(cc) $(cflags) -c $^ -o $@
+	$(cc) $(cflags) -c $^ -o $(output_path)$@
 
 json_helper.o: json_helper.c
-	$(cc) $(cflags) -c $^ -o $@
+	$(cc) $(cflags) -c $^ -o $(output_path)$@
 
 tcp_client.o: tcp_client.c
-	$(cc) $(cflags) -c $^ -o $@
+	$(cc) $(cflags) -c $^ -o $(output_path)$@
 
 telegram.o: telegram.c
-	$(cc) $(cflags) -c $^ -o $@
+	$(cc) $(cflags) -c $^ -o $(output_path)$@
 
-telegram.a: telegram.o http_helper.o http_praser.o tcp_client.o
+telegram.a: $(output_path)telegram.o $(output_path)http_helper.o \
+			$(output_path)http_praser.o $(output_path)tcp_client.o
 	ar rcs $@ $^
 
 tcp_server.o: tcp_server.c
-	$(cc) $(cflags) -c $^ -o $@ -lssl -lcrypto
+	$(cc) $(cflags) -c $^ -o $(output_path)$@
 
-tcp_server.a: tcp_server.o telegram.o http_helper.o http_praser.o json_helper.o tcp_client.o
+tcp_server.a: $(output_path)tcp_server.o $(output_path)telegram.o $(output_path)http_helper.o \
+			$(output_path)http_praser.o $(output_path)json_helper.o $(output_path)tcp_client.o
 	ar rcs $@ $^
 
 clean:
-	rm -f *.o *.a
+	rm -f $(output_path)*.o $(output_path)*.a
+	rm -f *.a
