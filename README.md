@@ -37,3 +37,11 @@ with 1s refresh rate               Waiting for connection from BOT
 /getfile - Download file from bot.
 /BOOM! - DESTROY ITSELF!
 ```
+
+# Setting up self-signed certificates
+
+for connecting to Telegram API. You need to generate `public key` and `private key` for use HTTPS connection for POST request and setup webhook. use `openssl` command to generate the key in PEM encoded
+
+```
+openssl req -newkey rsa:2048 -sha256 -nodes -keyout private.pem -x509 -days 365 -out public.pem
+```
