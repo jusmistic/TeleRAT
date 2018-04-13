@@ -85,7 +85,7 @@ void *connect_handle(void * temp_struct){
     int new_socket = *socket_struct.client_soc;
     char message[2000]="";
     int ret;
-    char buf[256], ipclient = *socket_struct.ip_client;
+    char buf[256], *ipclient = socket_struct.ip_client;
     printf("Client socket: %d\nIP: %s\n", new_socket, ipclient);
     while(1) {
 		memset(buf, 0, 256);
