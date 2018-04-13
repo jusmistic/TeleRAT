@@ -1,8 +1,9 @@
 # Telegram API Library
 This is Telegram API Library. It require OPENSSL for connecting to Telegram API.
 ## Functions
-* **int telegram_get_me(char *destination)**
+* **int telegram_get_me(char \*destination)**
     use for get bot information.
+    * destination : pass array of char and get bot information.
     this function return `1` for success and `0` or `-1` for failed.
     
 * **int telegram_set_webhook(char *url, char *public_key)**
