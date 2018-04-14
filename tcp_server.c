@@ -150,7 +150,7 @@ int tcp_server(){
     int server_socket = socket(AF_INET, SOCK_STREAM, 0);
     if(server_socket < 0){
         perror("Unable to create socket");
-        return EXIT_FAILURE;
+        return -1;
     }
 
     struct sockaddr_in server_address;
@@ -160,12 +160,12 @@ int tcp_server(){
 
     if(bind(server_socket, (struct sockaddr *) &server_address, sizeof(server_address)) < 0){
         perror("Unable to bind");
-        return EXIT_FAILURE;
+        return -1;
     }
 
     if(listen(server_socket, 5) < 0){
         perror("Unable to listen");
-        return EXIT_FAILURE;
+        return -1;
     }
 
     while(1){
