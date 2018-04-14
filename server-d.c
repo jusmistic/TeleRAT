@@ -1,4 +1,5 @@
 #include "include/common.h"
+#include "tcp_server.h"
 #include <sys/socket.h>
 #include <arpa/inet.h> //inet_addr
 #include <pthread.h>
@@ -7,6 +8,7 @@
 #define OP_STOP "\x03"
 
 void *connect_handle(void * temp_struct);
+void *telegram_serv(void *vargp);
 struct sendto_function {
     int *client_soc;
     char *ip_client;
@@ -37,7 +39,12 @@ int main(int argc , char *argv[])
     server.sin_family = AF_INET;
     server.sin_addr.s_addr = INADDR_ANY;
     server.sin_port = htons(potnumber_server);
-     
+
+    pthread_t tid;
+    if(pthread_create(&tid, NULL, telegram_serv, NULL) < 0){
+        perror("Can't create thread for Telegram\n");
+    }
+    printf("Thread for telegram created.\n");
     //Bind
     //bind() associates the socket with its local address [that's why server side binds, so that clients can use that address to connect to server.] connect() is used to connect to a remote [server] address
     if( bind(socket_desc,(struct sockaddr *)&server , sizeof(server)) < 0)
@@ -125,4 +132,10 @@ void *connect_handle(void * temp_struct){
 		    // printf("Stop Recieve...\n");
 
 	}
+}
+
+void *telegram_serv(void *vargp){
+    tcp_server();
+
+    return NULL;
 }
