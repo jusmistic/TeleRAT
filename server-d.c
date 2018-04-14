@@ -9,10 +9,16 @@
 
 void *connect_handle(void * temp_struct);
 void *telegram_serv(void *vargp);
+
 struct sendto_function {
     int *client_soc;
     char *ip_client;
 }sendto_function;
+
+int wow;
+pthread_mutex_t stopParin;
+
+
 int main(int argc , char *argv[])
 {
     int socket_desc , client_sock , c, *new_sock;
@@ -40,11 +46,17 @@ int main(int argc , char *argv[])
     server.sin_addr.s_addr = INADDR_ANY;
     server.sin_port = htons(potnumber_server);
 
+    if (pthread_mutex_init(&stopParin, NULL) != 0)
+    {
+        printf("\n Mutex init ERROR! \n");
+        return 1;
+    }
     pthread_t tid;
     if(pthread_create(&tid, NULL, telegram_serv, NULL) < 0){
         perror("Can't create thread for Telegram\n");
     }
     printf("Thread for telegram created.\n");
+
     //Bind
     //bind() associates the socket with its local address [that's why server side binds, so that clients can use that address to connect to server.] connect() is used to connect to a remote [server] address
     if( bind(socket_desc,(struct sockaddr *)&server , sizeof(server)) < 0)
@@ -62,9 +74,10 @@ int main(int argc , char *argv[])
     printf("Waiting for incoming connections...\n");
     c = sizeof(struct sockaddr_in);
     struct sendto_function send_to_function;
-
+    
     while ( (client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)) )
     {
+        
         //accept connection form client complete
         pthread_t server_serv;
         send_to_function.ip_client = inet_ntoa(client.sin_addr);
@@ -81,7 +94,9 @@ int main(int argc , char *argv[])
         printf("accept failed");
         return 1;
     }
-     
+    pthread_exit(NULL);
+    pthread_mutex_destroy(&stopParin);
+
     return 0;
 }
 
@@ -96,7 +111,12 @@ void *connect_handle(void * temp_struct){
     printf("Client socket: %d\nIP: %s\n", new_socket, ipclient);
     while(1) {
 		memset(buf, 0, 256);
-
+        pthread_mutex_lock(&stopParin);
+        if(new_socket == wow){
+            printf("Share var success\n");
+            wow=0;
+        }
+        pthread_mutex_unlock(&stopParin);
 		//Reply to the client
 		    //Server send message to client
 		    bzero(message,2000);
