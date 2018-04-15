@@ -1,6 +1,10 @@
 #include "json_helper.h"
 
-void get_telegram_chat(struct telegram_chat *chat, char *json){
+int get_telegram_chat(struct telegram_chat *chat, char *json){
+
+    if(strlen(json) == 0){
+        return -1;
+    }
     // char *target1 = "\"chat\"";
     char *target_id = "\"id\"";
     char *target_text = "\"text\"";
@@ -72,5 +76,7 @@ void get_telegram_chat(struct telegram_chat *chat, char *json){
         }
         break;
     }
+
+    return 1;
 
 }

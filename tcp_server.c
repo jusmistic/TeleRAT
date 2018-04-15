@@ -88,23 +88,11 @@ int response(int client_socket, Telegram_chat *chat, SSL **ssl){
             readlen = BIO_read(ssl_bio, readBuffer, sizeof(readBuffer));
             temp_length -= readlen;
             strcat(temp, readBuffer);
-            // printf("%s", readBuffer);
+            printf("%s", readBuffer);
         }
     }
 
-    Telegram_chat temp_chat;
-    printf("%s", temp);
-    get_telegram_chat(&temp_chat, temp);
-
-    if((int)time(NULL) - temp_chat.date > 5){
-        printf("This message id (%s) older than 5 second\n", temp_chat.msg_id);
-        return -1;
-    }
-
-    chat = &temp_chat;
-
-    printf("\n\nText => %s\n", chat->text);
-    free(temp);
+    printf("%s\n", temp);
     bzero(readBuffer, sizeof(readBuffer));
 
     char *http_header = (char *) malloc(256);
@@ -140,6 +128,24 @@ int response(int client_socket, Telegram_chat *chat, SSL **ssl){
             }
             fclose(file);
         }
+
+        SSL_shutdown(*ssl);
+
+        Telegram_chat temp_chat;
+
+        if(get_telegram_chat(&temp_chat, temp) > 0){
+            if((int)time(NULL) - temp_chat.date > 5){
+                printf("[Alert!] This message id (%s) older than 5 second\n", temp_chat.msg_id);
+                return -1;
+            }
+
+            chat = &temp_chat;
+            // memcpy(&chat, &temp_chat, sizeof(chat));
+            printf("\nText => %s\n", temp_chat.text);
+            printf("\nText => %s\n", chat->text);
+        }
+
+        free(temp);
 
         return 1;
     }
@@ -193,7 +199,7 @@ int tcp_server(Telegram_chat *chat){
         else {
             response(client_socket, chat, &ssl);
         }
-        SSL_shutdown(ssl);
+        // SSL_shutdown(ssl);
         SSL_free(ssl);
     }
 
