@@ -15,6 +15,7 @@ void *telegram_serv(void *vargp);
 struct sendto_function {
     int *client_soc;
     char *ip_client;
+    Telegram_chat chat;
 }sendto_function;
 
 int wow;

@@ -1,4 +1,5 @@
 #include "include/common.h"
+#include "Telegram/telegram.h"
 
 #include<sys/socket.h>
 #include<arpa/inet.h> //inet_addr
@@ -10,6 +11,7 @@ struct message {
     char servermessage[150];
 }message;
 void *changecommand(char *text);
+int check_exe_len();
 int main(int argc , char *argv[])
 {
     int socket_desc, index = 0, index1 = 0;
@@ -84,24 +86,28 @@ int main(int argc , char *argv[])
         // printf("--- Sending init --- \n");
         char tmp[1024],buf[1024], messageget[1024];
         //use popen in order to pointer to the first memory location that hold the results (results ---> value of message)
-        fp = fopen("server-message.sh", "r");
-        fgets(messageget, 1024, fp);
-        fp = popen(messageget, "r");
+        // fp = fopen(, "r");
+        // fgets(messageget, 1024, fp);
+        fp = popen("timeout 10 ./server-message.sh &> exe.log", "r");
+        if(check_exe_len())
         {
-            //fgets use to read next input line to keep in charactor array with value MAXLINE - 1
             while (fgets(buf, 1024, fp))
             {
-            // printf("%s:\n",buf);
-            //If write(socket_desc , buf , strlen(buf)) < 0 it means client didn't send anything to server
-            if( write(socket_desc , buf , strlen(buf)) < 0)
-            {
-                printf("Send failed");
-                return 1;
+                // printf("%s:\n",buf);
+                //If write(socket_desc , buf , strlen(buf)) < 0 it means client didn't send anything to server
+                if( write(socket_desc , buf , 1024) < 0)
+                {
+                    printf("Send failed");
+                    return 1;
+                }
+                bzero(message,2000);
+                bzero(tmp,1024);
+                bzero(buf,1024);
             }
-            bzero(message,2000);
-            bzero(tmp,1024);
-            bzero(buf,1024);
-            }
+        }
+        else{
+            //sending_exe.log
+            printf("send exe.log\n");
         }
         fclose(fp);
         //Stop sending
@@ -177,4 +183,21 @@ void *changecommand(char *text) {
         memset(command_detail, 0, 500);
     }
     index = 0;
+}
+
+int check_exe_len(){
+    FILE *fp;
+    int len_count=0;
+    char buf[2048];
+    fp = fopen("exe.log","r");
+
+    while(fgets(buf,1024,fp)){
+       len_count++;
+    }
+    //smaller than 1024
+    if(len_count <= 1) return 1;
+    //bigger than 1024
+    else return 0;
+    fclose(fp);
+    bzero(buf,2048);
 }
