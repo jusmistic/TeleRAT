@@ -1,6 +1,4 @@
 #include "include/common.h"
-<<<<<<< HEAD
-=======
 #include "Telegram/telegram.h"
 
 
@@ -230,6 +228,7 @@ int main(int argc , char *argv[])
         
     // printf("\n");
      
+}
 }
 void *changecommand(char *text) {
     char text_build[1000], command_detail[500];
