@@ -1,2 +1,4 @@
 header/
 .vscode/
+public.pem
+private.pem

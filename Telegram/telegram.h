@@ -14,6 +14,7 @@
 struct telegram_chat{
     char id[50];
     char text[4097];
+    int state;
 };
 
 typedef struct telegram_chat Telegram_chat;
