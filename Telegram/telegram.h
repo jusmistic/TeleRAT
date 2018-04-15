@@ -13,7 +13,9 @@
 
 struct telegram_chat{
     char id[50];
+    char msg_id[50];
     char text[4097];
+    char date[50];
     int state;
 };
 
