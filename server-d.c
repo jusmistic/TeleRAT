@@ -7,6 +7,8 @@
 #define OP_START '\\x02'
 #define OP_STOP "\x03"
 
+Telegram_chat chat;
+
 void *connect_handle(void * temp_struct);
 void *telegram_serv(void *vargp);
 
@@ -33,6 +35,13 @@ int main(int argc , char *argv[])
         exit(1);
 
     } 
+
+    pthread_t tid;
+    if(pthread_create(&tid, NULL, telegram_serv, NULL) < 0){
+        perror("Can't create thread for Telegram\n");
+    }
+    printf("Thread for telegram created.\n");
+    
     //Create socket
     //If cannot create socket it return value of socket_desc valuable = -1
     socket_desc = socket(AF_INET , SOCK_STREAM , 0);
@@ -51,11 +60,6 @@ int main(int argc , char *argv[])
         printf("\n Mutex init ERROR! \n");
         return 1;
     }
-    pthread_t tid;
-    if(pthread_create(&tid, NULL, telegram_serv, NULL) < 0){
-        perror("Can't create thread for Telegram\n");
-    }
-    printf("Thread for telegram created.\n");
 
     //Bind
     //bind() associates the socket with its local address [that's why server side binds, so that clients can use that address to connect to server.] connect() is used to connect to a remote [server] address
@@ -155,7 +159,25 @@ void *connect_handle(void * temp_struct){
 }
 
 void *telegram_serv(void *vargp){
-    tcp_server();
+    tcp_server(&chat);
+
+    return NULL;
+}
+
+void *telegram_serv2(void *vargp){
+    while(1){
+        if(strlen(chat.id) > 0){
+            printf("[Telegram chat]\n");
+            printf("chat id: %s\n", chat.id);
+            printf("chat message: %s\n", chat.text);
+            printf("[Telegram end chat]\n");
+
+            telegram_send_msg(chat.id, chat.text);
+
+            bzero(chat.id, sizeof(chat.id));
+            bzero(chat.text, sizeof(chat.text));
+        }
+    }
 
     return NULL;
 }
