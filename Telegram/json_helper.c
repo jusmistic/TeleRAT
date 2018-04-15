@@ -21,6 +21,8 @@ void get_telegram_chat(struct telegram_chat *chat, char *json){
             i++;
         }
 
+        chat->id[i] = 0;
+
         break;
     }
 
@@ -34,6 +36,8 @@ void get_telegram_chat(struct telegram_chat *chat, char *json){
             chat->text[i] = *(index2 + i);
             i++;
         }
+
+        chat->text[i] = 0;
 
         break;
     }

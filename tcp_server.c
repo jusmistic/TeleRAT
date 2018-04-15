@@ -46,10 +46,13 @@ void configure_context(SSL_CTX *ctx)
 }
 
 /* Get request and response HTTPS */
-int response(int client_socket, FILE *file, SSL **ssl){
+int response(int client_socket, Telegram_chat *chat, SSL **ssl){
     unsigned int bufflen, readlen;
     char buffer[BUFFER_SIZE], readBuffer[BUFFER_SIZE];
     char *temp = (char *) malloc(1024);
+
+    FILE *file;
+    file = fopen("htdocs/index.html", "r");
 
     /* Buffer IO Init*/
     BIO *out;
@@ -66,13 +69,13 @@ int response(int client_socket, FILE *file, SSL **ssl){
     memset(temp, 0, sizeof(temp));
 
     /* Read HTTP request Header */
-    // printf("[HTTP Request]\n");
+    printf("[HTTP Request]\n");
 
     struct http_request request;
     readlen = BIO_read(ssl_bio, readBuffer, sizeof(readBuffer));
     if(readlen > 0){
         prase_request(&request, readBuffer);
-        // printf("%s", readBuffer);
+        printf("%s", readBuffer);
     }
     else{
         return -1;
@@ -89,11 +92,10 @@ int response(int client_socket, FILE *file, SSL **ssl){
     }
 
     // printf("%s", temp);
-    struct telegram_chat chat;
-    get_telegram_chat(&chat, temp);
+    get_telegram_chat(chat, temp);
 
     // printf("Text => %s\n", chat.text);
-    telegram_send_msg(chat.id, chat.text);
+    telegram_send_msg(chat->id, chat->text);
 
     bzero(readBuffer, sizeof(readBuffer));
 
@@ -137,14 +139,12 @@ int response(int client_socket, FILE *file, SSL **ssl){
     }
 }
 
-int tcp_server(){
+int tcp_server(Telegram_chat *chat){
     SSL *ssl;
     SSL_CTX *ctx;
     init_openssl();
     ctx = create_context();
     configure_context(ctx);
-
-    FILE *fp;
 
     // Create server socket
     int server_socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -178,8 +178,6 @@ int tcp_server(){
             return EXIT_FAILURE;
         }
 
-        fp = fopen("htdocs/index.html", "r");
-
         ssl = SSL_new(ctx);
         SSL_set_fd(ssl, client_socket);
 
@@ -187,7 +185,7 @@ int tcp_server(){
             ERR_print_errors_fp(stderr);
         }
         else {
-            response(client_socket, fp, &ssl);
+            response(client_socket, chat, &ssl);
         }
         SSL_shutdown(ssl);
         SSL_free(ssl);

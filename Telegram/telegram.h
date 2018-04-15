@@ -13,8 +13,10 @@
 
 struct telegram_chat{
     char id[15];
-    char text[256];
+    char text[4097];
 };
+
+typedef struct telegram_chat Telegram_chat;
 
 int telegram_get_me(char *destination);
 int telegram_set_webhook(char *url, char *public_key);
