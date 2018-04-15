@@ -66,13 +66,13 @@ int response(int client_socket, FILE *file, SSL **ssl){
     memset(temp, 0, sizeof(temp));
 
     /* Read HTTP request Header */
-    // printf("[HTTP Request]\n");
+    printf("[HTTP Request]\n");
 
     struct http_request request;
     readlen = BIO_read(ssl_bio, readBuffer, sizeof(readBuffer));
     if(readlen > 0){
         prase_request(&request, readBuffer);
-        // printf("%s", readBuffer);
+        printf("%s", readBuffer);
     }
     else{
         return -1;

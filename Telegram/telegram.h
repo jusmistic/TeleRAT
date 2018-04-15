@@ -16,6 +16,8 @@ struct telegram_chat{
     char text[256];
 };
 
+typedef struct telegram_chat Telegram_chat;
+
 int telegram_get_me(char *destination);
 int telegram_set_webhook(char *url, char *public_key);
 int telegram_send_msg(char *chat_id, char *text);
