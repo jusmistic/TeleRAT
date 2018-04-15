@@ -160,7 +160,12 @@ void *connect_handle(void * temp_struct){
 }
 
 void *telegram_serv(void *vargp){
-    tcp_server(&chat);
+    while(1){
+        if(tcp_server(&chat) <= 0){
+            printf("Retry to bind address in 15 second...\n");
+            sleep(15);
+        }
+    }
 
     return NULL;
 }

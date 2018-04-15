@@ -82,8 +82,8 @@ int telegram_send_msg(char *chat_id, char *text){
     };
 
     char *header = (char *) malloc(512);
-    char *buffer = (char *) malloc(10240);
-    char *response = (char *) malloc(2048);
+    char *buffer = (char *) malloc(20480);
+    char *response = (char *) malloc(20480);
     char *response_body = (char *) malloc(2048);
 
     memset(buffer, 0, sizeof(buffer));
@@ -104,6 +104,7 @@ int telegram_send_msg(char *chat_id, char *text){
     write_request(&request_bio, buffer, strlen(buffer));
     get_response(&request_bio, response);
     get_body(response_body, response);
+
 
     printf("\n\n[Response from Telegram]\n\n%s\n\n[End Telegram response]\n\n", response_body);
     return 1;

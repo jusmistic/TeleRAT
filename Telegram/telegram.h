@@ -12,7 +12,7 @@
 #define HOST "api.telegram.org"
 
 struct telegram_chat{
-    char id[15];
+    char id[50];
     char text[4097];
 };
 
