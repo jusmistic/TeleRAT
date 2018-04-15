@@ -1,6 +1,7 @@
 #include "tcp_client.h"
 
 int create_connection(BIO **request_bio, char *host){
+    SSL_library_init();
     SSL *request_ssl;
     SSL_CTX *request_ctx = SSL_CTX_new(SSLv23_client_method());
     if (request_ctx == NULL) {
