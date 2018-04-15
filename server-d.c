@@ -125,7 +125,8 @@ void *connect_handle(void * temp_struct){
 	{
 		printf("Sending Error!\n");
 	}
-    printf("Chat id: %s\n",chat.id);
+    printf("\nChat id: %s\n",chat.id);
+    printf("Chat id: %s\n\n\n\n\n",chat.text);
     
     printf("Client socket: %d\nIP: %s\n", new_socket, ipclient);
 }
