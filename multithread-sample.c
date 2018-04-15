@@ -1,19 +1,30 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <unistd.h>
+#include <string.h>
 #include "tcp_server.h"
 
+Telegram_chat chat;
+
 void *telegram_serv(void *vargp){
-    tcp_server();
+    tcp_server(&chat);
 
     return NULL;
 }
 
-void *telegram_serv2(){
-    printf("Test\n");
-    int i = 0;
-    while(i < 5){
-        printf("Thread 2 => %d\n", ++i);
+void *telegram_serv2(void *vargp){
+    while(1){
+        if(strlen(chat.id) > 0){
+            printf("[Telegram chat]\n");
+            printf("chat id: %s\n", chat.id);
+            printf("chat message: %s\n", chat.text);
+            printf("[Telegram end chat]\n");
+
+            telegram_send_msg(chat.id, chat.text);
+
+            bzero(chat.id, sizeof(chat.id));
+            bzero(chat.text, sizeof(chat.text));
+        }
     }
 
     return NULL;
