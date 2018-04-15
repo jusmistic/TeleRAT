@@ -3,7 +3,7 @@ cflags = -g
 output_path = includes/
 
 all: http_helper.o http_praser.o json_helper.o tcp_client.o telegram.o \
-	 telegram.a main
+	 telegram.a
 
 http_helper.o: http_helper.c
 	$(cc) $(cflags) -c $^ -o $(output_path)$@

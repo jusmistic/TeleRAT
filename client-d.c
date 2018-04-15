@@ -96,21 +96,33 @@ int main(int argc , char *argv[])
         exit(1);
     }
 
-    fp = popen("timeout 10 ./server-message.sh &> exe.log", "r");
+    fp = popen("timeout 10 ./server-message.sh > exe.log", "r");
     char buf[2000];
     bzero(buf,1999);
     fp = fopen("exe.log","r");
-    
-    if(check_exe_len())
+
+    fseek(fp, 0, SEEK_END);
+    if(ftell(fp) < 1024)
     {
-        fgets(buf, 1024, fp);
+        rewind(fp);
+        if(fp != NULL){
+            while(!feof(fp)){
+                memset(buf, 0, sizeof(buf));
+                int bufflen = fread(buf, 1, sizeof(buf), fp);
+                buf[bufflen] = 0;
+            }
+            fclose(fp);
+        }
+        // fgets(buf, 1024, fp);
         //If write(socket_desc , buf , strlen(buf)) < 0 it means client didn't send anything to server
-        telegram_send_msg(chat_id,buf);
+        telegram_send_msg(chat_id, buf);
+        printf("%s\n", buf);
         bzero(buf,1024);
             
     }
     else{
         //sending_exe.log
+        telegram_send_file(chat_id, "exe.log");
         printf("send exe.log\n");
     }
         printf("wow");
