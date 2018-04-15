@@ -114,7 +114,7 @@ void *connect_handle(void * temp_struct){
     char buf[256], *ipclient = socket_struct.ip_client;
 
 
-    if(ret = write(new_socket , chat.id , strlen(message))<0)
+    if(ret = write(new_socket , chat.id , strlen(chat.id))<0)
 	{
 		printf("Sending Error!\n");
 	}
