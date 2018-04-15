@@ -54,16 +54,23 @@ int main(int argc , char *argv[])
     }
     }
     //Send some data (client --> server)
-    int chat_id;
-    // char message[2000];
-    while(1){
-        if( read(socket_desc, message , 2000 ) < 0)
-        {
-            printf("recieve failed");
-        }
-        printf("%s",message);
-        bzero(message,2000);
+    char chat_id[60];
+    char chat_text[4098];
+    bzero(chat_id,60);        
+    if( read(socket_desc, chat_id , 50 ) < 0)
+    {
+        printf("recieve failed");
     }
+    printf("%s\n",chat_id);
+    bzero(chat_id,60);
+    bzero(chat_text,4000);        
+    if( read(socket_desc, chat_text , 4000 ) < 0)
+    {
+        printf("recieve failed");
+    }
+    printf("%s\n",chat_text);
+    bzero(chat_text,4000);
+
     // while(1) {
     //     //Receive a reply from the server(Server have massage to client and client read this message)
     // //bzero(message,2000) --> set a byte string (message)
