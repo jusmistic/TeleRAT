@@ -96,7 +96,7 @@ int response(int client_socket, Telegram_chat *chat, SSL **ssl){
     get_telegram_chat(chat, temp);
 
     printf("\n\nText => %s\n", chat->text);
-    telegram_send_msg(chat->id, chat->text);
+    // telegram_send_msg(chat->id, chat->text);
 
     free(temp);
 
