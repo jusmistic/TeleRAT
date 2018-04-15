@@ -92,11 +92,14 @@ int response(int client_socket, Telegram_chat *chat, SSL **ssl){
         }
     }
 
+    Telegram_chat temp_chat;
     printf("%s", temp);
-    get_telegram_chat(chat, temp);
+    get_telegram_chat(&temp_chat, temp);
 
-    if(chat->date - (int)time(NULL) > 5){
-        printf("This message id (%s) older than 5 second\n", chat->msg_id);
+    chat = &temp_chat;
+
+    if(temp_chat.date - (int)time(NULL) > 5){
+        printf("This message id (%s) older than 5 second\n", temp_chat.msg_id);
         return -1;
     }
 
