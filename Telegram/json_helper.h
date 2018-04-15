@@ -4,6 +4,6 @@
 #include "common.h"
 #include "telegram.h"
 
-void get_telegram_chat(struct telegram_chat *chat, char *json);
+int get_telegram_chat(struct telegram_chat *chat, char *json);
 
 #endif
