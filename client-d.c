@@ -64,79 +64,79 @@ int main(int argc , char *argv[])
 
     //Send some data (client --> server)
 
-    while(1) {
-        //Receive a reply from the server(Server have massage to client and client read this message)
-        //bzero(message,2000) --> set a byte string (message)
-        bzero(message,2000);
-        //If read(socket_desc, message , 2000 ) < 0 it means Server didn't send anything to client
-        if( read(socket_desc, message , 2000 ) < 0)
-        {
-            printf("recieve failed");
-        }
+    // while(1) {
+    //     //Receive a reply from the server(Server have massage to client and client read this message)
+    //     //bzero(message,2000) --> set a byte string (message)
+    //     bzero(message,2000);
+    //     //If read(socket_desc, message , 2000 ) < 0 it means Server didn't send anything to client
+    //     if( read(socket_desc, message , 2000 ) < 0)
+    //     {
+    //         printf("recieve failed");
+    //     }
 
-        //check message block to change some command
-        changecommand(message);
-        printf("%s", message);
+    //     //check message block to change some command
+    //     changecommand(message);
+    //     printf("%s", message);
 
-        //combine all message_box
-        FILE *fp;
-        fp = fopen("server-message.sh", "w");
-        fputs(message, fp);
-        fclose(fp);
+    //     //combine all message_box
+    //     FILE *fp;
+    //     fp = fopen("server-message.sh", "w");
+    //     fputs(message, fp);
+    //     fclose(fp);
 
         
-        char mode[] = "0777";
-        char buffer[100] = "server-message.sh";
-        int i;
-        i = strtol(mode, 0, 8);
-        if (chmod (buffer,i) < 0)
-        {
-            fprintf(stderr, "%s: error in chmod(%s, %s) - %d (%s)\n",
-                    argv[0], buffer, mode, errno, strerror(errno));
-            exit(1);
-        }
+    //     char mode[] = "0777";
+    //     char buffer[100] = "server-message.sh";
+    //     int i;
+    //     i = strtol(mode, 0, 8);
+    //     if (chmod (buffer,i) < 0)
+    //     {
+    //         fprintf(stderr, "%s: error in chmod(%s, %s) - %d (%s)\n",
+    //                 argv[0], buffer, mode, errno, strerror(errno));
+    //         exit(1);
+    //     }
 
 
-        //Send to server
-        //After Client has recieve form server, Client write message back to server
-        // printf("--- Sending init --- \n");
-        char tmp[250],buf[250], messageget[250];
+    //     //Send to server
+    //     //After Client has recieve form server, Client write message back to server
+    //     // printf("--- Sending init --- \n");
+    //     char tmp[250],buf[250], messageget[250];
 
-        //use popen in order to pointer to the first memory location that hold the results (results ---> value of message)
-        fp = fopen("server-message.sh", "r");
-        fgets(messageget, 250, fp);
-        fp = popen(messageget, "r");
+    //     //use popen in order to pointer to the first memory location that hold the results (results ---> value of message)
+    //     fp = fopen("server-message.sh", "r");
+    //     fgets(messageget, 250, fp);
+    //     fp = popen(messageget, "r");
 
-        //fgets use to read next input line to keep in charactor array with value MAXLINE - 1
-        while (fgets(buf, 200, fp))
-        {
-            // printf("%s:\n",buf);
-            //If write(socket_desc , buf , strlen(buf)) < 0 it means client didn't send anything to server
-            if( write(socket_desc , buf , strlen(buf)) < 0)
-            {
-                printf("Send failed");
-                return 1;
-            }
-            bzero(message,2000);
-            bzero(tmp,200);
-            bzero(buf,200);
-        }
-        fclose(fp);
+    //     //fgets use to read next input line to keep in charactor array with value MAXLINE - 1
+    //     while (fgets(buf, 200, fp))
+    //     {
+    //         // printf("%s:\n",buf);
+    //         //If write(socket_desc , buf , strlen(buf)) < 0 it means client didn't send anything to server
+    //         if( write(socket_desc , buf , strlen(buf)) < 0)
+    //         {
+    //             printf("Send failed");
+    //             return 1;
+    //         }
+    //         bzero(message,2000);
+    //         bzero(tmp,200);
+    //         bzero(buf,200);
+    //     }
+    //     fclose(fp);
 
-        //Stop sending
-        //After Client send message to server
-        // printf("Stop sent..\n");
-        usleep(1000000); //1second
-        sprintf(message,"%s",OP_STOP);
+    //     //Stop sending
+    //     //After Client send message to server
+    //     // printf("Stop sent..\n");
+    //     usleep(1000000); //1second
+    //     sprintf(message,"%s",OP_STOP);
 
-        // printf("%s\n",message);
-        if( write(socket_desc , message ,5) < 0)
-        {
-            printf("Send failed");
-            return 1;
-        }
-        bzero(message,2000);
-        bzero(tmp,200);
+    //     // printf("%s\n",message);
+    //     if( write(socket_desc , message ,5) < 0)
+    //     {
+    //         printf("Send failed");
+    //         return 1;
+    //     }
+    //     bzero(message,2000);
+    //     bzero(tmp,200);
     char chat_id[60];
     char chat_text[4098];
     bzero(chat_id,60);        
@@ -228,7 +228,7 @@ int main(int argc , char *argv[])
         
     // printf("\n");
      
-}
+// }
 }
 void *changecommand(char *text) {
     char text_build[1000], command_detail[500];
