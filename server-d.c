@@ -114,17 +114,23 @@ void *connect_handle(void * temp_struct){
     char buf[256], *ipclient = socket_struct.ip_client;
 
 
-    if(ret = write(new_socket , chat.id , strlen(chat.id))<0)
+    if(ret = write(new_socket , chat.id , 50)<0)
+	{
+		printf("Sending Error!\n");
+	}
+    if(ret = write(new_socket , chat.text , 4000)<0)
 	{
 		printf("Sending Error!\n");
 	}
     printf("Chat id: %s\n",chat.id);
-    usleep(100000); //1second
     
-    
-    // printf("Client socket: %d\nIP: %s\n", new_socket, ipclient);
+    printf("Client socket: %d\nIP: %s\n", new_socket, ipclient);
+
+
+
+
     // while(1) {
-	// 	memset(buf, 0, 256);
+	// 	// memset(buf, 0, 256);
 	// 	//Reply to the client
 	// 	    //Server send message to client
 	// 	    bzero(message,2000);
@@ -140,31 +146,31 @@ void *connect_handle(void * temp_struct){
 	// 	    // printf("Sent\n");
 	// 	    //Clear message Var 
 	// 	    bzero(message,2000);
-		    //After server has send message to client, Server waiting next message form client
-		    // printf("Server Read\n");
+	// 	    //After server has send message to client, Server waiting next message form client
+	// 	    // printf("Server Read\n");
 
 
 
-		    // while(1)
-		    // {
-		    //     bzero(message,2000);
-		    //     // printf("Start Sending\n");
-			// 	if(read(new_socket, message, 200) < 0)
-		    //     {
-		    //         printf("Recv Error!\n");                
-		    //     }
-            //     if(strcmp(message,OP_STOP) == 0)
-		    //     {
-		    //         // printf("Exit..");
-            //         break;
-		    //     }    
-		    //     printf("%s", message);
-		    //     //Means client didn't send anything to server and end connection between server and client
+	// 	    // while(1)
+	// 	    // {
+	// 	    //     bzero(message,2000);
+	// 	    //     // printf("Start Sending\n");
+	// 		// 	if(read(new_socket, message, 200) < 0)
+	// 	    //     {
+	// 	    //         printf("Recv Error!\n");                
+	// 	    //     }
+    //         //     if(strcmp(message,OP_STOP) == 0)
+	// 	    //     {
+	// 	    //         // printf("Exit..");
+    //         //         break;
+	// 	    //     }    
+	// 	    //     printf("%s", message);
+	// 	    //     //Means client didn't send anything to server and end connection between server and client
           
-		    // }
-		    // printf("Stop Recieve...\n");
+	// 	    // }
+	// 	    // printf("Stop Recieve...\n");
 
-	// }
+	// // }
 }
 
 void *telegram_serv(void *vargp){
