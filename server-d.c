@@ -164,7 +164,7 @@ void *connect_handle(void * temp_struct){
 		    // }
 		    // printf("Stop Recieve...\n");
 
-	}
+	// }
 }
 
 void *telegram_serv(void *vargp){
