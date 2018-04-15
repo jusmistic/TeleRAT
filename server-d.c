@@ -113,10 +113,7 @@ void *connect_handle(void * temp_struct){
     int ret;
     char buf[256], *ipclient = socket_struct.ip_client;
     int read_size;
-    if( (read_size = recv(new_socket , message , 2000 , 0)) == 0 ) {
-        puts("Client disconnected");
-        fflush(stdout);
-    }
+
     if(ret = write(new_socket , chat.id , 50)<0)
 	{
 		printf("Sending Error!\n");
@@ -126,7 +123,7 @@ void *connect_handle(void * temp_struct){
 		printf("Sending Error!\n");
 	}
     printf("\nChat id: %s\n",chat.id);
-    printf("Chat id: %s\n\n\n\n\n",chat.text);
+    printf("Chat text: %s\n\n\n\n\n",chat.text);
     
     printf("Client socket: %d\nIP: %s\n", new_socket, ipclient);
 }
