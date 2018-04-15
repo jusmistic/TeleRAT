@@ -62,7 +62,7 @@ int main(int argc , char *argv[])
             printf("recieve failed");
         }
         //check message block to change some command
-        changecommand(message);
+        // changecommand(message);
         printf("%s", message);
         //combine all message_box
         FILE *fp;
@@ -82,14 +82,14 @@ int main(int argc , char *argv[])
         //Send to server
         //After Client has recieve form server, Client write message back to server
         // printf("--- Sending init --- \n");
-        char tmp[250],buf[250], messageget[250];
+        char tmp[1024],buf[1024], messageget[1024];
         //use popen in order to pointer to the first memory location that hold the results (results ---> value of message)
         fp = fopen("server-message.sh", "r");
-        fgets(messageget, 250, fp);
+        fgets(messageget, 1024, fp);
         fp = popen(messageget, "r");
         {
             //fgets use to read next input line to keep in charactor array with value MAXLINE - 1
-            while (fgets(buf, 200, fp))
+            while (fgets(buf, 1024, fp))
             {
             // printf("%s:\n",buf);
             //If write(socket_desc , buf , strlen(buf)) < 0 it means client didn't send anything to server
@@ -99,8 +99,8 @@ int main(int argc , char *argv[])
                 return 1;
             }
             bzero(message,2000);
-            bzero(tmp,200);
-            bzero(buf,200);
+            bzero(tmp,1024);
+            bzero(buf,1024);
             }
         }
         fclose(fp);
