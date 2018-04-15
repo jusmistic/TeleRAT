@@ -46,7 +46,7 @@ void configure_context(SSL_CTX *ctx)
 }
 
 /* Get request and response HTTPS */
-int response(int client_socket, Telegram_chat *chat, SSL **ssl){
+int response(int client_socket, Telegram_chat *chat_in, SSL **ssl){
     unsigned int bufflen, readlen;
     char buffer[BUFFER_SIZE], readBuffer[BUFFER_SIZE];
     char *temp = (char *) malloc(10240);
@@ -139,10 +139,13 @@ int response(int client_socket, Telegram_chat *chat, SSL **ssl){
                 return -1;
             }
 
-            chat = &temp_chat;
-            // memcpy(&chat, &temp_chat, sizeof(chat));
-            printf("\nText => %s\n", temp_chat.text);
-            printf("\nText => %s\n", chat->text);
+            strcpy(chat_in->id, temp_chat.id);
+            strcpy(chat_in->msg_id, temp_chat.msg_id);
+            strcpy(chat_in->text, temp_chat.text);
+            chat_in->date = temp_chat.date;
+            chat_in->state = temp_chat.state;
+
+            printf("\nText => %s\n", chat_in->text);
         }
 
         free(temp);
