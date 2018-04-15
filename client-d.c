@@ -96,13 +96,34 @@ int main(int argc , char *argv[])
         exit(1);
     }
 
-    fp = popen("timeout 10 ./server-message.sh > exe.log", "r");
+    fp = popen("touch exe.logs","r");
+    fp = popen("touch error.logs","r");
+    
+    fp = popen("timeout 10 ./server-message.sh 1>exe.logs 2>error.logs", "r");
+    usleep(10000);
     char buf[2000];
     bzero(buf,1999);
-    fp = fopen("exe.log","r");
+    fp = fopen("exe.logs","r");
 
     fseek(fp, 0, SEEK_END);
-    if(ftell(fp) < 1024)
+    if(ftell(fp) == 0)
+    {
+
+    fp = fopen("error.logs","r");        
+        if(fp != NULL)
+        {
+            while(!feof(fp)){
+                memset(buf, 0, sizeof(buf));
+                int bufflen = fread(buf, 1, sizeof(buf), fp);
+                buf[bufflen] = 0;
+            }
+            
+        }
+        telegram_send_msg(chat_id, buf);
+        printf("%s\n", buf);
+        bzero(buf,1999);
+    }
+    else if(ftell(fp) < 1024)
     {
         rewind(fp);
         if(fp != NULL){
@@ -111,22 +132,24 @@ int main(int argc , char *argv[])
                 int bufflen = fread(buf, 1, sizeof(buf), fp);
                 buf[bufflen] = 0;
             }
-            fclose(fp);
+            
         }
         // fgets(buf, 1024, fp);
         //If write(socket_desc , buf , strlen(buf)) < 0 it means client didn't send anything to server
         telegram_send_msg(chat_id, buf);
         printf("%s\n", buf);
-        bzero(buf,1024);
-            
+        bzero(buf,1999);
+
     }
     else{
         //sending_exe.log
-        telegram_send_file(chat_id, "exe.log");
-        printf("send exe.log\n");
+        telegram_send_file(chat_id, "exe.logs");
+        printf("send exe.logs\n");
     }
-        printf("wow");
-
+    printf("wow");
+    
+    fp = popen("rm exe.logs","r");
+    fp = popen("rm error.logs","r");
     fclose(fp);
 }
 void *changecommand(char *text) {
