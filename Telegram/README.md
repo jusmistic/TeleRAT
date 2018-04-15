@@ -1,5 +1,7 @@
 # Telegram API Library
 This is Telegram API Library. It require OPENSSL for connecting to Telegram API.
+## Struct
+* telegram
 ## Functions
 * **int telegram_get_me(char \*destination)**
     use for get bot information.

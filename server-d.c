@@ -7,6 +7,8 @@
 #define OP_START '\\x02'
 #define OP_STOP "\x03"
 
+Telegram_chat chat;
+
 void *connect_handle(void * temp_struct);
 void *telegram_serv(void *vargp);
 
@@ -33,6 +35,13 @@ int main(int argc , char *argv[])
         exit(1);
 
     } 
+
+    pthread_t tid;
+    if(pthread_create(&tid, NULL, telegram_serv, NULL) < 0){
+        perror("Can't create thread for Telegram\n");
+    }
+    printf("Thread for telegram created.\n");
+    
     //Create socket
     //If cannot create socket it return value of socket_desc valuable = -1
     socket_desc = socket(AF_INET , SOCK_STREAM , 0);
@@ -51,11 +60,6 @@ int main(int argc , char *argv[])
         printf("\n Mutex init ERROR! \n");
         return 1;
     }
-    pthread_t tid;
-    if(pthread_create(&tid, NULL, telegram_serv, NULL) < 0){
-        perror("Can't create thread for Telegram\n");
-    }
-    printf("Thread for telegram created.\n");
 
     //Bind
     //bind() associates the socket with its local address [that's why server side binds, so that clients can use that address to connect to server.] connect() is used to connect to a remote [server] address
@@ -108,54 +112,46 @@ void *connect_handle(void * temp_struct){
     char message[2000]="";
     int ret;
     char buf[256], *ipclient = socket_struct.ip_client;
-    printf("Client socket: %d\nIP: %s\n", new_socket, ipclient);
-    while(1) {
-		memset(buf, 0, 256);
-        pthread_mutex_lock(&stopParin);
-        if(new_socket == wow){
-            printf("Share var success\n");
-            wow=0;
-        }
-        pthread_mutex_unlock(&stopParin);
-		//Reply to the client
-		    //Server send message to client
-		    bzero(message,2000);
-		    // scanf(" %[^\n]",message);
-		    // printf("%s\n",message);
-		    //If write(new_socket , message , strlen(message) < 0 it means Server didn't send anything to client
-		    if(ret = write(new_socket , message , strlen(message))<0)
-		    {
-		          printf("Sending Error!\n");
-		    }
-		    // printf("Sent\n");
-		    //Clear message Var 
-		    bzero(message,2000);
-		    //After server has send message to client, Server waiting next message form client
-		    // printf("Server Read\n");
-		    while(1)
-		    {
-		        bzero(message,2000);
-		        // printf("Start Sending\n");
-				if(read(new_socket, message, 200) < 0)
-		        {
-		            printf("Recv Error!\n");                
-		        }
-                if(strcmp(message,OP_STOP) == 0)
-		        {
-		            // printf("Exit..");
-                    break;
-		        }    
-		        printf("%s", message);
-		        //Means client didn't send anything to server and end connection between server and client
-          
-		    }
-		    // printf("Stop Recieve...\n");
 
+
+    if(ret = write(new_socket , chat.id , 50)<0)
+	{
+		printf("Sending Error!\n");
 	}
+    if(ret = write(new_socket , chat.text , 4000)<0)
+	{
+		printf("Sending Error!\n");
+	}
+    printf("Chat id: %s\n",chat.id);
+    
+    printf("Client socket: %d\nIP: %s\n", new_socket, ipclient);
 }
 
 void *telegram_serv(void *vargp){
-    tcp_server();
+    while(1){
+        if(tcp_server(&chat) <= 0){
+            printf("Retry to bind address in 15 second...\n");
+            sleep(15);
+        }
+    }
+
+    return NULL;
+}
+
+void *telegram_serv2(void *vargp){
+    while(1){
+        if(strlen(chat.id) > 0){
+            printf("[Telegram chat]\n");
+            printf("chat id: %s\n", chat.id);
+            printf("chat message: %s\n", chat.text);
+            printf("[Telegram end chat]\n");
+
+            telegram_send_msg(chat.id, chat.text);
+
+            bzero(chat.id, sizeof(chat.id));
+            bzero(chat.text, sizeof(chat.text));
+        }
+    }
 
     return NULL;
 }

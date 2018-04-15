@@ -12,8 +12,11 @@
 #define HOST "api.telegram.org"
 
 struct telegram_chat{
-    char id[15];
-    char text[256];
+    char id[50];
+    char msg_id[50];
+    char text[4097];
+    char date[50];
+    int state;
 };
 
 typedef struct telegram_chat Telegram_chat;
