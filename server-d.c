@@ -118,6 +118,7 @@ void *connect_handle(void * temp_struct){
 	{
 		printf("Sending Error!\n");
 	}
+    printf("Chat id: %s\n",message);
     usleep(100000); //1second
     
     
