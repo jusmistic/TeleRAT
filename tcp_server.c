@@ -95,14 +95,14 @@ int response(int client_socket, Telegram_chat *chat, SSL **ssl){
     printf("%s", temp);
     get_telegram_chat(chat, temp);
 
+    if(chat->date - (int)time(NULL) > 5){
+        printf("This message id (%s) older than 5 second\n", chat->msg_id);
+        return -1;
+    }
+
     printf("\n\nText => %s\n", chat->text);
-    // telegram_send_msg(chat->id, chat->text);
-
     free(temp);
-
     bzero(readBuffer, sizeof(readBuffer));
-
-    // printf("\r\n\r\n");
 
     char *http_header = (char *) malloc(256);
     struct http_response response = {

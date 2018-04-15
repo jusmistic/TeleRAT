@@ -47,13 +47,15 @@ void get_telegram_chat(struct telegram_chat *chat, char *json){
     index2 = strstr(json, target_date);
     i = 0;
 
+    char date[50];
     while(index2 != NULL){
         index2 = strstr(json, target_date);
         index2 += strlen(target_date) + 1;
-        while(*(index2 + i) != ',' && i < (sizeof(chat->date) / sizeof(chat->date[0]))){
-            chat->date[i] = *(index2 + i);
+        while(*(index2 + i) != ',' && i < (sizeof(date) / sizeof(date[0]))){
+            date[i] = *(index2 + i);
             i++;
         }
+        chat->date = atoi(date);
         break;
     }
 
