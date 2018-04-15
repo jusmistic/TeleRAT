@@ -113,7 +113,8 @@ void *connect_handle(void * temp_struct){
     int ret;
     char buf[256], *ipclient = socket_struct.ip_client;
     int read_size;
-
+    printf("\nChat id: %s\n",chat.id);
+    printf("Chat text: %s\n\n\n\n\n",chat.text);
     if(ret = write(new_socket , chat.id , 50)<0)
 	{
 		printf("Sending Error!\n");
@@ -122,8 +123,7 @@ void *connect_handle(void * temp_struct){
 	{
 		printf("Sending Error!\n");
 	}
-    printf("\nChat id: %s\n",chat.id);
-    printf("Chat text: %s\n\n\n\n\n",chat.text);
+
     
     printf("Client socket: %d\nIP: %s\n", new_socket, ipclient);
 }
