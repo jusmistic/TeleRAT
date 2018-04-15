@@ -13,7 +13,7 @@
 
 struct telegram_chat{
     char id[15];
-    char text[4096];
+    char text[4097];
 };
 
 typedef struct telegram_chat Telegram_chat;
