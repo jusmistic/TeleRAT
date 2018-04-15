@@ -49,7 +49,7 @@ void configure_context(SSL_CTX *ctx)
 int response(int client_socket, Telegram_chat *chat, SSL **ssl){
     unsigned int bufflen, readlen;
     char buffer[BUFFER_SIZE], readBuffer[BUFFER_SIZE];
-    char *temp = (char *) malloc(1024);
+    char *temp = (char *) malloc(10240);
 
     FILE *file;
     file = fopen("htdocs/index.html", "r");
@@ -88,14 +88,17 @@ int response(int client_socket, Telegram_chat *chat, SSL **ssl){
             readlen = BIO_read(ssl_bio, readBuffer, sizeof(readBuffer));
             temp_length -= readlen;
             strcat(temp, readBuffer);
+            // printf("%s", readBuffer);
         }
     }
 
-    // printf("%s", temp);
+    printf("%s", temp);
     get_telegram_chat(chat, temp);
 
-    // printf("Text => %s\n", chat.text);
+    printf("\n\nText => %s\n", chat->text);
     telegram_send_msg(chat->id, chat->text);
+
+    free(temp);
 
     bzero(readBuffer, sizeof(readBuffer));
 
@@ -175,7 +178,7 @@ int tcp_server(Telegram_chat *chat){
         int client_socket = accept(server_socket, (struct sockaddr *) &client_address, &len);
         if (client_socket < 0) {
             perror("Unable to accept");
-            return EXIT_FAILURE;
+            return -1;
         }
 
         ssl = SSL_new(ctx);
