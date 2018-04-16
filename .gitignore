@@ -6,3 +6,5 @@ error.txt
 exe.txt
 client
 client-d
+*.a
+*.o
