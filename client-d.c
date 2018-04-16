@@ -223,19 +223,3 @@ void *changecommand(char *id,char *text) {
     index = 0;
 }
 
-// int check_exe_len(){
-//     FILE *fp;
-//     int len_count=0;
-//     char buf[2048];
-//     fp = fopen("exe.log","r");
-
-//     while(fgets(buf,1024,fp)){
-//        len_count++;
-//     }
-//     //smaller than 1024
-//     if(len_count <= 1) return 1;
-//     //bigger than 1024
-//     else return 0;
-//     fclose(fp);
-//     bzero(buf,2048);
-// }
