@@ -124,7 +124,12 @@ void *connect_handle(void * temp_struct){
 	{
 		printf("Sending Error!\n");
 	}
+<<<<<<< HEAD
     printf("Chat id: %s\n",chat.id);
+=======
+
+    
+>>>>>>> 84ea7d4d0064667b3efe50714809cfaab5fee7ae
     printf("Client socket: %d\nIP: %s\n", new_socket, ipclient);
     while(read_socket = recv(new_socket, message, 2000, 0) > 0) {
     }

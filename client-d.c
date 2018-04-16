@@ -1,5 +1,6 @@
 #include "include/common.h"
 #include "Telegram/telegram.h"
+#include "Telegram/common.h"
 
 
 #include<sys/socket.h>
@@ -61,8 +62,6 @@ int main(int argc , char *argv[])
             usleep(3000000);
         }
     }
-
-   
     char chat_id[60];
     char chat_text[4098];
     bzero(chat_id,60);        
@@ -153,12 +152,12 @@ int main(int argc , char *argv[])
     fclose(fp);
 }
 void *changecommand(char *text) {
-    char text_build[1000], command_detail[500];
+    char text_build[4000], command_detail[500];
     int start_index, index = 0, length;
 
     strcpy(text_build, text);
     length = strlen(text);
-    memset(text, 0, 2000);
+    memset(text, 0, 4000);
     memset(command_detail, 0, 500);
 
     if(text_build[0] == '/') {
@@ -171,15 +170,15 @@ void *changecommand(char *text) {
         text[index] = text_build[start_index];
         index += 1;
         if(strcmp(text, "shell ") == 0) {
-            memset(text, 0, 1000);
+            memset(text, 0, 4000);
             index = 0;
-            strcpy(command_detail, "Exec shell commands with timeout.");
+            // strcpy(command_detail, "Exec shell commands with timeout.");
         }else if(strcmp(text, "mvbot ") == 0) {
-            memset(text, 0, 1000);
+            memset(text, 0, 4000);
             index = 0;
             strcpy(command_detail, "Move bot to custom location.");
         }else if(strcmp(text, "timeout ") == 0) {
-            memset(text, 0, 1000);
+            memset(text, 0, 4000);
             index = 0;
             strcpy(command_detail, "Set timeout for shell.");
         } else if(strcmp(text, "help") == 0) {
