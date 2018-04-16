@@ -110,13 +110,8 @@ void *connect_handle(void * temp_struct){
     printf("Connection accepted ");
     int new_socket = *socket_struct.client_soc;
     char message[2000]="";
-    int ret;
+    int ret, read_socket;
     char buf[256], *ipclient = socket_struct.ip_client;
-    int read_size;
-    if( (read_size = recv(new_socket , message , 2000 , 0)) == 0 ) {
-        puts("Client disconnected");
-        fflush(stdout);
-    }
     if(ret = write(new_socket , chat.id , 50)<0)
 	{
 		printf("Sending Error!\n");
@@ -126,8 +121,19 @@ void *connect_handle(void * temp_struct){
 		printf("Sending Error!\n");
 	}
     printf("Chat id: %s\n",chat.id);
-    
     printf("Client socket: %d\nIP: %s\n", new_socket, ipclient);
+    while(read_socket = recv(new_socket, message, 2000, 0) > 0) {
+    }
+    if(read_socket == 0)
+    {
+        printf("Client %d disconnected \n", new_socket);
+        fflush(stdout);
+        close(new_socket);
+        pthread_exit(NULL);
+        return 0;
+    }
+
+
 }
 
 void *telegram_serv(void *vargp){
