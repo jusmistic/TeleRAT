@@ -208,9 +208,6 @@ void *changecommand(char *text) {
         else if(strcmp(text, "getfile") == 0) {
             strcpy(command_detail, "Download file from bot.");
         }
-        else if(strcmp(text, "reserve") == 0) {
-            strcpy(command_detail, "Warning text that found in shell.");
-        }
         else if(strcmp(text, "BOOM!") == 0) {
             strcpy(command_detail, "DESTROY ITSELF!");
         }
