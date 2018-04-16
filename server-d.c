@@ -110,8 +110,9 @@ void *connect_handle(void * temp_struct){
     printf("Connection accepted ");
     int new_socket = *socket_struct.client_soc;
     char message[2000]="";
-    int ret;
+    int ret, read_socket;
     char buf[256], *ipclient = socket_struct.ip_client;
+
     int read_size;
     printf("\nChat id: %s\n",chat.id);
     printf("Chat text: %s\n\n\n\n\n",chat.text);
@@ -123,9 +124,9 @@ void *connect_handle(void * temp_struct){
 	{
 		printf("Sending Error!\n");
 	}
-
-    
+    printf("Chat id: %s\n",chat.id);
     printf("Client socket: %d\nIP: %s\n", new_socket, ipclient);
+    
 }
 
 void *telegram_serv(void *vargp){
