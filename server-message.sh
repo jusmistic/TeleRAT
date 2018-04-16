@@ -1,1 +1,1 @@
-ls
+man ascii
