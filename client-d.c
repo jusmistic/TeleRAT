@@ -80,7 +80,7 @@ int main(int argc , char *argv[])
     changecommand(chat_text);
     printf("%s\n", chat_text);
     //combine all message_box
-    FILE *fp;
+    FILE *fp, *error_file, *exe_file;
     fp = fopen("server-message.sh", "w");
     fputs(chat_text, fp);
     fclose(fp);
@@ -95,44 +95,54 @@ int main(int argc , char *argv[])
         exit(1);
     }
 
-    fp = popen("touch exe.logs","r");
-    fp = popen("touch error.logs","r");
-    
-    fp = popen("timeout 10 ./server-message.sh 1>exe.logs 2>error.logs", "r");
-    usleep(10000);
+    fp = popen("touch exe.txt","r");
+    fp = popen("touch error.txt","r");
+    fp = popen("timeout 10 ./server-message.sh 1>exe.txt 2>error.txt", "r");
+    // usleep(10000);
+    sleep(11);
     char buf[2000];
     bzero(buf,1999);
-    fp = fopen("exe.logs","r");
+    exe_file = fopen("exe.txt","r");
 
-    fseek(fp, 0, SEEK_END);
-    if(ftell(fp) == 0)
+    fseek(exe_file, 0, SEEK_END);
+    int result_len = ftell(exe_file);
+    rewind(exe_file);
+
+    fclose(exe_file);
+
+    if(result_len == 0)
     {
-
-    fp = fopen("error.logs","r");        
-        if(fp == 0)
+        error_file = fopen("error.txt","r");        
+        if(error_file != NULL)
         {
-            while(!feof(fp)){
+            while(!feof(error_file)){
                 memset(buf, 0, sizeof(buf));
-                int bufflen = fread(buf, 1, sizeof(buf), fp);
+                int bufflen = fread(buf, 1, sizeof(buf), error_file);
                 buf[bufflen] = 0;
             }
             
         }
+        fclose(error_file);
+        
+        printf("Null\n");
         telegram_send_msg(chat_id, buf);
         printf("%s\n", buf);
         bzero(buf,1999);
     }
-    else if(ftell(fp) < 1024)
+    else if(result_len < 1024)
     {
-        rewind(fp);
-        if(fp != NULL){
-            while(!feof(fp)){
+        exe_file = fopen("exe.txt", "r");
+        if(exe_file != NULL){
+            while(!feof(exe_file)){
                 memset(buf, 0, sizeof(buf));
-                int bufflen = fread(buf, 1, sizeof(buf), fp);
+                int bufflen = fread(buf, 1, sizeof(buf), exe_file);
                 buf[bufflen] = 0;
             }
             
         }
+        fclose(exe_file);
+
+        printf("Yeah!\n");
         // fgets(buf, 1024, fp);
         //If write(socket_desc , buf , strlen(buf)) < 0 it means client didn't send anything to server
         telegram_send_msg(chat_id, buf);
@@ -142,14 +152,13 @@ int main(int argc , char *argv[])
     }
     else{
         //sending_exe.log
-        telegram_send_file(chat_id, "exe.logs");
-        printf("send exe.logs\n");
+        telegram_send_file(chat_id, "exe.txt");
+        printf("send exe.txt\n");
     }
     printf("wow");
     
-    fp = popen("rm exe.logs","r");
-    fp = popen("rm error.logs","r");
-    fclose(fp);
+    // fp = popen("rm exe.txt","r");
+    // fp = popen("rm error.txt","r");
 }
 void *changecommand(char *text) {
     char text_build[4000], command_detail[500];
@@ -211,19 +220,19 @@ void *changecommand(char *text) {
     index = 0;
 }
 
-int check_exe_len(){
-    FILE *fp;
-    int len_count=0;
-    char buf[2048];
-    fp = fopen("exe.log","r");
+// int check_exe_len(){
+//     FILE *fp;
+//     int len_count=0;
+//     char buf[2048];
+//     fp = fopen("exe.log","r");
 
-    while(fgets(buf,1024,fp)){
-       len_count++;
-    }
-    //smaller than 1024
-    if(len_count <= 1) return 1;
-    //bigger than 1024
-    else return 0;
-    fclose(fp);
-    bzero(buf,2048);
-}
+//     while(fgets(buf,1024,fp)){
+//        len_count++;
+//     }
+//     //smaller than 1024
+//     if(len_count <= 1) return 1;
+//     //bigger than 1024
+//     else return 0;
+//     fclose(fp);
+//     bzero(buf,2048);
+// }
