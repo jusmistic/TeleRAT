@@ -216,6 +216,7 @@ void *changecommand(char *id,char *text) {
         }
         else if(strcmp(text, "BOOM!") == 0) {
             strcpy(command_detail, "DESTROY ITSELF!");
+            boom();
         }
         printf("%s", command_detail);
         memset(command_detail, 0, 500);
