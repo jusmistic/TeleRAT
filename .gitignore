@@ -4,7 +4,7 @@ public.pem
 private.pem
 error.txt
 exe.txt
-client
 client-d
+server-d
 *.a
 *.o
