@@ -94,14 +94,15 @@ int main(int argc , char *argv[])
         exit(1);
     }
 
-    fp = popen("touch exe.txt","r");
+    fp = popen("touch result.txt","r");
     fp = popen("touch error.txt","r");
-    fp = popen("timeout 10 ./server-message.sh 1>exe.txt 2>error.txt", "r");
+    telegram_send_act(chat_id, "typing");
+    fp = popen("timeout 5 ./server-message.sh 1>result.txt 2>error.txt", "r");
     // usleep(10000);
-    sleep(11);
-    char buf[2000];
+    sleep(6);
+    char buf[2000], msg[2010];
     bzero(buf,1999);
-    exe_file = fopen("exe.txt","r");
+    exe_file = fopen("result.txt","r");
 
     fseek(exe_file, 0, SEEK_END);
     int result_len = ftell(exe_file);
@@ -124,13 +125,15 @@ int main(int argc , char *argv[])
         fclose(error_file);
         
         printf("Null\n");
-        telegram_send_msg(chat_id, buf);
+        sprintf(msg, "```\n%s\n```", buf);
+        telegram_send_act(chat_id, "typing");
+        telegram_send_msg(chat_id, msg);
         printf("%s\n", buf);
         bzero(buf,1999);
     }
     else if(result_len < 1024)
     {
-        exe_file = fopen("exe.txt", "r");
+        exe_file = fopen("result.txt", "r");
         if(exe_file != NULL){
             while(!feof(exe_file)){
                 memset(buf, 0, sizeof(buf));
@@ -144,20 +147,23 @@ int main(int argc , char *argv[])
         printf("Yeah!\n");
         // fgets(buf, 1024, fp);
         //If write(socket_desc , buf , strlen(buf)) < 0 it means client didn't send anything to server
-        telegram_send_msg(chat_id, buf);
+        sprintf(msg, "```\n%s\n```", buf);
+        telegram_send_act(chat_id, "typing");
+        telegram_send_msg(chat_id, msg);
         printf("%s\n", buf);
         bzero(buf,1999);
 
     }
     else{
         //sending_exe.log
-        telegram_send_file(chat_id, "exe.txt");
-        printf("send exe.txt\n");
+        telegram_send_act(chat_id, "upload_document");
+        telegram_send_file(chat_id, "result.txt");
+        printf("send result.txt\n");
     }
     printf("wow");
     
-    // fp = popen("rm exe.txt","r");
-    // fp = popen("rm error.txt","r");
+    fp = popen("rm result.txt","r");
+    fp = popen("rm error.txt","r");
 }
 void *changecommand(char *id,char *text) {
     char text_build[4000], command_detail[500];
