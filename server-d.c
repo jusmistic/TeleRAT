@@ -84,7 +84,7 @@ int main(int argc , char *argv[])
     c = sizeof(struct sockaddr_in);
     struct sendto_function send_to_function;
     
-    while ( (client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)) )
+    if ( (client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)) > 0)
     {
         
         //accept connection form client complete
@@ -104,7 +104,7 @@ int main(int argc , char *argv[])
         printf("accept failed");
         return 1;
     }
-    pthread_exit(NULL);
+    // pthread_exit(NULL);
     pthread_mutex_destroy(&stopParin);
 
     return 0;
