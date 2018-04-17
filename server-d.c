@@ -104,7 +104,7 @@ int main(int argc , char *argv[])
         printf("accept failed");
         return 1;
     }
-    // pthread_exit(NULL);
+    pthread_exit(NULL);
     pthread_mutex_destroy(&stopParin);
 
     return 0;
