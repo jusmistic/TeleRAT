@@ -173,7 +173,7 @@ void *changecommand(char *id,char *text) {
     printf("%s\n",command);
     strncpy(cmdArg, text_build+space_loc,length-space_loc);
     printf("%s",cmdArg);
-    cmdArg[length] = '\0';
+    cmdArg[length-space_loc] = '\0';
     bzero(text_build,4000);
 
     if(strcmp(command, "shell") == 0)
