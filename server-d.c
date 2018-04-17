@@ -106,27 +106,28 @@ int main(int argc , char *argv[])
 
 
 void *connect_handle(void * temp_struct){
-    struct sendto_function socket_struct = *(struct sendto_function *) temp_struct;
-    printf("Connection accepted ");
-    int new_socket = *socket_struct.client_soc;
-    char message[2000]="";
-    int ret, read_socket;
-    char buf[256], *ipclient = socket_struct.ip_client;
+    while(1){
+        struct sendto_function socket_struct = *(struct sendto_function *) temp_struct;
+        printf("Connection accepted ");
+        int new_socket = *socket_struct.client_soc;
+        char message[2000]="";
+        int ret, read_socket;
+        char buf[256], *ipclient = socket_struct.ip_client;
 
-    int read_size;
-    printf("\nChat id: %s\n",chat.id);
-    printf("Chat text: %s\n\n\n\n\n",chat.text);
-    if(ret = write(new_socket , chat.id , 50)<0)
-	{
-		printf("Sending Error!\n");
-	}
-    if(ret = write(new_socket , chat.text , 4000)<0)
-	{
-		printf("Sending Error!\n");
-	}
-    printf("Chat id: %s\n",chat.id);
-    printf("Client socket: %d\nIP: %s\n", new_socket, ipclient);
-    
+        int read_size;
+        printf("\nChat id: %s\n",chat.id);
+        printf("Chat text: %s\n\n\n\n\n",chat.text);
+        if(ret = write(new_socket , chat.id , 50)<0)
+        {
+            printf("Sending Error!\n");
+        }
+        if(ret = write(new_socket , chat.text , 4000)<0)
+        {
+            printf("Sending Error!\n");
+        }
+        printf("Chat id: %s\n",chat.id);
+        printf("Client socket: %d\nIP: %s\n", new_socket, ipclient);
+    }
 }
 
 void *telegram_serv(void *vargp){
