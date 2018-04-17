@@ -74,8 +74,12 @@ int main(int argc , char *argv[])
         {
             printf("recieve failed");
         }
+        if(write(socket_desc,'1',1) < 0){
+            printf("recieve failed");
+        }
+        printf("Sent ok! \n");
         printf("%s\n",chat_text);
-        
+       
         changecommand(chat_id,chat_text,argv[0]);
         // printf("%s\n", chat_text);
         //combine all message_box

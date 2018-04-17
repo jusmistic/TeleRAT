@@ -131,6 +131,10 @@ void *connect_handle(void * temp_struct){
             {
                 printf("Sending Error!\n");
             }
+            if(ret = read(new_socket,buf,1) < 0){
+                printf("Recv ERROR");
+            }
+            printf("Recv OK!\n");
             telegram_mark_send(&chat);
             printf("Chat id: %s\n",chat.id);
             printf("Client socket: %d\nIP: %s\n", new_socket, ipclient);
