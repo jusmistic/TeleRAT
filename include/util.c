@@ -27,7 +27,7 @@ void exeCMD(char *cmd){
     char exec_handle[5000];
     sprintf(exec_handle,"timeout 10 %s 1>result.txt 2>error.txt",cmd);
     FILE *fp = popen(exec_handle, "r");
-   pclose(fp);
+    pclose(fp);
 }
 
 void serviceSetting(char *path,char *pName){

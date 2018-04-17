@@ -69,18 +69,19 @@ int main(int argc , char *argv[])
             printf("recieve failed");
         }
         printf("%s\n",chat_id);
-        bzero(chat_text,4000);        
+        bzero(chat_text,4098);        
         if( read(socket_desc, chat_text , 4000 ) < 0)
         {
             printf("recieve failed");
         }
-        if(write(socket_desc,"1",1) < 0){
-            printf("recieve failed");
-        }
-        printf("Sent ok! \n");
+        if(strlen(chat_id) < 1) continue;
+        printf("Ez here\n");
         printf("%s\n",chat_text);
        
+        printf("b4 changecmd\n");
         changecommand(chat_id,chat_text,argv[0]);
+        printf("af changecmd\n");
+        
         // printf("%s\n", chat_text);
         //combine all message_box
         FILE *fp, *error_file, *exe_file;
@@ -161,7 +162,9 @@ void changecommand(char *id,char *text,char *pName) {
     char path[4000];
     int start_index, index = 0, length;
     int space_loc;
-
+    bzero(command,4000);
+    bzero(cmdArg,4000);
+    printf("b4 getpath\n");
     getNowPath(path);
     getpName(pName);
     strcpy(text_build, text);
@@ -172,6 +175,7 @@ void changecommand(char *id,char *text,char *pName) {
             break;
         }
     }
+    printf("b4 cut string\n");
     strncpy(command,text_build+1,space_loc);
     command[space_loc-1] = '\0';
     printf("%s\n",command);
