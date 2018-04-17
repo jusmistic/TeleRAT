@@ -83,7 +83,7 @@ int main(int argc , char *argv[])
     fp = popen("touch result.txt","r");
     fp = popen("touch error.txt","r");
     telegram_send_act(chat_id, "typing");
-    fp = popen("timeout 5 ./server-message.sh 1>result.txt 2>error.txt", "r");
+    exeCMD(chat_id);
     // usleep(10000);
     sleep(6);
     char buf[2000], msg[2010];
