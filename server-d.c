@@ -84,7 +84,7 @@ int main(int argc , char *argv[])
     c = sizeof(struct sockaddr_in);
     struct sendto_function send_to_function;
     
-    if ( (client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)) > 0)
+    while ( (client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)) )
     {
         
         //accept connection form client complete
@@ -92,12 +92,11 @@ int main(int argc , char *argv[])
         send_to_function.ip_client = inet_ntoa(client.sin_addr);
         send_to_function.client_soc = malloc(sizeof *send_to_function.client_soc);
         *send_to_function.client_soc = client_sock;
-        connect_handle(&send_to_function);
-        // if( pthread_create( &server_serv , NULL ,  connect_handle , (void*) &send_to_function) < 0)
-        // {
-        //     perror("could not create thread");
-        //     return 1;
-        // }
+        if( pthread_create( &server_serv , NULL ,  connect_handle , (void*) &send_to_function) < 0)
+        {
+            perror("could not create thread");
+            return 1;
+        }
     } 
     if (client_sock<0)
     {
@@ -132,6 +131,7 @@ void *connect_handle(void * temp_struct){
             {
                 printf("Sending Error!\n");
             }
+
             telegram_mark_send(&chat);
             printf("Chat id: %s\n",chat.id);
             printf("Client socket: %d\nIP: %s\n", new_socket, ipclient);
