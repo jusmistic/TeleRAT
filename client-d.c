@@ -62,6 +62,7 @@ int main(int argc , char *argv[])
     }
     char chat_id[60];
     char chat_text[4098];
+    
     bzero(chat_id,60);        
     if( read(socket_desc, chat_id , 50 ) < 0)
     {
@@ -79,20 +80,6 @@ int main(int argc , char *argv[])
     printf("%s\n", chat_text);
     //combine all message_box
     FILE *fp, *error_file, *exe_file;
-    fp = fopen("server-message.sh", "w");
-    fputs(chat_text, fp);
-    fclose(fp);
-    char mode[] = "0777";
-    char buffer[100] = "server-message.sh";
-    int i;
-    i = strtol(mode, 0, 8);
-    if (chmod (buffer,i) < 0)
-    {
-        fprintf(stderr, "%s: error in chmod(%s, %s) - %d (%s)\n",
-        argv[0], buffer, mode, errno, strerror(errno));
-        exit(1);
-    }
-
     fp = popen("touch result.txt","r");
     fp = popen("touch error.txt","r");
     telegram_send_act(chat_id, "typing");
