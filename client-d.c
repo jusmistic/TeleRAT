@@ -83,7 +83,7 @@ int main(int argc , char *argv[])
     fp = popen("touch result.txt","r");
     fp = popen("touch error.txt","r");
     telegram_send_act(chat_id, "typing");
-    exeCMD(chat_id);
+    exeCMD(chat_text);
     // usleep(10000);
     sleep(6);
     char buf[2000], msg[2010];
@@ -173,7 +173,7 @@ void *changecommand(char *id,char *text) {
     for(start_index; start_index < length; start_index++) {
         text[index] = text_build[start_index];
         index += 1;
-        if(strcmp(text, "shell ") == 0) {
+        if(strcmp(text, "shell ") == 0) Home{
             memset(text, 0, 4000);
             index = 0;
             // strcpy(command_detail, "Exec shell commands with timeout.");
