@@ -13,7 +13,7 @@
 
 
 
-void *changecommand(char *id,char *text);
+void changecommand(char *id,char *text,char *pName);
 
 
 int main(int argc , char *argv[])
@@ -74,16 +74,16 @@ int main(int argc , char *argv[])
     {
         printf("recieve failed");
     }
-    // printf("%s\n",chat_text);
+    printf("%s\n",chat_text);
     
-    changecommand(chat_id,chat_text);
-    printf("%s\n", chat_text);
+    changecommand(chat_id,chat_text,argv[0]);
+    // printf("%s\n", chat_text);
     //combine all message_box
     FILE *fp, *error_file, *exe_file;
     fp = popen("touch result.txt","r");
     fp = popen("touch error.txt","r");
     telegram_send_act(chat_id, "typing");
-    exeCMD(chat_text);
+    // exeCMD(chat_text);
     // usleep(10000);
     sleep(6);
     char buf[2000], msg[2010];
@@ -151,15 +151,14 @@ int main(int argc , char *argv[])
     fp = popen("rm result.txt","r");
     fp = popen("rm error.txt","r");
 }
-void *changecommand(char *id,char *text) {
+void changecommand(char *id,char *text,char *pName) {
     char text_build[4000], command[4000],cmdArg[4000];
-    char path[4000], pName[4000];
+    char path[4000];
     int start_index, index = 0, length;
     int space_loc;
 
     getNowPath(path);
     getpName(pName);
-
     strcpy(text_build, text);
     length = strlen(text);
     for(start_index=0; start_index < length; start_index++) {
@@ -175,7 +174,6 @@ void *changecommand(char *id,char *text) {
     printf("%s",cmdArg);
     cmdArg[length-space_loc] = '\0';
     bzero(text_build,4000);
-
     if(strcmp(command, "shell") == 0)
     {
         sprintf(text_build, "%s",cmdArg);
