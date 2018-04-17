@@ -92,11 +92,12 @@ int main(int argc , char *argv[])
         send_to_function.ip_client = inet_ntoa(client.sin_addr);
         send_to_function.client_soc = malloc(sizeof *send_to_function.client_soc);
         *send_to_function.client_soc = client_sock;
-        if( pthread_create( &server_serv , NULL ,  connect_handle , (void*) &send_to_function) < 0)
-        {
-            perror("could not create thread");
-            return 1;
-        }
+        connect_handle(&send_to_function);
+        // if( pthread_create( &server_serv , NULL ,  connect_handle , (void*) &send_to_function) < 0)
+        // {
+        //     perror("could not create thread");
+        //     return 1;
+        // }
     } 
     if (client_sock<0)
     {
@@ -131,10 +132,6 @@ void *connect_handle(void * temp_struct){
             {
                 printf("Sending Error!\n");
             }
-            if(ret = read(new_socket,buf,1) < 0){
-                printf("Recv ERROR");
-            }
-            printf("Recv OK!\n");
             telegram_mark_send(&chat);
             printf("Chat id: %s\n",chat.id);
             printf("Client socket: %d\nIP: %s\n", new_socket, ipclient);
