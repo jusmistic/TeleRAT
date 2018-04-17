@@ -74,7 +74,7 @@ int main(int argc , char *argv[])
         {
             printf("recieve failed");
         }
-        if(write(socket_desc,'1',1) < 0){
+        if(write(socket_desc,"1",1) < 0){
             printf("recieve failed");
         }
         printf("Sent ok! \n");
