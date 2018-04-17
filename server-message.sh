@@ -1,1 +1,1 @@
-man ascii
+clear

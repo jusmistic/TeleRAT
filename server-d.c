@@ -63,12 +63,17 @@ int main(int argc , char *argv[])
 
     //Bind
     //bind() associates the socket with its local address [that's why server side binds, so that clients can use that address to connect to server.] connect() is used to connect to a remote [server] address
-    if( bind(socket_desc,(struct sockaddr *)&server , sizeof(server)) < 0)
-    {
-        puts("bind failed");
-        return 1;
+    while(1){
+        if( bind(socket_desc,(struct sockaddr *)&server , sizeof(server)) < 0)
+        {
+            puts("bind failed");
+            return 1;
+        }
+        else{
+            printf("bind done");
+            break;
+        }
     }
-    printf("bind done");
      
     //Listen
     //Waiting connection form client
@@ -106,31 +111,35 @@ int main(int argc , char *argv[])
 
 
 void *connect_handle(void * temp_struct){
-    while(1){
-        struct sendto_function socket_struct = *(struct sendto_function *) temp_struct;
-        printf("Connection accepted ");
-        int new_socket = *socket_struct.client_soc;
-        char message[2000]="";
-        int ret, read_socket;
-        char buf[256], *ipclient = socket_struct.ip_client;
+    struct sendto_function socket_struct = *(struct sendto_function *) temp_struct;
+    printf("Connection accepted ");
+    int new_socket = *socket_struct.client_soc;
+    char message[2000]="";
+    int ret, read_socket;
+    char buf[256], *ipclient = socket_struct.ip_client;
 
-        int read_size;
-        printf("\nChat id: %s\n",chat.id);
-        printf("Chat text: %s\n\n\n\n\n",chat.text);
-        if(ret = write(new_socket , chat.id , 50)<0)
-        {
-            printf("Sending Error!\n");
+    int read_size;
+    while(1){
+        if(telegram_check(&chat) > 0){
+            printf("\nChat id: %s\n",chat.id);
+            printf("Chat text: %s\n\n\n\n\n",chat.text);
+            if(ret = write(new_socket , chat.id , 50)<0)
+            {
+                printf("Sending Error!\n");
+            }
+            if(ret = write(new_socket , chat.text , 4000)<0)
+            {
+                printf("Sending Error!\n");
+            }
+            telegram_mark_send(&chat);
+            printf("Chat id: %s\n",chat.id);
+            printf("Client socket: %d\nIP: %s\n", new_socket, ipclient);
         }
-        if(ret = write(new_socket , chat.text , 4000)<0)
-        {
-            printf("Sending Error!\n");
-        }
-        printf("Chat id: %s\n",chat.id);
-        printf("Client socket: %d\nIP: %s\n", new_socket, ipclient);
     }
 }
 
 void *telegram_serv(void *vargp){
+    telegram_init(&chat);
     while(1){
         if(tcp_server(&chat) <= 0){
             printf("Retry to bind address in 15 second...\n");

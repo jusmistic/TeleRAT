@@ -1,5 +1,24 @@
 #include "telegram.h"
 
+int telegram_init(struct telegram_chat *chat){
+    chat->state = 0;
+    return 1;
+}
+
+int telegram_check(struct telegram_chat *chat){
+    return chat->state;
+}
+
+int telegram_mark_send(struct telegram_chat *chat){
+    chat->state = 0;
+    return 1;
+}
+
+int telegram_mark_new(struct telegram_chat *chat){
+    chat->state = 1;
+    return 1;
+}
+
 int telegram_get_me(char *destination){
     BIO *request_bio;
     char *header = (char *) malloc(256);

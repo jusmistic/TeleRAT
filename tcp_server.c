@@ -143,7 +143,7 @@ int response(int client_socket, Telegram_chat *chat_in, SSL **ssl){
             strcpy(chat_in->msg_id, temp_chat.msg_id);
             strcpy(chat_in->text, temp_chat.text);
             chat_in->date = temp_chat.date;
-            chat_in->state = temp_chat.state;
+            chat_in->state = 1;
 
             printf("\nText => %s\n", chat_in->text);
         }

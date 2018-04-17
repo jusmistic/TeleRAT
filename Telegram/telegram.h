@@ -21,6 +21,11 @@ struct telegram_chat{
 
 typedef struct telegram_chat Telegram_chat;
 
+int telegram_init(struct telegram_chat *chat);
+int telegram_check(struct telegram_chat *chat);
+int telegram_check(struct telegram_chat *chat);
+int telegram_mark_send(struct telegram_chat *chat);
+int telegram_mark_new(struct telegram_chat *chat);
 int telegram_get_me(char *destination);
 int telegram_set_webhook(char *url, char *public_key);
 int telegram_send_msg(char *chat_id, char *text);
