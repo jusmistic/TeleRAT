@@ -24,15 +24,9 @@ void getNowPath(char *nowPath){
        perror("getcwd() error");
 }
 void exeCMD(char *cmd){
-    char buf[250];
+    char exec_handle[5000];
+    sprintf(exec_handle,"timeout 10 ./%s 1>result.txt 2>error.txt",cmd);
     FILE *fp = popen(cmd, "r");
-
-    while (fgets(buf, 200, fp))
-    {
-        printf("%s:",buf);
-        bzero(cmd,200);
-        bzero(buf,200); 
-   }
    pclose(fp);
 }
 
