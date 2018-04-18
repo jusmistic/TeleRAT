@@ -62,26 +62,46 @@ int main(int argc , char *argv[])
             usleep(3000000);
         }
     }
+
     char chat_id[60];
     char chat_text[4098];
     char buf[3];
+    char status[3];
+    int status_len;
     while(1){
         bzero(chat_id,sizeof(chat_id));
         bzero(chat_text,sizeof(chat_text));
         bzero(buf,sizeof(buf));
+        bzero(status,sizeof(status));
+
+        //Check status
+        while(1){
+            write(socket_desc, "1", 1);
+            while((status_len = recv(socket_desc, status , 3, 0)) > 0)
+            {
+                status[status_len] = '\0';
+                if(strlen(status) > 0){
+                    break;
+                }
+            }
+            if(strcmp(status, "1") == 0){
+                break;
+            }
+            sleep(3);
+        }
 
         if(read(socket_desc, chat_id , 50) < 0){
             printf("chat_id failed\n");
             // perror("chat_id");
         }
         printf("%s\n",chat_id);
-        if( read(socket_desc, chat_text , 4000 ) < 0)
+        if( read(socket_desc, chat_text , sizeof(chat_text) ) < 0)
         {
             printf("recieve failed");
         }
-        if( write(socket_desc,buf,3) < 0){
-            printf("writing failed");
-        }
+        // if( write(socket_desc,buf,3) < 0){
+        //     printf("writing failed");
+        // }
         if(strlen(chat_id) < 1) continue;
         // printf("Ez here\n");
         printf("%s\n",chat_text);
