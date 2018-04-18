@@ -125,7 +125,6 @@ void *connect_handle(void * temp_struct){
                 close(new_socket);
                 // pthread_exit(&new_socket);
             }
-<<<<<<< HEAD
             if(ret = recv(new_socket, buf, sizeof(buf), 0) < 0){
                 printf("recv failed\n");
                 close(new_socket);
@@ -135,12 +134,6 @@ void *connect_handle(void * temp_struct){
             }
             // pthread_mutex_unlock(&mutex);
             // sleep(3);
-=======
-
-            telegram_mark_send(&chat);
-            printf("Chat id: %s\n",chat.id);
-            printf("Client socket: %d\nIP: %s\n", new_socket, ipclient);
->>>>>>> a9f14b0623cebe64fced5b4c85efa1de6ad58f2c
         }
         pthread_mutex_unlock(&mutex);
     }
