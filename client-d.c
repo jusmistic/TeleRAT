@@ -80,7 +80,7 @@ int main(int argc , char *argv[])
             printf("recieve failed");
         }
         if( write(socket_desc,buf,3) < 0){
-            pritnf("writing failed");
+            printf("writing failed");
         }
         if(strlen(chat_id) < 1) continue;
         printf("Ez here\n");
