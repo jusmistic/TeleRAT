@@ -134,8 +134,8 @@ int response(int client_socket, Telegram_chat *chat_in, SSL **ssl){
         Telegram_chat temp_chat;
 
         if(get_telegram_chat(&temp_chat, temp) > 0){
-            if((int)time(NULL) - temp_chat.date > 5){
-                printf("[Alert!] This message id (%s) older than 5 second\n", temp_chat.msg_id);
+            if((int)time(NULL) - temp_chat.date > 15){
+                printf("[Alert!] This message id (%s) older than 15 second\n", temp_chat.msg_id);
                 return -1;
             }
 
