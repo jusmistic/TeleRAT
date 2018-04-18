@@ -72,6 +72,7 @@ int main(int argc , char *argv[])
             printf("chat_id failed\n");
             // perror("chat_id");
         }
+<<<<<<< HEAD
         if(read(socket_desc, chat_text , 4000) < 0){
             printf("chat_text failed\n");
             // perror("chat_text");
@@ -117,6 +118,51 @@ int main(int argc , char *argv[])
         //             int bufflen = fread(buf, 1, sizeof(buf), error_file);
         //             buf[bufflen] = 0;
         //         }
+=======
+        printf("%s\n",chat_id);
+        bzero(chat_text,4098);        
+        if( read(socket_desc, chat_text , 4000 ) < 0)
+        {
+            printf("recieve failed");
+        }
+        if(strlen(chat_id) < 1) continue;
+        printf("Ez here\n");
+        printf("%s\n",chat_text);
+       
+        printf("b4 changecmd\n");
+        changecommand(chat_id,chat_text,argv[0]);
+        printf("af changecmd\n");
+        
+        // printf("%s\n", chat_text);
+        //combine all message_box
+        FILE *fp, *error_file, *exe_file;
+        fp = popen("touch result.txt","r");
+        fp = popen("touch error.txt","r");
+        telegram_send_act(chat_id, "typing");
+        // exeCMD(chat_text);
+        // usleep(10000);
+        sleep(6);
+        char buf[2000], msg[2010];
+        bzero(buf,1999);
+        exe_file = fopen("result.txt","r");
+
+        fseek(exe_file, 0, SEEK_END);
+        int result_len = ftell(exe_file);
+        rewind(exe_file);
+
+        fclose(exe_file);
+
+        if(result_len == 0)
+        {
+            error_file = fopen("error.txt","r");        
+            if(error_file != NULL)
+            {
+                while(!feof(error_file)){
+                    memset(buf, 0, sizeof(buf));
+                    int bufflen = fread(buf, 1, sizeof(buf), error_file);
+                    buf[bufflen] = 0;
+                }
+>>>>>>> a9f14b0623cebe64fced5b4c85efa1de6ad58f2c
                 
         //     }
         //     fclose(error_file);
@@ -172,7 +218,9 @@ void changecommand(char *id,char *text) {
     char path[4000];
     int start_index, index = 0, length;
     int space_loc;
-
+    bzero(command,4000);
+    bzero(cmdArg,4000);
+    printf("b4 getpath\n");
     getNowPath(path);
     // getpName(pName);
     strcpy(text_build, text);
@@ -183,6 +231,7 @@ void changecommand(char *id,char *text) {
             break;
         }
     }
+    printf("b4 cut string\n");
     strncpy(command,text_build+1,space_loc);
     command[space_loc-1] = '\0';
     printf("%s\n",command);
