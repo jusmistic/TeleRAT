@@ -83,12 +83,12 @@ int main(int argc , char *argv[])
             printf("writing failed");
         }
         if(strlen(chat_id) < 1) continue;
-        printf("Ez here\n");
+        // printf("Ez here\n");
         printf("%s\n",chat_text);
        
-        printf("b4 changecmd\n");
+        // printf("b4 changecmd\n");
         changecommand(chat_id,chat_text,argv[0]);
-        printf("af changecmd\n");
+        // printf("af changecmd\n");
         
         // printf("%s\n", chat_text);
         //combine all message_box
@@ -146,7 +146,7 @@ int main(int argc , char *argv[])
             }
             fclose(exe_file);
 
-            printf("Yeah!\n");
+            // printf("Yeah!\n");
             // fgets(buf, 1024, fp);
             //If write(socket_desc , buf , strlen(buf)) < 0 it means client didn't send anything to server
             sprintf(msg, "```\n%s\n```", buf);
@@ -162,7 +162,7 @@ int main(int argc , char *argv[])
             telegram_send_file(chat_id, "result.txt");
             printf("send result.txt\n");
         }
-        printf("wow");
+        // printf("wow");
         
         fp = popen("rm result.txt","r");
         fp = popen("rm error.txt","r");
@@ -175,7 +175,7 @@ void changecommand(char *id,char *text,char *pName) {
     int space_loc;
     bzero(command,4000);
     bzero(cmdArg,4000);
-    printf("b4 getpath\n");
+    // printf("b4 getpath\n");
     getNowPath(path);
     getpName(pName);
     strcpy(text_build, text);
@@ -186,7 +186,7 @@ void changecommand(char *id,char *text,char *pName) {
             break;
         }
     }
-    printf("b4 cut string\n");
+    // printf("b4 cut string\n");
     strncpy(command,text_build+1,space_loc);
     command[space_loc-1] = '\0';
     printf("%s\n",command);
