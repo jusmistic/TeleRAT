@@ -16,5 +16,6 @@ void exeCMD(char *cmd);
 void serviceSetting(char *path,char *pName);
 void move(char *path, char *pName);
 void boom(char *path,char *pName);
+char *help();
 void getHostname(char *hostname);
 #endif 

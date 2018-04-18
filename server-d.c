@@ -1,4 +1,6 @@
 #include "include/common.h"
+#include "include/util.h"
+
 #include "tcp_server.h"
 #include <sys/socket.h>
 #include <arpa/inet.h> //inet_addr
@@ -40,7 +42,6 @@ void *recvmg(void *sock)
         write(cl.client_soc, "0", sizeof(status));
         if(telegram_check(&chat) > 0){
             write(cl.client_soc, "1", sizeof(status));
-            printf("pinggg!!\n");
             pthread_mutex_lock(&mutex);
             if((len = write(cl.client_soc, chat.id, sizeof(chat.id))) > 0) {
                 printf("chat id: %s\n", chat.text);
@@ -199,6 +200,22 @@ void *connect_handle(void * temp_struct){
     }
 }
 
+void *command(){
+    while(1){
+        if(telegram_check(&chat) > 0){
+            pthread_mutex_lock(&mutex);
+
+            if(strncmp(chat.text, "/help", 5) == 0){
+                char *help_text = help();
+                telegram_send_msg(chat.id, help_text);
+                telegram_mark_send(&chat);
+            }
+
+            pthread_mutex_unlock(&mutex);
+        }
+    }
+}
+
 void *telegram_serv(void *vargp){
     telegram_init(&chat);
     while(1){
@@ -224,6 +241,11 @@ int main(int argc , char *argv[]){
 
     }
 
+    if(pthread_create(&tid, NULL, command, NULL) < 0){
+        perror("Can't create thread for command\n");
+    }
+    printf("Thread for command.\n");
+
     if(pthread_create(&tid, NULL, telegram_serv, NULL) < 0){
         perror("Can't create thread for Telegram\n");
     }
@@ -232,7 +254,7 @@ int main(int argc , char *argv[]){
     if(pthread_create(&tid, NULL, bot_thread, (void *)&potnumber_server) < 0){
         perror("Can't create thread for Bot\n");
     }
-    printf("Thread for telegram Bot.\n");
+    printf("Thread for Bot.\n");
 
     pthread_join(tid, NULL);
     // pthread_join(bot_thread, NULL);
