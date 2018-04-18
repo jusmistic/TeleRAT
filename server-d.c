@@ -99,11 +99,12 @@ void *connect_handle(void * temp_struct){
     int new_socket = *socket_struct.client_soc;
     char message[2000]="";
     int ret, read_socket;
-    char buf[256], *ipclient = socket_struct.ip_client;
+    char buf[3], *ipclient = socket_struct.ip_client;
 
 
     int read_size;
     while(1){
+        bzero(buf,sizeof(buf));
         pthread_mutex_lock(&mutex);
         if(telegram_check(&chat) > 0){
             telegram_mark_send(&chat);
@@ -125,7 +126,7 @@ void *connect_handle(void * temp_struct){
                 close(new_socket);
                 // pthread_exit(&new_socket);
             }
-            if(ret = recv(new_socket, buf, sizeof(buf), 0) < 0){
+            if(ret = recv(new_socket, buf, 3, 0) < 0){
                 printf("recv failed\n");
                 close(new_socket);
                 // pthread_exit(&new_socket);
