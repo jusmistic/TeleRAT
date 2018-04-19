@@ -16,7 +16,7 @@ tcp_server.a: tcp_server.o $(lib_path)telegram.o $(lib_path)http_helper.o \
 	ar rcs $@ $^
 
 include/util.o: include/util.c
-	$(cc) $(cflags) $^ -o $@
+	$(cc) $(cflags) -c $^ -o $@
 
 server-d: server-d.c tcp_server.a include/util.o
 	$(cc) $(cflags) $^ -o $@ -lssl -lcrypto -lpthread

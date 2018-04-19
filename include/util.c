@@ -93,16 +93,6 @@ char *help(){
             "timeout - Set timeout for shell\n"
             "getfile - Download file from bot\n"
             "boom - DESTROY ITSELF!\n";
-    // bzero(text, sizeof(text));
-    // strcat(text, "help - List of commands\n");
-    // strcat(text, "shell - Exec shell commands with timeout\n");
-    // strcat(text, "cp - Copy file/folder\n");
-    // strcat(text, "mv - Move file/folder\n");
-    // strcat(text, "rm - Remove file/folder\n");
-    // strcat(text, "mkdir - Make directory\n");
-    // strcat(text, "timeout - Set timeout for shell\n");
-    // strcat(text, "getfile - Download file from bot\n");
-    // strcat(text, "boom - DESTROY ITSELF!\n");
 }
 
 

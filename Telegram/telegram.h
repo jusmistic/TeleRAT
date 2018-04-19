@@ -10,11 +10,14 @@
 #include "tcp_client.h"
 
 #define HOST "api.telegram.org"
+#define MSG_ID_LENGTH 50
+#define ID_LENGTH 50
+#define TEXT_LENGTH 4097
 
 struct telegram_chat{
-    char id[50];
-    char msg_id[50];
-    char text[4097];
+    char id[ID_LENGTH];
+    char msg_id[MSG_ID_LENGTH];
+    char text[TEXT_LENGTH];
     int date;
     int state;
 };
