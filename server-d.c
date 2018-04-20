@@ -41,43 +41,56 @@ void *recvmg(void *sock)
 	int len;
     char status[3];
     int select = -1;
-    while((len = recv(cl.client_soc,msg,500,0)) > 0){
-        printf("[Thread %d] recv: %s\n", cl.client_soc, msg);
-        write(cl.client_soc, "0", sizeof(status));
-
-        //Check index of socket array.
+    if((len = recv(cl.client_soc, msg, 500, 0)) > 0){
         for(int i = 0; i < n; i++){
             if(sendto_function[i].client_soc == cl.client_soc){
                 select = i;
                 break;
             }
         }
-        
-        pthread_mutex_lock(&mutex);
-        if(telegram_check(&sendto_function[select].chat) > 0){
-            write(cl.client_soc, "1", sizeof(status));
-            printf("[Sending to client %d]\n", sendto_function[select].client_soc);
-            if((len = write(cl.client_soc, sendto_function[select].chat.id, sizeof(sendto_function[select].chat.id))) > 0) {
-                printf("chat id: %s\n", sendto_function[select].chat.text);
-                
-            }
-            if((len = write(cl.client_soc, sendto_function[select].chat.text, sizeof(sendto_function[select].chat.text))) > 0) {
-                printf("msg: %s\n", sendto_function[select].chat.text);
-                
-            }
-            telegram_mark_send(&sendto_function[select].chat);
-            printf("[End sending]\n");
-        }
-        pthread_mutex_unlock(&mutex);
-    }
-    pthread_mutex_lock(&mutex);
+        //Copy hostname
+        strcpy(sendto_function[select].hostname, msg);
 
+        while((len = recv(cl.client_soc, msg, 500, 0)) > 0){
+            // printf("[Thread %d] recv: %s\n", cl.client_soc, msg);
+            write(cl.client_soc, "0", sizeof(status));
+
+            //Check index of socket array.
+            for(int i = 0; i < n; i++){
+                if(sendto_function[i].client_soc == cl.client_soc){
+                    select = i;
+                    break;
+                }
+            }
+            
+            pthread_mutex_lock(&mutex);
+            if(telegram_check(&sendto_function[select].chat) > 0){
+                write(cl.client_soc, "1", sizeof(status));
+                printf("[Sending to client %d]\n", sendto_function[select].client_soc);
+                if((len = write(cl.client_soc, sendto_function[select].chat.id, sizeof(sendto_function[select].chat.id))) > 0) {
+                    printf("chat id: %s\n", sendto_function[select].chat.text);
+                    
+                }
+                if((len = write(cl.client_soc, sendto_function[select].chat.text, sizeof(sendto_function[select].chat.text))) > 0) {
+                    printf("msg: %s\n", sendto_function[select].chat.text);
+                    
+                }
+                telegram_mark_send(&sendto_function[select].chat);
+                printf("[End sending]\n");
+            }
+            pthread_mutex_unlock(&mutex);
+        }
+    }
+    
+    pthread_mutex_lock(&mutex);
     /* delete client socket on disconected */
     printf("%s disconnected\n",cl.ip_client);
 
     for(int i = 0; i < user_select_n; i++){
         if(user_select[i].client_soc == cl.client_soc){
-            telegram_send_msg(user_select[i].chat_id, "Your selected client is disconnected.");
+            char temp[350];
+            sprintf(temp, "Client `%s` is disconnect.", sendto_function[select].hostname);
+            telegram_send_msg(user_select[i].chat_id, temp);
         }
     }
 
@@ -149,7 +162,8 @@ int botserver(int potnumber_server)
 		pthread_mutex_lock(&mutex);
 
         char ip[INET_ADDRSTRLEN];
-		inet_ntop(AF_INET, (struct sockaddr *)&client, ip, INET_ADDRSTRLEN);
+        strcpy(ip, inet_ntoa(client.sin_addr));
+		// inet_ntop(AF_INET, (struct sockaddr *)&client, ip, INET_ADDRSTRLEN);
 		printf("[Bot] %s connected\n",ip);
 
 		sendto_function[n].client_soc = new_sock;
@@ -199,7 +213,9 @@ void *command(){
                     int i = 0;
                     for(i; i < n; i++){
                         memset(temp, 0, sizeof(temp));
-                        sprintf(temp, "%d) %s\nOn socket: %d\n", (i+1), sendto_function[i].ip_client ,sendto_function[i].client_soc);
+                        sprintf(temp,   "%d) %s\n"
+                                        "ip : %s\n", 
+                                        (i+1), sendto_function[i].hostname ,sendto_function[i].ip_client);
                         strcat(text, temp);
                     }
 
@@ -208,7 +224,7 @@ void *command(){
 
                     memset(text, 0, sizeof(text));
                     sprintf(text,   "Have %d client(s) connect to server\n"
-                                    "```\n%s\n```"
+                                    "```\n%s```\n"
                                     "Use /select <id> to select the client."
                                     , n, temp);
 
