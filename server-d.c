@@ -86,6 +86,9 @@ void *recvmg(void *sock)
     printf("%s disconnected\n",cl.ip_client);
 
     /* send disconnect message to everyone is using this client */
+
+    /* debug user_select_n */
+    printf("[Debug user_select_n] %d\n", user_select_n);
     for(int i = 0; i < user_select_n; i++){
         if(user_select[i].client_soc == cl.client_soc){
             char temp[350];
@@ -93,7 +96,7 @@ void *recvmg(void *sock)
             telegram_send_msg(user_select[i].chat_id, temp);
 
             int j = i;
-            while(j < user_select_n-1){
+            while(j < user_select_n){
                 user_select[j] = user_select[j+1];
                 j++;
             }
@@ -103,27 +106,6 @@ void *recvmg(void *sock)
             i--;
         }
     }
-    
-    // /* remove user select from list */
-    // for(int i = 0; i < user_select_n; i++){
-    //     if(user_select[i].client_soc == cl.client_soc){
-    //         int j = i;
-    //         if(user_select_n == 1){
-    //             user_select[j].client_soc = 0;
-    //             memset(user_select[j].chat_id, 0, sizeof(user_select[j].chat_id));
-    //         }
-    //         else{
-    //             while(j < user_select_n-1){
-    //                 user_select[j] = user_select[j+1];
-    //                 j++;
-    //             }
-    //         }
-
-    //         printf("[Thread debug %d] deleted user select %d\n", user_select[i].client_soc, i);
-
-    //         user_select_n--;
-    //     }
-    // }
 
     /* remove it from socket list */
     for(int i = 0; i < n; i++) {
