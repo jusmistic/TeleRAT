@@ -162,7 +162,6 @@ int main(int argc , char *argv[])
                     int bufflen = fread(buf, 1, sizeof(buf), exe_file);
                     buf[bufflen] = 0;
                 }
-                
             }
             fclose(exe_file);
 
@@ -211,8 +210,11 @@ void changecommand(char *id,char *text,char *pName) {
     command[space_loc-1] = '\0';
     printf("%s\n",command);
     strncpy(cmdArg, text_build+space_loc,length-space_loc);
-    printf("%s",cmdArg);
     cmdArg[length-space_loc] = '\0';
+    // printf("%s",cmdArg);
+    if(strlen(cmdArg) > 0){
+        printf("%s",cmdArg);
+    }
     bzero(text_build,4000);
     if(strcmp(command, "shell") == 0)
     {
