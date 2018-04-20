@@ -14,17 +14,18 @@
        ___)( )(___
       (((__) (__)))
 ```
-Project Computer Programing 
+TeleRAT เป็นโปรแกรมสนับสนุนการทำงานระยะไกลของระบบปฎิบัติการ Ubuntu(Linux debian base) ซึ่งนำโปรแกรมแกรม Telegram มาใช้เป็นตัวกลางในการควบคุม shell ของเครื่อง client แต่ละตัวผ่านการแชท
 # How TeleRAT Work
 ```
  _____________                       _______________                       _______________
 | BOT(Client) | ==================> |     Server    | ==================> |   Telegram    |
 |   Ubuntu    |                     | Ubuntu On AWS |                     |    Message    | 
-|_____________| <================== |_______________| <================== |_______________|
+|_____________|                     |_______________|                     |_______________|
+       ╚===========================================================================╝
 
 Bot communicate with Server        handle with command that recieve from
-using Reverse TCP concept          Telegram massege 
-with 1s refresh rate               Waiting for connection from BOT
+via Socket server                  Telegram massege 
+                                   Waiting for connection from BOT
                                    then send the command to execute
 
 
