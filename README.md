@@ -12,9 +12,36 @@
       "'\       /'"_.-~^`'-.
          \  _  /--'         `
        ___)( )(___
-      (((__) (__)))
+      (((__) (__)))    
 ```
+## What is TeleRAT
 TeleRAT เป็นโปรแกรมสนับสนุนการทำงานระยะไกลของระบบปฎิบัติการ Ubuntu(Linux debian base) ซึ่งนำโปรแกรมแกรม Telegram มาใช้เป็นตัวกลางในการควบคุม shell ของเครื่อง client แต่ละตัวผ่านการแชท
+
+## Installation
+การติดตั้ง TeleRAT มีวิธีง่ายๆ ดังนี้
+1. ทำการ clone จาก Github Repository
+```
+git clone https://github.com/jusmistic/TeleRAT.git
+```
+
+2. ทำการติดตั้ง Library ที่จำเป็นโดย 
+```
+cd Telegram && chmod a+x install.sh && sudo ./install.sh
+```
+
+3. ทำการ MAKE FILE
+```
+make all
+```
+4. ทำการเปิด Server โดย
+```
+./server-d <PORT>
+```
+และนำ client-d ไปติดตั้งที่เครื่อง Client และรันโดย
+```
+sudo ./client-d <IP> <PORT> -init
+```
+
 # How TeleRAT Work
 ```
  _____________                       _______________                       _______________
