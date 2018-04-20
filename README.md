@@ -1,4 +1,19 @@
 # TeleRAT
+```
+    
+     .--,       .--,     
+    ( (  \.---./  ) )         _   _   _   _   _   _   _  
+     '.__/o   o\__.'         / \ / \ / \ / \ / \ / \ / \ 
+        {=  ^  =}           ( T | e | l | e | R | A | T )
+         >  -  <             \_/ \_/ \_/ \_/ \_/ \_/ \_/          
+        /       \
+       //       \\
+      //|   .   |\\
+      "'\       /'"_.-~^`'-.
+         \  _  /--'         `
+       ___)( )(___
+      (((__) (__)))
+```
 Project Computer Programing 
 # How TeleRAT Work
 ```
@@ -27,15 +42,15 @@ with 1s refresh rate               Waiting for connection from BOT
                 ||     ||
 
 /help - List of commands.
-/shell - Exec shell commands with timeout.
-/cp - Copy file/folder.
-/mv - Move file/folder.
-/rm - Remove file/folder.
-/mkdir - Make directory.
-/timeout - Set timeout for shell.
-/mvbot - Move bot to custom location.
-/getfile - Download file from bot.
-/BOOM! - DESTROY ITSELF!
+/list - Show all avaliable clients
+/select - Select the client by id
+/shell - Exec shell commands with timeout
+/cp - Copy file/folder
+/mv - Move file/folder
+/rm - Remove file/folder
+/mkdir - Make directory
+/getfile - Download file from bot
+/boom - DESTROY ITSELF!
 ```
 
 # Setting up self-signed certificates
