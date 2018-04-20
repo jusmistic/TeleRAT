@@ -45,6 +45,7 @@ void *recvmg(void *sock)
         printf("[Thread %d] recv: %s\n", cl.client_soc, msg);
         write(cl.client_soc, "0", sizeof(status));
 
+        //Check index of socket array.
         for(int i = 0; i < n; i++){
             if(sendto_function[i].client_soc == cl.client_soc){
                 select = i;
@@ -73,6 +74,13 @@ void *recvmg(void *sock)
 
     /* delete client socket on disconected */
     printf("%s disconnected\n",cl.ip_client);
+
+    for(int i = 0; i < user_select_n; i++){
+        if(user_select[i].client_soc == cl.client_soc){
+            telegram_send_msg(user_select[i].chat_id, "Your selected client is disconnected.");
+        }
+    }
+
     for(int i = 0; i < n; i++) {
         if(sendto_function[i].client_soc == cl.client_soc) {
             int j = i;
@@ -92,7 +100,8 @@ int botserver(int potnumber_server)
 {
     int socket_desc , client_sock , new_sock;
     int max_sd, sd, activity;
-    struct sockaddr_in server , client;
+    struct sockaddr_in server, client;
+    struct timeval tv = {30, 0};
     pthread_t server_serv;
     fd_set readfds;
     
@@ -134,6 +143,9 @@ int botserver(int potnumber_server)
 			perror("accept unsuccessful");
 			exit(1);
 		}
+
+        setsockopt(new_sock, SOL_SOCKET, SO_RCVTIMEO, (struct timeval *)&tv, sizeof(struct timeval));
+
 		pthread_mutex_lock(&mutex);
 
         char ip[INET_ADDRSTRLEN];
@@ -195,7 +207,10 @@ void *command(){
                     strcpy(temp, text);
 
                     memset(text, 0, sizeof(text));
-                    sprintf(text, "Have %d client(s) connect to server\n```\n%s\n```", n, temp);
+                    sprintf(text,   "Have %d client(s) connect to server\n"
+                                    "```\n%s\n```"
+                                    "Use /select <id> to select the client."
+                                    , n, temp);
 
                     telegram_send_msg(chat.id, text);
                 }
