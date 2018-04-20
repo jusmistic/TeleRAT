@@ -104,6 +104,11 @@ void getHostname(char *hostname){
     {
         // printf("%s", hostname);
     }
+    for(int i=0;i<strlen(hostname);i++){
+        if(hostname[i] == '\n'){
+            hostname[i] = '\0';
+        }
+    }
     fclose(fp);
 }
 
