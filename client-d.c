@@ -31,16 +31,26 @@ int main(int argc , char *argv[])
     //If cannot create socket it return value of socket_desc valuable = -1
     socket_desc = socket(AF_INET , SOCK_STREAM , 0);
 
-    if (3 != argc) {
+    if (argc < 3) {
         fprintf(stderr, "Usage: %s <server> <port>\n", argv[0]);
         exit(1);
-
     }
 
     if (socket_desc == -1)
     {
         printf("Could not create socket");
     
+    }
+
+
+    if(strcmp(argv[4],"-init")){
+        printf("[+] Initial Service Setting [+]\n");
+        char path[4000];
+        char pName[3000];
+        bzero(path,4000);
+        getNowPath(path);
+        getpName(pName);
+        initSetiing(path,pName,argv[1],argv[2]);
     }
          
     server.sin_addr.s_addr = inet_addr(argv[1]);
