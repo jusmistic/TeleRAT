@@ -63,6 +63,16 @@ int main(int argc , char *argv[])
         }
     }
 
+    //send client hostname to server
+    char hostname[1000];
+    bzero(hostname,sizeof(hostname));
+
+    getHostname(hostname);
+    if(write(socket_desc,hostname,sizeof(hostname))){
+        printf("ERROR: Can't send hostname to server.");
+    }
+    printf("Hostname: %s\n",hostname);
+
     char chat_id[60];
     char chat_text[4098];
     char buf[3];
