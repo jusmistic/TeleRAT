@@ -42,6 +42,7 @@ void *recvmg(void *sock)
     char status[3];
     int select = -1;
     while((len = recv(cl.client_soc,msg,500,0)) > 0){
+        printf("[Thread %d] recv: %s\n", cl.client_soc, msg);
         write(cl.client_soc, "0", sizeof(status));
 
         for(int i = 0; i < n; i++){
@@ -51,9 +52,8 @@ void *recvmg(void *sock)
             }
         }
         
+        pthread_mutex_lock(&mutex);
         if(telegram_check(&sendto_function[select].chat) > 0){
-            pthread_mutex_lock(&mutex);
-
             write(cl.client_soc, "1", sizeof(status));
             printf("[Sending to client %d]\n", sendto_function[select].client_soc);
             if((len = write(cl.client_soc, sendto_function[select].chat.id, sizeof(sendto_function[select].chat.id))) > 0) {
@@ -66,8 +66,8 @@ void *recvmg(void *sock)
             }
             telegram_mark_send(&sendto_function[select].chat);
             printf("[End sending]\n");
-            pthread_mutex_unlock(&mutex);
         }
+        pthread_mutex_unlock(&mutex);
     }
     pthread_mutex_lock(&mutex);
 

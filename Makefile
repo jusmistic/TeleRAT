@@ -2,8 +2,7 @@ cc = gcc
 cflags = -g
 lib_path = Telegram/includes/
 
-all: helper tcp_server.o telegram_server tcp_server.a server-d client-d \
-	include/util.o
+all: helper tcp_server.o tcp_server.a server-d client-d include/util.o
 
 helper:
 	cd Telegram && make all && cd ..
