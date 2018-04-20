@@ -16,12 +16,15 @@
 void changecommand(char *id,char *text,char *pName);
 
 
+
 int main(int argc , char *argv[])
 {
     int socket_desc, index = 0, index1 = 0, potnumber_client;
     char message[2000], server_reply[2000], word_copy_message[150];
     struct sockaddr_in server;
 
+    i_am_root();
+    
     char arg[100];
     strcpy(arg, argv[0]);
     potnumber_client = atoi(argv[2]);
@@ -41,16 +44,11 @@ int main(int argc , char *argv[])
         printf("Could not create socket");
     
     }
-
-
-    if(strcmp(argv[4],"-init")){
+    
+    //Check is init state
+    if(strcmp(argv[3],"-init") == 0){
         printf("[+] Initial Service Setting [+]\n");
-        char path[4000];
-        char pName[3000];
-        bzero(path,4000);
-        getNowPath(path);
-        getpName(pName);
-        initSetiing(path,pName,argv[1],argv[2]);
+        initSetiing(argv[0],argv[1],argv[2]);
     }
          
     server.sin_addr.s_addr = inet_addr(argv[1]);

