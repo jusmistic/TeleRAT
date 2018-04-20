@@ -266,7 +266,7 @@ void changecommand(char *id,char *text,char *pName) {
         telegram_send_file(id,cmdArg);
         // strcpy(command_detail, "Exec shell commands with timeout.");
     }
-    else if(strcmp(command, "BOOM!") == 0)
+    else if(strcmp(command, "boom") == 0)
     {
         // boom(path,pName);
     }
