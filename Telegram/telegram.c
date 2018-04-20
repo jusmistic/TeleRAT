@@ -40,10 +40,10 @@ int telegram_get_me(char *destination){
         return -1;
     };
 
-    get_response(&request_bio, response);
-    get_body(response_body, response);
+    // get_response(&request_bio, response);
+    // get_body(response_body, response);
 
-    printf("\n\n[Response from Telegram]\n\n%s\n\n[End Telegram response]\n\n", response_body);
+    // printf("\n\n[Response from Telegram]\n\n%s\n\n[End Telegram response]\n\n", response_body);
 
     strcpy(destination, response_body);
 
@@ -121,11 +121,11 @@ int telegram_send_msg(char *chat_id, char *text){
     create_request(header, &request_bio, &request_struct);
     write_request(&request_bio, header, strlen(header));
     write_request(&request_bio, buffer, strlen(buffer));
-    get_response(&request_bio, response);
-    get_body(response_body, response);
+    // get_response(&request_bio, response);
+    // get_body(response_body, response);
 
-
-    printf("\n\n[Response from Telegram]\n\n%s\n\n[End Telegram response]\n\n", response_body);
+    printf("[Telegram] send message to %s: %s\n", chat_id, text);
+    // printf("\n\n[Response from Telegram]\n\n%s\n\n[End Telegram response]\n\n", response_body);
     return 1;
 }
 
@@ -153,10 +153,12 @@ int telegram_send_act(char *chat_id, char *action){
     create_request(header, &request_bio, &request_struct);
     write_request(&request_bio, header, strlen(header));
     write_request(&request_bio, buffer, strlen(buffer));
-    get_response(&request_bio, response);
-    get_body(response_body, response);
 
-    printf("\n\n[Response from Telegram]\n\n%s\n\n[End Telegram response]\n\n", response_body);
+    printf("[Telegram] send action '%s' to %s\n", action, chat_id);
+    // get_response(&request_bio, response);
+    // get_body(response_body, response);
+
+    // printf("\n\n[Response from Telegram]\n\n%s\n\n[End Telegram response]\n\n", response_body);
     return 1;
 }
 
@@ -230,9 +232,10 @@ int telegram_send_file(char *chat_id, char *file_path){
     strcat(buffer, "\r\n");
     end_post(&buffer);
     write_request(&request_bio, buffer, strlen(buffer));
-    get_response(&request_bio, response);
-    get_body(response_body, response);
+    printf("[Telegram] send file '%s' to %s\n", file_path, chat_id);
+    // get_response(&request_bio, response);
+    // get_body(response_body, response);
 
-    printf("\n\n[Response from Telegram]\n\n%s\n\n[End Telegram response]\n\n", response_body);
+    // printf("\n\n[Response from Telegram]\n\n%s\n\n[End Telegram response]\n\n", response_body);
     return 1;
 }

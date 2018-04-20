@@ -75,7 +75,6 @@ int response(int client_socket, Telegram_chat *chat_in, SSL **ssl){
     readlen = BIO_read(ssl_bio, readBuffer, sizeof(readBuffer));
     if(readlen > 0){
         prase_request(&request, readBuffer);
-        printf("%s", readBuffer);
     }
     else{
         return -1;
@@ -88,11 +87,8 @@ int response(int client_socket, Telegram_chat *chat_in, SSL **ssl){
             readlen = BIO_read(ssl_bio, readBuffer, sizeof(readBuffer));
             temp_length -= readlen;
             strcat(temp, readBuffer);
-            printf("%s", readBuffer);
         }
     }
-
-    printf("%s\n", temp);
     bzero(readBuffer, sizeof(readBuffer));
 
     char *http_header = (char *) malloc(256);
