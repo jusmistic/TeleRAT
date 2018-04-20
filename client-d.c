@@ -68,7 +68,7 @@ int main(int argc , char *argv[])
     bzero(hostname,sizeof(hostname));
 
     getHostname(hostname);
-    if(write(socket_desc,hostname,sizeof(hostname))){
+    if(write(socket_desc,hostname,sizeof(hostname)) < 0){
         printf("ERROR: Can't send hostname to server.");
     }
     printf("Hostname: %s\n",hostname);
