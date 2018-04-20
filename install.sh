@@ -8,3 +8,4 @@ cd openssl &&\
 ./config &&\
 make &&\
 make install &&\
+echo "Install complete."
