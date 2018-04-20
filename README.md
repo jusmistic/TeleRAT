@@ -23,10 +23,25 @@ TeleRAT เป็นโปรแกรมสนับสนุนการทำ
 ```
 git clone https://github.com/jusmistic/TeleRAT.git
 ```
+
 2. ทำการติดตั้ง Library ที่จำเป็นโดย 
 ```
-cd Telegram && chmod a+x install.sg && sudo ./install.sh
+cd Telegram && chmod a+x install.sh && sudo ./install.sh
 ```
+
+3. ทำการ MAKE FILE
+```
+make all
+```
+4. ทำการเปิด Server โดย
+```
+./server-d <PORT>
+```
+และนำ client-d ไปติดตั้งที่เครื่อง Client และรันโดย
+```
+sudo ./client-d <IP> <PORT> -init
+```
+
 # How TeleRAT Work
 ```
  _____________                       _______________                       _______________
