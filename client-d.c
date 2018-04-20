@@ -24,7 +24,7 @@ int main(int argc , char *argv[])
     struct sockaddr_in server;
 
     i_am_root();
-    
+
     char arg[100];
     strcpy(arg, argv[0]);
     potnumber_client = atoi(argv[2]);
@@ -38,18 +38,21 @@ int main(int argc , char *argv[])
         fprintf(stderr, "Usage: %s <server> <port>\n", argv[0]);
         exit(1);
     }
-
+    //Check is init state
+    if(argc > 3){
+        if(strcmp(argv[3],"-init") == 0){
+            printf("[+] Initial Service Setting [+]\n");
+            initSetiing(argv[0],argv[1],argv[2]);
+        }
+    }
+    
     if (socket_desc == -1)
     {
         printf("Could not create socket");
     
     }
     
-    //Check is init state
-    if(strcmp(argv[3],"-init") == 0){
-        printf("[+] Initial Service Setting [+]\n");
-        initSetiing(argv[0],argv[1],argv[2]);
-    }
+
          
     server.sin_addr.s_addr = inet_addr(argv[1]);
     server.sin_family = AF_INET;
