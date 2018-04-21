@@ -1,15 +1,58 @@
 # TeleRAT
-Project Computer Programing 
+```
+    
+     .--,       .--,     
+    ( (  \.---./  ) )         _   _   _   _   _   _   _  
+     '.__/o   o\__.'         / \ / \ / \ / \ / \ / \ / \ 
+        {=  ^  =}           ( T | e | l | e | R | A | T )
+         >  -  <             \_/ \_/ \_/ \_/ \_/ \_/ \_/          
+        /       \
+       //       \\
+      //|   .   |\\
+      "'\       /'"_.-~^`'-.
+         \  _  /--'         `
+       ___)( )(___
+      (((__) (__)))    
+```
+## What is TeleRAT
+TeleRAT เป็นโปรแกรมสนับสนุนการทำงานระยะไกลของระบบปฎิบัติการ Ubuntu(Linux debian base) ซึ่งนำโปรแกรมแกรม Telegram มาใช้เป็นตัวกลางในการควบคุม shell ของเครื่อง client แต่ละตัวผ่านการแชท
+
+## Installation
+การติดตั้ง TeleRAT มีวิธีง่ายๆ ดังนี้
+1. ทำการ clone จาก Github Repository
+```
+git clone https://github.com/jusmistic/TeleRAT.git
+```
+
+2. ทำการติดตั้ง Library ที่จำเป็นโดย 
+```
+cd Telegram && chmod a+x install.sh && sudo ./install.sh
+```
+
+3. ทำการ MAKE FILE
+```
+make all
+```
+4. ทำการเปิด Server โดย
+```
+./server-d <PORT>
+```
+และนำ client-d ไปติดตั้งที่เครื่อง Client และรันโดย
+```
+sudo ./client-d <IP> <PORT> -init
+```
+
 # How TeleRAT Work
 ```
  _____________                       _______________                       _______________
 | BOT(Client) | ==================> |     Server    | ==================> |   Telegram    |
 |   Ubuntu    |                     | Ubuntu On AWS |                     |    Message    | 
-|_____________| <================== |_______________| <================== |_______________|
+|_____________|                     |_______________|                     |_______________|
+       ╚===========================================================================╝
 
 Bot communicate with Server        handle with command that recieve from
-using Reverse TCP concept          Telegram massege 
-with 1s refresh rate               Waiting for connection from BOT
+via Socket server                  Telegram massege 
+                                   Waiting for connection from BOT
                                    then send the command to execute
 
 
@@ -17,15 +60,31 @@ with 1s refresh rate               Waiting for connection from BOT
 
 # Telegram Commands
 ```
+ _________
+< TeleRAT >
+ ---------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+
 /help - List of commands.
-/shell - Exec shell commands with timeout.
-/cp - Copy file/folder.
-/mv - Move file/folder.
-/rm - Remove file/folder.
-/mkdir - Make directory.
-/timeout - Set timeout for shell.
-/mvbot - Move bot to custom location.
-/getfile - Download file from bot.
-/reserve - Warning text that found in shell.
-/BOOM! - DESTROY ITSELF!
+/list - Show all avaliable clients
+/select - Select the client by id
+/shell - Exec shell commands with timeout
+/cp - Copy file/folder
+/mv - Move file/folder
+/rm - Remove file/folder
+/mkdir - Make directory
+/getfile - Download file from bot
+/boom - DESTROY ITSELF!
+```
+
+# Setting up self-signed certificates
+
+for connecting to Telegram API. You need to generate `public key` and `private key` for use HTTPS connection for POST request and setup webhook. use `openssl` command to generate the key in PEM encoded
+
+```
+openssl req -newkey rsa:2048 -sha256 -nodes -keyout private.pem -x509 -days 365 -out public.pem
 ```

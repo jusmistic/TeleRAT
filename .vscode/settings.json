@@ -1,9 +1,0 @@
-{
-    "files.associations": {
-        "*.ipp": "c",
-        "stdio.h": "c",
-        "system_error": "c",
-        "string.h": "c",
-        "stdlib.h": "c"
-    }
-}

@@ -1,1 +1,10 @@
 header/
+.vscode/
+public.pem
+private.pem
+error.txt
+exe.txt
+client-d
+server-d
+*.a
+*.o
