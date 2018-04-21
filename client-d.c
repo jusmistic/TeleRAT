@@ -113,32 +113,22 @@ int main(int argc , char *argv[])
 
         if(read(socket_desc, chat_id , 50) < 0){
             printf("chat_id failed\n");
-            // perror("chat_id");
         }
         printf("%s\n",chat_id);
         if( read(socket_desc, chat_text , sizeof(chat_text) ) < 0)
         {
             printf("recieve failed");
         }
-        // if( write(socket_desc,buf,3) < 0){
-        //     printf("writing failed");
-        // }
         if(strlen(chat_id) < 1) continue;
-        // printf("Ez here\n");
         printf("%s\n",chat_text);
        
-        // printf("b4 changecmd\n");
         int exec_status;
         exec_status = changecommand(chat_id,chat_text,argv[0]);
-        // printf("af changecmd\n");
-        
-        // printf("%s\n", chat_text);
+
         //combine all message_box
         FILE *fp, *error_file, *exe_file;
         fp = popen("touch result.txt","r");
         fp = popen("touch error.txt","r");
-        
-        // usleep(10000);
         
         if(exec_status == 0){
             sleep(1);
@@ -167,6 +157,7 @@ int main(int argc , char *argv[])
                 }
                 fclose(error_file);
                 
+                //Chat is not buf, It's plain text >> IF check other Buf --> No output
                 if(strlen(buf) <= 0){
                     strcpy(buf, "No output");
                 }
@@ -190,9 +181,6 @@ int main(int argc , char *argv[])
                 }
                 fclose(exe_file);
 
-                // printf("Yeah!\n");
-                // fgets(buf, 1024, fp);
-                //If write(socket_desc , buf , strlen(buf)) < 0 it means client didn't send anything to server
                 sprintf(msg, "```\n%s\n```", buf);
                 telegram_send_act(chat_id, "typing");
                 telegram_send_msg(chat_id, msg);
@@ -206,13 +194,13 @@ int main(int argc , char *argv[])
                 telegram_send_file(chat_id, "result.txt");
                 printf("send result.txt\n");
             }
-            // printf("wow");
         }    
         fp = popen("rm result.txt","r");
         fp = popen("rm error.txt","r");
     
     }
 }
+//Check some command to change for worked
 int changecommand(char *id,char *text,char *pName) {
     char text_build[4000], command[4000],cmdArg[4000];
     char path[4000];
@@ -221,11 +209,11 @@ int changecommand(char *id,char *text,char *pName) {
     int space_found=-1;
     bzero(command,4000);
     bzero(cmdArg,4000);
-    // printf("b4 getpath\n");
     getNowPath(path);
     getpName(pName);
     strcpy(text_build, text);
     length = strlen(text);
+    //Get buf
     for(start_index=0; start_index < length; start_index++) {
         if(text_build[start_index] == ' ' ){
             space_loc = start_index;
@@ -264,7 +252,7 @@ int changecommand(char *id,char *text,char *pName) {
         }
         return -1;
     }
-    // printf("b4 cut string\n");
+    // Get Path
     strncpy(command,text_build+1,space_loc);
     command[space_loc-1] = '\0';
     strncpy(cmdArg, text_build+space_loc,length-space_loc);
