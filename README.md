@@ -20,6 +20,44 @@ TeleRAT เป็นโปรแกรมสนับสนุนการทำ
 <img align="center" src="https://media.giphy.com/media/hTDO28e3i3Di3H2Y8f/giphy.gif" alt="how TeleRAT work.">
 </p>
 
+## Telegram Commands
+```
+ _________
+< TeleRAT >
+ ---------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+
+/help - List of commands.
+/list - Show all avaliable clients
+/select - Select the client by id
+/shell - Exec shell commands with timeout
+/cp - Copy file/folder
+/mv - Move file/folder
+/rm - Remove file/folder
+/mkdir - Make directory
+/getfile - Download file from bot
+/boom - DESTROY ITSELF!
+```
+
+## How TeleRAT Work
+```
+             _____________                       _______________                       _______________
+            | BOT(Client) | ==================> |     Server    | ==================> |   Telegram    |
+            |   Ubuntu    |                     | Ubuntu On AWS |                     |    Message    | 
+            |_____________|                     |_______________|                     |_______________|
+                   ╚===========================================================================╝
+            
+            Bot communicate with Server        handle with command that recieve from
+            via Socket server                  Telegram massege 
+                                               Waiting for connection from BOT
+                                               then send the command to execute
+
+```
+
 ## Installation
 การติดตั้ง TeleRAT มีวิธีง่ายๆ ดังนี้
 1. ทำการ clone จาก Github Repository
@@ -45,43 +83,8 @@ make all
 sudo ./client-d <IP> <PORT> -init
 ```
 
-# How TeleRAT Work
-```
-             _____________                       _______________                       _______________
-            | BOT(Client) | ==================> |     Server    | ==================> |   Telegram    |
-            |   Ubuntu    |                     | Ubuntu On AWS |                     |    Message    | 
-            |_____________|                     |_______________|                     |_______________|
-                   ╚===========================================================================╝
-            
-            Bot communicate with Server        handle with command that recieve from
-            via Socket server                  Telegram massege 
-                                               Waiting for connection from BOT
-                                               then send the command to execute
 
-```
 
-# Telegram Commands
-```
- _________
-< TeleRAT >
- ---------
-        \   ^__^
-         \  (oo)\_______
-            (__)\       )\/\
-                ||----w |
-                ||     ||
-
-/help - List of commands.
-/list - Show all avaliable clients
-/select - Select the client by id
-/shell - Exec shell commands with timeout
-/cp - Copy file/folder
-/mv - Move file/folder
-/rm - Remove file/folder
-/mkdir - Make directory
-/getfile - Download file from bot
-/boom - DESTROY ITSELF!
-```
 
 # Setting up self-signed certificates
 
