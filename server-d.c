@@ -83,17 +83,31 @@ void *recvmg(void *sock)
     }
     
     pthread_mutex_lock(&mutex);
-    /* delete client socket on disconected */
     printf("%s disconnected\n",cl.ip_client);
 
+    /* send disconnect message to everyone is using this client */
+
+    /* debug user_select_n */
+    printf("[Debug user_select_n] %d\n", user_select_n);
     for(int i = 0; i < user_select_n; i++){
         if(user_select[i].client_soc == cl.client_soc){
             char temp[350];
             sprintf(temp, "Client `%s` is disconnect.", sendto_function[select].hostname);
             telegram_send_msg(user_select[i].chat_id, temp);
+
+            int j = i;
+            while(j < user_select_n){
+                user_select[j] = user_select[j+1];
+                j++;
+            }
+
+            printf("[Thread debug %d] deleted user select %d\n", user_select[i].client_soc, i);
+            user_select_n--;
+            i--;
         }
     }
 
+    /* remove it from socket list */
     for(int i = 0; i < n; i++) {
         if(sendto_function[i].client_soc == cl.client_soc) {
             int j = i;
@@ -101,10 +115,10 @@ void *recvmg(void *sock)
                 sendto_function[j] = sendto_function[j+1];
                 j++;
             }
+            n--;
             break;
         }
     }
-    n--;
 
     pthread_mutex_unlock(&mutex);
 }
@@ -192,6 +206,10 @@ void *command(){
             printf("Client list%d\n", n);
             pthread_mutex_lock(&mutex);
 
+            /*  
+                find user selected client.
+                if user not select client before. value of select is -1.
+            */
             for(int i = 0; i < n; i++){
                 if(strcmp(user_select[i].chat_id, chat.id) == 0){
                     select = i;
@@ -200,6 +218,9 @@ void *command(){
                 }
             }
 
+            /*
+                /help function
+            */
             if(strncmp(chat.text, "/help", 5) == 0){
                 char *help_text = help();
                 telegram_send_msg(chat.id, help_text);
@@ -237,8 +258,14 @@ void *command(){
                 free(temp);
                 free(text);
             }
+
+            /*
+                /select function
+            */
             else if(strncmp(chat.text, "/select", 7) == 0){
                 char temp[100] = "";
+
+                /* parse client_id from message */
                 int user_select_id;
                 for(int i = 7; chat.text[i] != 0; i++){
                     temp[i-7] = chat.text[i];
@@ -247,10 +274,13 @@ void *command(){
                 if(strlen(temp) > 0){
                     user_select_id = atoi(temp);
                     if(user_select_id > 0){
+                        /* argument 2 entering number */
                         if(select != -1){
+                            /* user have selected other client before */
                             user_select[select].client_soc = sendto_function[user_select_id-1].client_soc;
                             printf("[Debug] It already have (%d)(socket %d)\n", select, sendto_function[user_select_id-1].client_soc);
                         }else{
+                            /* user never selected client before */
                             select = user_select_n;
                             strcpy(user_select[select].chat_id, chat.id);
                             user_select[select].client_soc = sendto_function[user_select_id-1].client_soc;
@@ -259,6 +289,7 @@ void *command(){
                         }
                         telegram_mark_send(&chat);
 
+                        /* copy chat struct to socket list struct */
                         sendto_function[user_select_id-1].chat = chat;
                         printf("Debug => %s\n", sendto_function[user_select_id-1].chat.id);
                         printf("Debug => %d\n", sendto_function[user_select_id-1].client_soc);
@@ -280,17 +311,18 @@ void *command(){
                                             "Use /select to select the cliend");
             }
             else{
-                int temp_socket = -1;
+                // int temp_socket = -1;
                 int is_found = 0;
-                for(int i = 0; i < user_select_n; i++){
-                    if(strcmp(user_select[i].chat_id, chat.id) == 0){
-                        temp_socket = user_select[i].client_soc;
-                        break;
-                    }
-                }
+                // for(int i = 0; i < user_select_n; i++){
+                //     if(strcmp(user_select[i].chat_id, chat.id) == 0){
+                //         temp_socket = user_select[i].client_soc;
+                //         break;
+                //     }
+                // }
                 
+                /* find socket of client that user selected */
                 for(int i = 0; i < n; i++){
-                    if(sendto_function[i].client_soc == temp_socket){
+                    if(sendto_function[i].client_soc == user_select[select].client_soc){
                         sendto_function[i].chat = chat;
                         is_found = 1;
                         break;
