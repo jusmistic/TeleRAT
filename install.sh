@@ -8,4 +8,6 @@ cd openssl &&\
 ./config &&\
 make &&\
 make install &&\
+cd .. &&\
+openssl req -newkey rsa:2048 -sha256 -nodes -keyout private.pem -x509 -days 365 -out public.pem &&\
 echo "Install complete."

