@@ -29,7 +29,7 @@ git clone https://github.com/jusmistic/TeleRAT.git
 
 2. ทำการติดตั้ง Library ที่จำเป็นโดย 
 ```
-cd Telegram && chmod a+x install.sh && sudo ./install.sh
+cd TeleRAT && chmod a+x install.sh && sudo ./install.sh
 ```
 
 3. ทำการ MAKE FILE
