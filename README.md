@@ -16,6 +16,9 @@
 ```
 ## What is TeleRAT
 TeleRAT เป็นโปรแกรมสนับสนุนการทำงานระยะไกลของระบบปฎิบัติการ Ubuntu(Linux debian base) ซึ่งนำโปรแกรมแกรม Telegram มาใช้เป็นตัวกลางในการควบคุม shell ของเครื่อง client แต่ละตัวผ่านการแชท
+<p align="center">
+<img align="center" src="https://media.giphy.com/media/hTDO28e3i3Di3H2Y8f/giphy.gif" alt="how TeleRAT work.">
+</p>
 
 ## Installation
 การติดตั้ง TeleRAT มีวิธีง่ายๆ ดังนี้
@@ -44,17 +47,16 @@ sudo ./client-d <IP> <PORT> -init
 
 # How TeleRAT Work
 ```
- _____________                       _______________                       _______________
-| BOT(Client) | ==================> |     Server    | ==================> |   Telegram    |
-|   Ubuntu    |                     | Ubuntu On AWS |                     |    Message    | 
-|_____________|                     |_______________|                     |_______________|
-       ╚===========================================================================╝
-
-Bot communicate with Server        handle with command that recieve from
-via Socket server                  Telegram massege 
-                                   Waiting for connection from BOT
-                                   then send the command to execute
-
+             _____________                       _______________                       _______________
+            | BOT(Client) | ==================> |     Server    | ==================> |   Telegram    |
+            |   Ubuntu    |                     | Ubuntu On AWS |                     |    Message    | 
+            |_____________|                     |_______________|                     |_______________|
+                   ╚===========================================================================╝
+            
+            Bot communicate with Server        handle with command that recieve from
+            via Socket server                  Telegram massege 
+                                               Waiting for connection from BOT
+                                               then send the command to execute
 
 ```
 
