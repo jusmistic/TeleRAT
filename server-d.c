@@ -235,6 +235,8 @@ void *command(){
                 }
             }
 
+            telegram_send_act(chat.id, "typing");
+
             /*
                 /help function
             */

