@@ -15,7 +15,7 @@
       (((__) (__)))    
 ```
 ## What is TeleRAT
-TeleRAT เป็นโปรแกรมสนับสนุนการทำงานระยะไกลของระบบปฎิบัติการ Ubuntu (Linux debian base) ซึ่งนำโปรแกรมแกรม Telegram มาใช้เป็นตัวกลางในการควบคุม shell ของเครื่อง client แต่ละตัวผ่านการแชท
+TeleRAT เป็นโปรแกรมสนับสนุนการทำงานระยะไกลของระบบปฎิบัติการ Ubuntu (or Linux debian base) ซึ่งนำโปรแกรมแกรม Telegram มาใช้เป็นตัวกลางในการควบคุม shell ของเครื่อง client แต่ละตัวผ่านการแชท
 <p align="center">
 <img align="center" src="https://media.giphy.com/media/hTDO28e3i3Di3H2Y8f/giphy.gif" alt="how TeleRAT work.">
 </p>
@@ -183,4 +183,4 @@ sudo ./client-d <IP> <PORT> -init
 ## Assistant Teachers
 ผศ. ดร. กิติ์สุชาติ พสุภา | ผศ. ดร. ปานวิทย์ ธุวะนุติ
 --------------------|----------------------
-![ผศ. ดร. กิติ์สุชาติ พสุภา](/resource/AJOung.png) |![ผศ. ดร. ปานวิทย์ ธุวะนุติ](/resource/AJPanwit.png)
+![ผศ. ดร. กิติ์สุชาติ พสุภา](/resource/AJOung.jpg) |![ผศ. ดร. ปานวิทย์ ธุวะนุติ](/resource/AJPanwit.jpg)
