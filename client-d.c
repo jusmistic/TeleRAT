@@ -255,7 +255,7 @@ int changecommand(char *id,char *text,char *pName) {
     // Get Path
     strncpy(command,text_build+1,space_loc);
     command[space_loc-1] = '\0';
-    strncpy(cmdArg, text_build+space_loc,length-space_loc);
+    strncpy(cmdArg, text_build+space_loc+1,length-space_loc);
     cmdArg[length-space_loc] = '\0';
 
     bzero(text_build,4000);
@@ -270,34 +270,35 @@ int changecommand(char *id,char *text,char *pName) {
     else if(strcmp(command, "cp") == 0 && space_found != -1)
     {
         printf("%d",space_found);
-        sprintf(text_build, "%s%s",command,cmdArg);
+        sprintf(text_build, "%s %s",command,cmdArg);
         exeCMD(text_build);
         return 0;
         // strcpy(command_detail, "Exec shell commands with timeout.");
     }
     else if(strcmp(command, "mv") == 0  && space_found != -1)
     {
-        sprintf(text_build, "%s%s",command,cmdArg);
+        sprintf(text_build, "%s %s",command,cmdArg);
         exeCMD(text_build);
         return 0;
         // strcpy(command_detail, "Exec shell commands with timeout.");
     }
     else if(strcmp(command, "rm") == 0  && space_found != -1)
     {
-        sprintf(text_build, "%s%s",command,cmdArg);
+        sprintf(text_build, "%s %s",command,cmdArg);
         exeCMD(text_build);
         return 0;
         // strcpy(command_detail, "Exec shell commands with timeout.");
     }
     else if(strcmp(command, "mkdir") == 0  && space_found != -1)
     {
-        sprintf(text_build, "%s%s",command,cmdArg);
+        sprintf(text_build, "%s %s",command,cmdArg);
         exeCMD(text_build);
         return 0;
         // strcpy(command_detail, "Exec shell commands with timeout.");
     }
     else if(strcmp(command, "getfile") == 0  && space_found != -1)
     {
+        printf("cmd Arg: %s\n",cmdArg);
         telegram_send_file(id,cmdArg);
         return 0;
         // strcpy(command_detail, "Exec shell commands with timeout.");
