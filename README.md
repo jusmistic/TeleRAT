@@ -61,10 +61,11 @@ TeleRAT เป็นโปรแกรมสนับสนุนการทำ
     เลือก Client ที่ต้องการใช้งาน <br>
     **Command** <br>
     ```
-    /select <id>
+    /select <id | all>
     ```
     **Argument** <br>
-    * id - ID ของ client ที่ต้องการใช้งาน
+    * id - ID ของ client ที่ต้องการใช้งาน หรือ
+    * all - เลือก client ทั้งหมดที่มี
 * **shell** <br>
     ใช้เพื่อ execute command ที่ต้องการ <br>
     **Command** <br>
