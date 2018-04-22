@@ -110,11 +110,12 @@ int main(int argc , char *argv[])
             }
             sleep(3);
         }
-
+        //Check chat id
         if(read(socket_desc, chat_id , 50) < 0){
             printf("chat_id failed\n");
         }
         printf("%s\n",chat_id);
+        //Check revieve chat text
         if( read(socket_desc, chat_text , sizeof(chat_text) ) < 0)
         {
             printf("recieve failed");

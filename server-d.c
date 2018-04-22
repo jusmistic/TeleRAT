@@ -16,7 +16,6 @@
 
 Telegram_chat chat;
 
-void *connect_handle(void * temp_struct);
 void *telegram_serv(void *vargp);
 
 struct clients {
@@ -34,10 +33,10 @@ struct user_select{
 int n = 0, user_select_n = 0;
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
-void *recvmg(void *sock)
+void *recieve_message(void *clientsock)
 {
     //Change void to struct
-	struct clients cl = *((struct clients *)sock);
+	struct clients cl = *((struct clients *)clientsock);
 	char message_get[500];
 	int len;
     char status[3];
@@ -90,6 +89,7 @@ void *recvmg(void *sock)
     printf("%s disconnected\n",cl.ip_client);
 
     /* send disconnect message to everyone is using this client */
+
     for(int i = 0; i < user_select_n; i++){
         if(user_select[i].client_soc == cl.client_soc){
             char temp[350];
@@ -101,6 +101,7 @@ void *recvmg(void *sock)
                 user_select[j] = user_select[j+1];
                 j++;
             }
+
             user_select_n--;
             i--;
         }
@@ -185,7 +186,7 @@ int botserver(int potnumber_server)
 		strcpy(clients[n].ip_client, ip);
         int socket = n;
         //create new thread
-		pthread_create(&server_serv, NULL, recvmg, &clients[n]);
+		pthread_create(&server_serv, NULL, recieve_message, &clients[n]);
         n++;
 
 		pthread_mutex_unlock(&mutex);
@@ -204,6 +205,7 @@ void *command(){
     while(1){
         if(telegram_check(&chat) > 0){
             int select = -1;
+
             pthread_mutex_lock(&mutex);
 
             /*  
