@@ -38,12 +38,7 @@ int telegram_get_me(char *destination){
     
     if(write_request(&request_bio, header, strlen(header)) < 0){
         return -1;
-    };
-
-    // get_response(&request_bio, response);
-    // get_body(response_body, response);
-
-    // printf("\n\n[Response from Telegram]\n\n%s\n\n[End Telegram response]\n\n", response_body);
+    }
 
     strcpy(destination, response_body);
 
@@ -79,7 +74,9 @@ int telegram_set_webhook(char *url, char *public_key){
     strcat(temp, buffer);
     strcpy(buffer, temp);
 
-    write_request(&request_bio, buffer, strlen(buffer));
+    if(write_request(&request_bio, buffer, strlen(buffer)) < 0){
+        return -1;
+    }
     get_response(&request_bio, response);
     get_body(response_body, response);
 
@@ -119,7 +116,10 @@ int telegram_send_msg(char *chat_id, char *text){
 
     /* create HTTP Header message */
     create_request(header, &request_bio, &request_struct);
-    write_request(&request_bio, header, strlen(header));
+    if(write_request(&request_bio, header, strlen(header)) < 0)
+    {
+        return -1;
+    }
     write_request(&request_bio, buffer, strlen(buffer));
     // get_response(&request_bio, response);
     // get_body(response_body, response);
@@ -151,8 +151,12 @@ int telegram_send_act(char *chat_id, char *action){
     request_struct.content_length = strlen(buffer);
 
     create_request(header, &request_bio, &request_struct);
-    write_request(&request_bio, header, strlen(header));
-    write_request(&request_bio, buffer, strlen(buffer));
+    if(write_request(&request_bio, header, strlen(header)) < 0){
+        return -1;
+    }
+    if(write_request(&request_bio, buffer, strlen(buffer)) < 0){
+        return -1;
+    }
 
     printf("[Telegram] send action '%s' to %s\n", action, chat_id);
     return 1;
@@ -202,27 +206,35 @@ int telegram_send_file(char *chat_id, char *file_path){
         request_struct.content_length += strlen(buffer);
 
         create_request(header, &request_bio, &request_struct);
-        write_request(&request_bio, header, strlen(header));
+        if(write_request(&request_bio, header, strlen(header)) < 0){
+            return -1;
+        }
 
         memset(buffer, 0, sizeof(buffer));
         add_post(buffer, chat_id, "chat_id");
         create_file_boundary(&temp, file_path, "document");
         strcat(buffer, temp);
 
-        write_request(&request_bio, buffer, strlen(buffer));
+        if(write_request(&request_bio, buffer, strlen(buffer)) < 0){
+            return -1;
+        }
 
         rewind(fp);
         while(!feof(fp)){
             memset(read_file, 0, sizeof(read_file));
             int bufflen = fread(read_file, 1, sizeof(read_file), fp);
             read_file[bufflen] = 0;
-            write_request(&request_bio, read_file, bufflen);
+            if(write_request(&request_bio, read_file, bufflen) < 0){
+                return -1;
+            }
         }
         fclose(fp);
         bzero(buffer, sizeof(buffer));
         strcat(buffer, "\r\n");
         end_post(&buffer);
-        write_request(&request_bio, buffer, strlen(buffer));
+        if(write_request(&request_bio, buffer, strlen(buffer)) < 0){
+            return -1;
+        }
         printf("[Telegram] send file '%s' to %s\n", file_path, chat_id);
         return -1;
     }else{

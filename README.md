@@ -164,14 +164,3 @@ make all
 ```
 sudo ./client-d <IP> <PORT> -init
 ```
-
-
-
-
-# Setting up self-signed certificates
-
-for connecting to Telegram API. You need to generate `public key` and `private key` for use HTTPS connection for POST request and setup webhook. use `openssl` command to generate the key in PEM encoded
-
-```
-openssl req -newkey rsa:2048 -sha256 -nodes -keyout private.pem -x509 -days 365 -out public.pem
-```
