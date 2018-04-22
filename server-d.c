@@ -92,7 +92,7 @@ void *recieve_message(void *clientsock)
     /* send disconnect message to everyone is using this client */
 
     for(int i = 0; i < user_select_n; i++){
-        if(user_select[i].client_soc == cl.client_soc || user_select[i].boardcast == 1){
+        if(user_select[i].client_soc == cl.client_soc){
             char temp[350];
             sprintf(temp, "[Bot] Client `%s (ip: %s)` is disconnect.", clients[select].hostname, clients[select].ip_client);
             telegram_send_msg(user_select[i].chat_id, temp);
