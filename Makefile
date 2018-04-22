@@ -25,4 +25,6 @@ client-d: client-d.c include/util.o Telegram/telegram.a
 
 clean:
 	rm -f *.a *.o
+	rm -f server-d
+	rm -f client-d
 	cd Telegram && make clean && cd ..

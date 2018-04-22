@@ -170,13 +170,15 @@ int tcp_server(Telegram_chat *chat){
     server_address.sin_addr.s_addr = htonl(INADDR_ANY);
 
     if(bind(server_socket, (struct sockaddr *) &server_address, sizeof(server_address)) < 0){
-        perror("Unable to bind");
-        return -1;
+        perror("[Telegram HTTPS server] Unable to bind");
+        return -2;
+    }else{
+        printf("[Telegram HTTPS server] bind done\n");
     }
 
     if(listen(server_socket, 5) < 0){
         perror("Unable to listen");
-        return -1;
+        return -3;
     }
 
     while(1){
@@ -186,7 +188,7 @@ int tcp_server(Telegram_chat *chat){
         int client_socket = accept(server_socket, (struct sockaddr *) &client_address, &len);
         if (client_socket < 0) {
             perror("Unable to accept");
-            return -1;
+            return -4;
         }
 
         ssl = SSL_new(ctx);
@@ -205,4 +207,6 @@ int tcp_server(Telegram_chat *chat){
     SSL_CTX_free(ctx);
     close(server_socket);
     cleanup_openssl();
+
+    return 1;
 }

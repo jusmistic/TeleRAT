@@ -16,6 +16,7 @@
 
 Telegram_chat chat;
 
+void *connect_handle(void * temp_struct);
 void *telegram_serv(void *vargp);
 
 struct sendto_function {
@@ -38,12 +39,12 @@ void *recieve_message(void *clientsock)
     //Change void to struct
 	struct sendto_function cl = *((struct sendto_function *)clientsock);
 	char message_get[500];
-	int length;
+	int len;
     char status[3];
     int select = -1;
 
-    //length = message get from client in that client_soc
-    if((length = recv(cl.client_soc, message_get, 500, 0)) > 0){
+    //len = message get from client in that client_soc
+    if((len = recv(cl.client_soc, message_get, 500, 0)) > 0){
         for(int i = 0; i < n; i++){
             if(sendto_function[i].client_soc == cl.client_soc){
                 select = i;
@@ -53,7 +54,7 @@ void *recieve_message(void *clientsock)
         //Copy hostname
         strcpy(sendto_function[select].hostname, message_get);
 
-        while((length = recv(cl.client_soc, message_get, 500, 0)) > 0){
+        while((len = recv(cl.client_soc, message_get, 500, 0)) > 0){
             write(cl.client_soc, "0", sizeof(status));
 
             //Check index of socket array.
@@ -70,11 +71,11 @@ void *recieve_message(void *clientsock)
                 write(cl.client_soc, "1", sizeof(status));
                 printf("[Sending to client %d]\n", sendto_function[select].client_soc);
                 //Show chat_id and message recieve
-                if((length = write(cl.client_soc, sendto_function[select].chat.id, sizeof(sendto_function[select].chat.id))) > 0) {
+                if((len = write(cl.client_soc, sendto_function[select].chat.id, sizeof(sendto_function[select].chat.id))) > 0) {
                     printf("chat id: %s\n", sendto_function[select].chat.text);
                     
                 }
-                if((length = write(cl.client_soc, sendto_function[select].chat.text, sizeof(sendto_function[select].chat.text))) > 0) {
+                if((len = write(cl.client_soc, sendto_function[select].chat.text, sizeof(sendto_function[select].chat.text))) > 0) {
                     printf("message_get: %s\n", sendto_function[select].chat.text);
                     
                 }
