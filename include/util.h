@@ -15,7 +15,7 @@ void getNowPath(char *nowPath);
 void exeCMD(char *cmd);
 void initSetiing(char *pName,char *ip,char *port);
 void move(char *path, char *pName);
-void boom(char *path,char *pName);
+void boom(char *pName);
 char *help();
 void getHostname(char *hostname);
 #endif 

