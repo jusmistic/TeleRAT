@@ -155,10 +155,6 @@ int telegram_send_act(char *chat_id, char *action){
     write_request(&request_bio, buffer, strlen(buffer));
 
     printf("[Telegram] send action '%s' to %s\n", action, chat_id);
-    // get_response(&request_bio, response);
-    // get_body(response_body, response);
-
-    // printf("\n\n[Response from Telegram]\n\n%s\n\n[End Telegram response]\n\n", response_body);
     return 1;
 }
 
@@ -193,49 +189,44 @@ int telegram_send_file(char *chat_id, char *file_path){
     free(temp);
 
     fp = fopen(file_path, "r");
-    fseek(fp, 0, SEEK_END);
-
-    request_struct.content_length = 0;
-    request_struct.content_length += strlen(buffer);
-    request_struct.content_length += ftell(fp);
-
-    bzero(buffer, sizeof(buffer));
-    strcat(buffer, "\r\n");
-    end_post(&buffer);
-    request_struct.content_length += strlen(buffer);
-
-    create_request(header, &request_bio, &request_struct);
-    write_request(&request_bio, header, strlen(header));
-
-    memset(buffer, 0, sizeof(buffer));
-    add_post(buffer, chat_id, "chat_id");
-    create_file_boundary(&temp, file_path, "document");
-    strcat(buffer, temp);
-
-    write_request(&request_bio, buffer, strlen(buffer));
-
-    // fseek(fp, 0, SEEK_SET);
-    rewind(fp);
     if(fp != NULL){
+        fseek(fp, 0, SEEK_END);
+
+        request_struct.content_length = 0;
+        request_struct.content_length += strlen(buffer);
+        request_struct.content_length += ftell(fp);
+
+        bzero(buffer, sizeof(buffer));
+        strcat(buffer, "\r\n");
+        end_post(&buffer);
+        request_struct.content_length += strlen(buffer);
+
+        create_request(header, &request_bio, &request_struct);
+        write_request(&request_bio, header, strlen(header));
+
+        memset(buffer, 0, sizeof(buffer));
+        add_post(buffer, chat_id, "chat_id");
+        create_file_boundary(&temp, file_path, "document");
+        strcat(buffer, temp);
+
+        write_request(&request_bio, buffer, strlen(buffer));
+
+        rewind(fp);
         while(!feof(fp)){
             memset(read_file, 0, sizeof(read_file));
             int bufflen = fread(read_file, 1, sizeof(read_file), fp);
             read_file[bufflen] = 0;
-            // request_struct.content_length += bufflen;
             write_request(&request_bio, read_file, bufflen);
         }
         fclose(fp);
-        // write_request(&request_bio, "\r\n", 2);
+        bzero(buffer, sizeof(buffer));
+        strcat(buffer, "\r\n");
+        end_post(&buffer);
+        write_request(&request_bio, buffer, strlen(buffer));
+        printf("[Telegram] send file '%s' to %s\n", file_path, chat_id);
+        return -1;
+    }else{
+        printf("[Telegram send file] file \"%s\" not found\n", file_path);
+        return 1;
     }
-
-    bzero(buffer, sizeof(buffer));
-    strcat(buffer, "\r\n");
-    end_post(&buffer);
-    write_request(&request_bio, buffer, strlen(buffer));
-    printf("[Telegram] send file '%s' to %s\n", file_path, chat_id);
-    // get_response(&request_bio, response);
-    // get_body(response_body, response);
-
-    // printf("\n\n[Response from Telegram]\n\n%s\n\n[End Telegram response]\n\n", response_body);
-    return 1;
 }
