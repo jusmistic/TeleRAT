@@ -16,7 +16,6 @@
 
 Telegram_chat chat;
 
-void *connect_handle(void * temp_struct);
 void *telegram_serv(void *vargp);
 
 struct sendto_function {
@@ -34,17 +33,17 @@ struct user_select{
 int n = 0, user_select_n = 0;
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
-void *recvmg(void *sock)
+void *recieve_message(void *clientsock)
 {
     //Change void to struct
-	struct sendto_function cl = *((struct sendto_function *)sock);
+	struct sendto_function cl = *((struct sendto_function *)clientsock);
 	char message_get[500];
-	int len;
+	int length;
     char status[3];
     int select = -1;
 
-    //len = message get from client in that client_soc
-    if((len = recv(cl.client_soc, message_get, 500, 0)) > 0){
+    //length = message get from client in that client_soc
+    if((length = recv(cl.client_soc, message_get, 500, 0)) > 0){
         for(int i = 0; i < n; i++){
             if(sendto_function[i].client_soc == cl.client_soc){
                 select = i;
@@ -54,7 +53,7 @@ void *recvmg(void *sock)
         //Copy hostname
         strcpy(sendto_function[select].hostname, message_get);
 
-        while((len = recv(cl.client_soc, message_get, 500, 0)) > 0){
+        while((length = recv(cl.client_soc, message_get, 500, 0)) > 0){
             write(cl.client_soc, "0", sizeof(status));
 
             //Check index of socket array.
@@ -71,11 +70,11 @@ void *recvmg(void *sock)
                 write(cl.client_soc, "1", sizeof(status));
                 printf("[Sending to client %d]\n", sendto_function[select].client_soc);
                 //Show chat_id and message recieve
-                if((len = write(cl.client_soc, sendto_function[select].chat.id, sizeof(sendto_function[select].chat.id))) > 0) {
+                if((length = write(cl.client_soc, sendto_function[select].chat.id, sizeof(sendto_function[select].chat.id))) > 0) {
                     printf("chat id: %s\n", sendto_function[select].chat.text);
                     
                 }
-                if((len = write(cl.client_soc, sendto_function[select].chat.text, sizeof(sendto_function[select].chat.text))) > 0) {
+                if((length = write(cl.client_soc, sendto_function[select].chat.text, sizeof(sendto_function[select].chat.text))) > 0) {
                     printf("message_get: %s\n", sendto_function[select].chat.text);
                     
                 }
@@ -189,7 +188,7 @@ int botserver(int potnumber_server)
 		strcpy(sendto_function[n].ip_client, ip);
         int socket = n;
         //create new thread
-		pthread_create(&server_serv, NULL, recvmg, &sendto_function[n]);
+		pthread_create(&server_serv, NULL, recieve_message, &sendto_function[n]);
         n++;
 
 		pthread_mutex_unlock(&mutex);
