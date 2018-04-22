@@ -301,7 +301,7 @@ int changecommand(char *id,char *text,char *pName) {
     {
         printf("cmd Arg: %s\n",cmdArg);
         telegram_send_file(id,cmdArg);
-        return 0;
+        return -1;
         // strcpy(command_detail, "Exec shell commands with timeout.");
     }
 
