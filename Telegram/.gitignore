@@ -5,3 +5,4 @@
 /tcp_server
 /includes/*
 /*.a
+/config.h

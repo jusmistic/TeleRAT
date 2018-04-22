@@ -202,6 +202,19 @@ void *bot_thread(void * argc){
 }
 
 void *command(){
+    char command_list[][20] = {
+        "/help",
+        "/list",
+        "/select",
+        "/shell",
+        "/cp",
+        "/mv",
+        "/rm",
+        "/mkdir",
+        "/getfile",
+        "/boom"
+    };
+
     while(1){
         if(telegram_check(&chat) > 0){
             int select = -1;
@@ -315,21 +328,35 @@ void *command(){
                                             "Use /select to select the cliend");
             }
             else{
-                int is_found = 0;
-                
-                /* find socket of client that user selected */
-                for(int i = 0; i < n; i++){
-                    if(clients[i].client_soc == user_select[select].client_soc){
-                        clients[i].chat = chat;
-                        is_found = 1;
+                int command_exist = 0;
+                for(int i = 0; i < 10; i++){
+                    if(strncmp(chat.text, command_list[i], strlen(command_list[i])) == 0){
+                        
+                        command_exist = 1;
+
+                        int is_found = 0;
+                        /* find socket of client that user selected */
+                        for(int i = 0; i < n; i++){
+                            if(clients[i].client_soc == user_select[select].client_soc){
+                                clients[i].chat = chat;
+                                is_found = 1;
+                                break;
+                            }
+                        }
+                        //Client disconnect from server and is_found return 0 value
+                        if(is_found == 0){
+                            telegram_send_msg(chat.id,  "Client disconnected.\n"
+                                                        "Use /list to view avaliable clients.\n"
+                                                        "Use /select to select client.");
+                        }
+
                         break;
                     }
                 }
-                //Client disconnect from server and is_found return 0 value
-                if(is_found == 0){
-                    telegram_send_msg(chat.id,  "Client disconnected.\n"
-                                                "Use /list to view avaliable clients.\n"
-                                                "Use /select to select client.");
+                
+                if(!command_exist){
+                    printf("[Error] command not found\n");
+                    telegram_send_msg(chat.id, "Command not found");
                 }
             }
 

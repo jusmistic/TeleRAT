@@ -3,19 +3,14 @@
 #include "Telegram/common.h"
 #include "include/util.h"
 
-
-#include<sys/socket.h>
-#include<arpa/inet.h> //inet_addr
+#include <sys/socket.h>
+#include <arpa/inet.h> //inet_addr
 #include <sys/stat.h>
 
 #define OP_START '\\x02'
 #define OP_STOP "\x03"
 
-
-
 int changecommand(char *id,char *text,char *pName);
-
-
 
 int main(int argc , char *argv[])
 {
@@ -52,8 +47,6 @@ int main(int argc , char *argv[])
     
     }
     
-
-         
     server.sin_addr.s_addr = inet_addr(argv[1]);
     server.sin_family = AF_INET;
     server.sin_port = htons(potnumber_client);

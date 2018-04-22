@@ -30,7 +30,7 @@ int telegram_get_me(char *destination){
 
     struct http_request request_struct = {
         .method = "GET",
-        .path = "/bot591458604:AAHOF6mhG6ft9Zyvr2bCciFWKiXsuSJmD9Q/getMe",
+        .path = "/bot"TELEGRAM_TOKEN"/getMe",
         .host = "api.telegram.org"
     };
 
@@ -60,7 +60,7 @@ int telegram_set_webhook(char *url, char *public_key){
 
     struct http_request request_struct = {
         .method = "POST",
-        .path = "/bot591458604:AAHOF6mhG6ft9Zyvr2bCciFWKiXsuSJmD9Q/setWebhook",
+        .path = "/bot"TELEGRAM_TOKEN"/setWebhook",
         .host = "api.telegram.org",
         .content_type = "multipart/form-data",
     };
@@ -95,7 +95,7 @@ int telegram_send_msg(char *chat_id, char *text){
 
     struct http_request request_struct = {
         .method = "POST",
-        .path = "/bot591458604:AAHOF6mhG6ft9Zyvr2bCciFWKiXsuSJmD9Q/sendMessage",
+        .path = "/bot"TELEGRAM_TOKEN"/sendMessage",
         .host = "api.telegram.org",
         .content_type = "multipart/form-data",
     };
@@ -134,7 +134,7 @@ int telegram_send_act(char *chat_id, char *action){
 
     struct http_request request_struct = {
         .method = "POST",
-        .path = "/bot591458604:AAHOF6mhG6ft9Zyvr2bCciFWKiXsuSJmD9Q/sendChatAction",
+        .path = "/bot"TELEGRAM_TOKEN"/sendChatAction",
         .host = "api.telegram.org",
         .content_type = "multipart/form-data",
     };
@@ -164,7 +164,7 @@ int telegram_send_file(char *chat_id, char *file_path){
 
     struct http_request request_struct = {
         .method = "POST",
-        .path = "/bot591458604:AAHOF6mhG6ft9Zyvr2bCciFWKiXsuSJmD9Q/sendDocument",
+        .path = "/bot"TELEGRAM_TOKEN"/sendDocument",
         .host = "api.telegram.org",
         .content_type = "multipart/form-data",
     };

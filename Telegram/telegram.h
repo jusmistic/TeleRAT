@@ -2,6 +2,7 @@
 #define TELEGRAM_
 
 #include "common.h"
+#include "config.h"
 
 #include "openssl/bio.h"
 
