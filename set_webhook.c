@@ -1,7 +1,6 @@
 #include "Telegram/telegram.h"
-#define URL "https://ec2-13-229-209-129.ap-southeast-1.compute.amazonaws.com:8443"
 
-int main(){
-    telegram_set_webhook(URL, "public.pem");
+int main(int argc , char *argv[]){
+    telegram_set_webhook(argv[1], "public.pem");
     return 0;
 }

@@ -6,5 +6,6 @@ error.txt
 exe.txt
 client-d
 server-d
+set_webhook
 *.a
 *.o

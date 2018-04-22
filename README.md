@@ -15,7 +15,7 @@
       (((__) (__)))    
 ```
 ## What is TeleRAT
-TeleRAT เป็นโปรแกรมสนับสนุนการทำงานระยะไกลของระบบปฎิบัติการ Ubuntu(Linux debian base) ซึ่งนำโปรแกรมแกรม Telegram มาใช้เป็นตัวกลางในการควบคุม shell ของเครื่อง client แต่ละตัวผ่านการแชท
+TeleRAT เป็นโปรแกรมสนับสนุนการทำงานระยะไกลของระบบปฎิบัติการ Ubuntu (Linux debian base) ซึ่งนำโปรแกรมแกรม Telegram มาใช้เป็นตัวกลางในการควบคุม shell ของเครื่อง client แต่ละตัวผ่านการแชท
 <p align="center">
 <img align="center" src="https://media.giphy.com/media/hTDO28e3i3Di3H2Y8f/giphy.gif" alt="how TeleRAT work.">
 </p>
@@ -140,6 +140,9 @@ TeleRAT เป็นโปรแกรมสนับสนุนการทำ
 
 ```
 
+## Library
+* [OpenSSL](https://www.openssl.org/)
+
 ## Installation
 การติดตั้ง TeleRAT มีวิธีง่ายๆ ดังนี้
 1. ทำการ clone จาก Github Repository
@@ -151,16 +154,22 @@ git clone https://github.com/jusmistic/TeleRAT.git
 ```
 cd TeleRAT && chmod a+x install.sh && sudo ./install.sh
 ```
+3. แก้ไขไฟล์ Config โดยเข้าไปที่โฟล์เดอร์ Telegram แล้วแก้ชื่อไฟล์ `config.example.h` เป็น `config.h` จากนั้นตรง `TELEGRAM_TOKEN` แก้ค่าเป็น Token ของ Telegram Bot ที่สร้างจาก @BotFather ของ Telegram
 
-3. ทำการ MAKE FILE
+4. ทำการ Complie โดยใช้ MAKE FILE
 ```
 make all
 ```
-4. ทำการเปิด Server โดย
+5. ตั้งค่า Telegram Webhook
+```
+./set_webhook <https://yourdomainOr.IP>
+```
+6. ทำการเปิด Server โดยใช้คำสั่ง
 ```
 ./server-d <PORT>
 ```
-และนำ client-d ไปติดตั้งที่เครื่อง Client และรันโดย
+ในการเปิด Server ครั้งต่อไป สามารถใช้คำสั่ง `./server-d <PORT>` ได้เลย
+และนำไฟล์ client-d ไปติดตั้งที่เครื่อง Client และรันโดยใช้คำสั่ง
 ```
 sudo ./client-d <IP> <PORT> -init
 ```
@@ -169,7 +178,7 @@ sudo ./client-d <IP> <PORT> -init
 พงศธร กิตติวรปัญญา | พุฒิเมธ ธรรมแสง | ปริญ สิทธิกุล
 -----------------|--------------|------------
 ![Phongsathron Kittiworapanya](/resource/fluke.jpg) | ![Puttimate Thumsank](/resource/gun.jpg) | ![Parin Sittigul](/resource/dump.jpg)
-60070055 | 60070068 | 600700xx
+60070055 | 60070068 | 60070047
 
 ## Assistant Teachers
 ผศ. ดร. กิติ์สุชาติ พสุภา | ผศ. ดร. ปานวิทย์ ธุวะนุติ
