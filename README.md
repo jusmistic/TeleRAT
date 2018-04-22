@@ -164,3 +164,14 @@ make all
 ```
 sudo ./client-d <IP> <PORT> -init
 ```
+
+## Our Team
+พงศธร กิตติวรปัญญา | พุฒิเมธ ธรรมแสง | ปริญ สิทธิกุล
+-----------------|--------------|------------
+![Phongsathron Kittiworapanya](/resource/fluke.jpg) | ![Puttimate Thumsank](/resource/gun.jpg) | ![Parin Sittigul](/resource/dump.jpg)
+60070055 | 60070068 | 600700xx
+
+## Assistant Teachers
+ผศ. ดร. กิติ์สุชาติ พสุภา | ผศ. ดร. ปานวิทย์ ธุวะนุติ
+--------------------|----------------------
+![ผศ. ดร. กิติ์สุชาติ พสุภา](/resource/AJOung.png) |![ผศ. ดร. ปานวิทย์ ธุวะนุติ](/resource/AJPanwit.png)
