@@ -16,15 +16,14 @@
 
 Telegram_chat chat;
 
-void *connect_handle(void * temp_struct);
 void *telegram_serv(void *vargp);
 
-struct sendto_function {
+struct clients {
     int client_soc;
     char ip_client[INET_ADDRSTRLEN];
     char hostname[256];
     Telegram_chat chat;
-}sendto_function[100];
+}clients[100];
 
 struct user_select{
     char chat_id[ID_LENGTH];
@@ -34,10 +33,10 @@ struct user_select{
 int n = 0, user_select_n = 0;
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
-void *recvmg(void *sock)
+void *recieve_message(void *clientsock)
 {
     //Change void to struct
-	struct sendto_function cl = *((struct sendto_function *)sock);
+	struct clients cl = *((struct clients *)clientsock);
 	char message_get[500];
 	int len;
     char status[3];
@@ -46,20 +45,20 @@ void *recvmg(void *sock)
     //len = message get from client in that client_soc
     if((len = recv(cl.client_soc, message_get, 500, 0)) > 0){
         for(int i = 0; i < n; i++){
-            if(sendto_function[i].client_soc == cl.client_soc){
+            if(clients[i].client_soc == cl.client_soc){
                 select = i;
                 break;
             }
         }
         //Copy hostname
-        strcpy(sendto_function[select].hostname, message_get);
+        strcpy(clients[select].hostname, message_get);
 
         while((len = recv(cl.client_soc, message_get, 500, 0)) > 0){
             write(cl.client_soc, "0", sizeof(status));
 
             //Check index of socket array.
             for(int i = 0; i < n; i++){
-                if(sendto_function[i].client_soc == cl.client_soc){
+                if(clients[i].client_soc == cl.client_soc){
                     select = i;
                     break;
                 }
@@ -67,19 +66,19 @@ void *recvmg(void *sock)
             
             pthread_mutex_lock(&mutex);
             //Check chat recieve from client in Telegram request
-            if(telegram_check(&sendto_function[select].chat) > 0){
+            if(telegram_check(&clients[select].chat) > 0){
                 write(cl.client_soc, "1", sizeof(status));
-                printf("[Sending to client %d]\n", sendto_function[select].client_soc);
+                printf("[Sending to client %d]\n", clients[select].client_soc);
                 //Show chat_id and message recieve
-                if((len = write(cl.client_soc, sendto_function[select].chat.id, sizeof(sendto_function[select].chat.id))) > 0) {
-                    printf("chat id: %s\n", sendto_function[select].chat.text);
+                if((len = write(cl.client_soc, clients[select].chat.id, sizeof(clients[select].chat.id))) > 0) {
+                    printf("chat id: %s\n", clients[select].chat.text);
                     
                 }
-                if((len = write(cl.client_soc, sendto_function[select].chat.text, sizeof(sendto_function[select].chat.text))) > 0) {
-                    printf("message_get: %s\n", sendto_function[select].chat.text);
+                if((len = write(cl.client_soc, clients[select].chat.text, sizeof(clients[select].chat.text))) > 0) {
+                    printf("message_get: %s\n", clients[select].chat.text);
                     
                 }
-                telegram_mark_send(&sendto_function[select].chat);
+                telegram_mark_send(&clients[select].chat);
                 printf("[End sending]\n");
             }
             pthread_mutex_unlock(&mutex);
@@ -91,12 +90,10 @@ void *recvmg(void *sock)
 
     /* send disconnect message to everyone is using this client */
 
-    /* debug user_select_n */
-    printf("[Debug user_select_n] %d\n", user_select_n);
     for(int i = 0; i < user_select_n; i++){
         if(user_select[i].client_soc == cl.client_soc){
             char temp[350];
-            sprintf(temp, "Client `%s` is disconnect.", sendto_function[select].hostname);
+            sprintf(temp, "[Bot] Client `%s (ip: %s)` is disconnect.", clients[select].hostname, clients[select].ip_client);
             telegram_send_msg(user_select[i].chat_id, temp);
 
             int j = i;
@@ -105,7 +102,6 @@ void *recvmg(void *sock)
                 j++;
             }
 
-            printf("[Thread debug %d] deleted user select %d\n", user_select[i].client_soc, i);
             user_select_n--;
             i--;
         }
@@ -113,10 +109,10 @@ void *recvmg(void *sock)
 
     /* remove it from socket list */
     for(int i = 0; i < n; i++) {
-        if(sendto_function[i].client_soc == cl.client_soc) {
+        if(clients[i].client_soc == cl.client_soc) {
             int j = i;
             while(j < n-1) {
-                sendto_function[j] = sendto_function[j+1];
+                clients[j] = clients[j+1];
                 j++;
             }
             n--;
@@ -150,10 +146,11 @@ int botserver(int potnumber_server)
     while(1){
         if( bind(socket_desc,(struct sockaddr *)&server , sizeof(server)) < 0)
         {
-            puts("bind failed");
+            perror("[Telegram HTTPS server] Unable to bind");
+            printf("[BOT server] Retry to bind address in 15 second...\n");
         }
         else{
-            printf("bind done");
+            printf("[BOT server] bind done\n");
             break;
         }
         sleep(15);
@@ -185,11 +182,11 @@ int botserver(int potnumber_server)
         //accept connection
 		printf("[Bot] %s connected\n",ip);
 
-		sendto_function[n].client_soc = new_sock;
-		strcpy(sendto_function[n].ip_client, ip);
+		clients[n].client_soc = new_sock;
+		strcpy(clients[n].ip_client, ip);
         int socket = n;
         //create new thread
-		pthread_create(&server_serv, NULL, recvmg, &sendto_function[n]);
+		pthread_create(&server_serv, NULL, recieve_message, &clients[n]);
         n++;
 
 		pthread_mutex_unlock(&mutex);
@@ -208,7 +205,7 @@ void *command(){
     while(1){
         if(telegram_check(&chat) > 0){
             int select = -1;
-            printf("Client list%d\n", n);
+
             pthread_mutex_lock(&mutex);
 
             /*  
@@ -218,7 +215,6 @@ void *command(){
             for(int i = 0; i < n; i++){
                 if(strcmp(user_select[i].chat_id, chat.id) == 0){
                     select = i;
-                    printf("found %d\n", select);
                     break;
                 }
             }
@@ -242,7 +238,7 @@ void *command(){
                         memset(temp, 0, sizeof(temp));
                         sprintf(temp,   "%d) %s\n"
                                         "ip : %s\n", 
-                                        (i+1), sendto_function[i].hostname ,sendto_function[i].ip_client);
+                                        (i+1), clients[i].hostname ,clients[i].ip_client);
                         strcat(text, temp);
                     }
 
@@ -287,22 +283,20 @@ void *command(){
                         /* argument 2 entering number */
                         if(select != -1){
                             /* user have selected other client before */
-                            user_select[select].client_soc = sendto_function[user_select_id-1].client_soc;
-                            printf("[Debug] It already have (%d)(socket %d)\n", select, sendto_function[user_select_id-1].client_soc);
+                            user_select[select].client_soc = clients[user_select_id-1].client_soc;
+                            // printf("[Debug] It already have (%d)(socket %d)\n", select, clients[user_select_id-1].client_soc);
                         }else{
                             /* user never selected client before */
                             select = user_select_n;
                             strcpy(user_select[select].chat_id, chat.id);
-                            user_select[select].client_soc = sendto_function[user_select_id-1].client_soc;
+                            user_select[select].client_soc = clients[user_select_id-1].client_soc;
                             user_select_n++;
-                            printf("[Debug] create new one (%d)(socket %d)\n", select, sendto_function[user_select_id-1].client_soc);
+                            // printf("[Debug] create new one (%d)(socket %d)\n", select, clients[user_select_id-1].client_soc);
                         }
                         telegram_mark_send(&chat);
 
                         /* copy chat struct to socket list struct */
-                        sendto_function[user_select_id-1].chat = chat;
-                        printf("Debug => %s\n", sendto_function[user_select_id-1].chat.id);
-                        printf("Debug => %d\n", sendto_function[user_select_id-1].client_soc);
+                        clients[user_select_id-1].chat = chat;
                         sprintf(temp, "Selected client %d", user_select_id);
                         telegram_send_msg(chat.id, temp);
                     }
@@ -325,8 +319,8 @@ void *command(){
                 
                 /* find socket of client that user selected */
                 for(int i = 0; i < n; i++){
-                    if(sendto_function[i].client_soc == user_select[select].client_soc){
-                        sendto_function[i].chat = chat;
+                    if(clients[i].client_soc == user_select[select].client_soc){
+                        clients[i].chat = chat;
                         is_found = 1;
                         break;
                     }
@@ -350,8 +344,8 @@ void *telegram_serv(void *vargp){
     telegram_init(&chat);
     //Server Try To bind
     while(1){
-        if(tcp_server(&chat) <= 0){
-            printf("Retry to bind address in 15 second...\n");
+        if(tcp_server(&chat) < 0){
+            printf("[Telegram HTTPS server] Retry to bind address in 15 second...\n");
             sleep(15);
         }
     }
