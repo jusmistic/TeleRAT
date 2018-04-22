@@ -6,6 +6,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h> //inet_addr
 #include <sys/stat.h>
+#include <sys/time.h>
 
 #define OP_START '\\x02'
 #define OP_STOP "\x03"
@@ -17,6 +18,7 @@ int main(int argc , char *argv[])
     int socket_desc, index = 0, index1 = 0, potnumber_client;
     char message[2000], server_reply[2000], word_copy_message[150];
     struct sockaddr_in server;
+    struct timeval tv = {30, 0};
 
     i_am_root();
 
@@ -47,13 +49,13 @@ int main(int argc , char *argv[])
     
     }
     
-    server.sin_addr.s_addr = inet_addr(argv[1]);
-    server.sin_family = AF_INET;
-    server.sin_port = htons(potnumber_client);
+    while(1){
+        server.sin_addr.s_addr = inet_addr(argv[1]);
+        server.sin_family = AF_INET;
+        server.sin_port = htons(potnumber_client);
  
     //Connect to remote server
     //If cannot connect to server it return value of (connect(socket_desc , (struct sockaddr *)&server , sizeof(server)) < 0 and end program
-    while(1){
         while(1) {
             socket_desc = socket(AF_INET , SOCK_STREAM , 0);
             server.sin_addr.s_addr = inet_addr(argv[1]);
@@ -91,7 +93,10 @@ int main(int argc , char *argv[])
 
             //Check status
             while(1){
-                write(socket_desc, "1", 1);
+                if(write(socket_desc, "1", 1) < 0){
+                    perror("Can't write.\n");
+                    close(socket_desc);
+                };
                 while((status_len = recv(socket_desc, status , 3, 0)) > 0)
                 {
                     status[status_len] = '\0';
@@ -106,13 +111,15 @@ int main(int argc , char *argv[])
             }
             //Check chat id
             if(read(socket_desc, chat_id , 50) < 0){
-                printf("chat_id failed\n");
+                perror("chat_id failed\n");
+                close(socket_desc);
             }
             printf("%s\n",chat_id);
             //Check revieve chat text
             if( read(socket_desc, chat_text , sizeof(chat_text) ) < 0)
             {
-                printf("recieve failed");
+                perror("recieve failed");
+                close(socket_desc);
             }
             if(strlen(chat_id) < 1) continue;
             printf("%s\n",chat_text);
