@@ -28,6 +28,7 @@ struct clients {
 struct user_select{
     char chat_id[ID_LENGTH];
     int client_soc;
+    int boardcast;
 }user_select[100];
 
 int n = 0, user_select_n = 0;
@@ -215,6 +216,8 @@ void *command(){
         "/boom"
     };
 
+    int user_select_id;
+
     while(1){
         if(telegram_check(&chat) > 0){
             int select = -1;
@@ -285,36 +288,52 @@ void *command(){
                 char temp[100] = "";
 
                 /* parse client_id from message */
-                int user_select_id;
                 for(int i = 7; chat.text[i] != 0; i++){
                     temp[i-7] = chat.text[i];
                 }
 
                 if(strlen(temp) > 0){
-                    user_select_id = atoi(temp);
-                    if(user_select_id > 0){
-                        /* argument 2 entering number */
+                    if(strcmp(temp, " all") == 0){
                         if(select != -1){
                             /* user have selected other client before */
-                            user_select[select].client_soc = clients[user_select_id-1].client_soc;
-                            // printf("[Debug] It already have (%d)(socket %d)\n", select, clients[user_select_id-1].client_soc);
+                            user_select[select].client_soc = 0;
+                            user_select[select].boardcast = 1;
                         }else{
                             /* user never selected client before */
                             select = user_select_n;
                             strcpy(user_select[select].chat_id, chat.id);
                             user_select[select].client_soc = clients[user_select_id-1].client_soc;
+                            user_select[select].boardcast = 1;
                             user_select_n++;
-                            // printf("[Debug] create new one (%d)(socket %d)\n", select, clients[user_select_id-1].client_soc);
                         }
-                        telegram_mark_send(&chat);
 
-                        /* copy chat struct to socket list struct */
-                        clients[user_select_id-1].chat = chat;
-                        sprintf(temp, "Selected client %d", user_select_id);
-                        telegram_send_msg(chat.id, temp);
-                    }
-                    else{
-                        telegram_send_msg(chat.id, "Invalid value.");
+                        telegram_send_msg(chat.id, "Select all clients.");
+                    }else{
+                        user_select_id = atoi(temp);
+                        if(user_select_id > 0){
+                            /* argument 2 entering number */
+                            if(select != -1){
+                                /* user have selected other client before */
+                                user_select[select].client_soc = clients[user_select_id-1].client_soc;
+                                user_select[select].boardcast = 0;
+                            }else{
+                                /* user never selected client before */
+                                select = user_select_n;
+                                strcpy(user_select[select].chat_id, chat.id);
+                                user_select[select].client_soc = clients[user_select_id-1].client_soc;
+                                user_select[select].boardcast = 0;
+                                user_select_n++;
+                            }
+                            telegram_mark_send(&chat);
+
+                            /* copy chat struct to socket list struct */
+                            clients[user_select_id-1].chat = chat;
+                            sprintf(temp, "Selected client %d", user_select_id);
+                            telegram_send_msg(chat.id, temp);
+                        }
+                        else{
+                            telegram_send_msg(chat.id, "Invalid value.");
+                        }
                     }
                 }
                 else{
@@ -336,11 +355,18 @@ void *command(){
 
                         int is_found = 0;
                         /* find socket of client that user selected */
-                        for(int i = 0; i < n; i++){
-                            if(clients[i].client_soc == user_select[select].client_soc){
+                        if(user_select[select].boardcast == 1){
+                            for(int i = 0; i < n; i++){
                                 clients[i].chat = chat;
                                 is_found = 1;
-                                break;
+                            }
+                        }else{
+                            for(int i = 0; i < n; i++){
+                                if(clients[i].client_soc == user_select[select].client_soc){
+                                    clients[i].chat = chat;
+                                    is_found = 1;
+                                    break;
+                                }
                             }
                         }
                         //Client disconnect from server and is_found return 0 value
