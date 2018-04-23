@@ -204,6 +204,7 @@ void *bot_thread(void * argc){
 
 void *command(){
     char command_list[][20] = {
+        "/start",
         "/help",
         "/list",
         "/select",
@@ -238,9 +239,25 @@ void *command(){
             telegram_send_act(chat.id, "typing");
 
             /*
+                /start
+            */
+            if(strncmp(chat.text, "/start", 7) == 0){
+                char *cowsay =  "```\n"
+                                " ______\n"
+                                "< Hi~~ >\n"
+                                " ------\n"
+                                "        \\   ^__^\n"
+                                "         \\  (oo)\\_______\n"
+                                "            (__)\\       )\\/\\\n"
+                                "                ||----w |\n"
+                                "                ||     ||\n"
+                                "```";
+                telegram_send_msg(chat.id, cowsay);
+            }
+            /*
                 /help function
             */
-            if(strncmp(chat.text, "/help", 5) == 0){
+            else if(strncmp(chat.text, "/help", 5) == 0){
                 char *help_text = help();
                 telegram_send_msg(chat.id, help_text);
             }
