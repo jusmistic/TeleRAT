@@ -180,7 +180,7 @@ sudo ./client-d <IP> <PORT> -init
 -----------------|--------------|------------
 ![Phongsathron Kittiworapanya](/resource/fluke.jpg) | ![Puttimate Thumsank](/resource/gun.jpg) | ![Parin Sittigul](/resource/dump.jpg)
 60070055 | 60070068 | 60070047
-@Phongsathron | @jusmistic | @Dumpkung
+[@Phongsathron](https://github.com/Phongsathron) | [@jusmistic](https://github.com/jusmistic) | [@Dumpkung](https://github.com/Dumpkung)
 
 ## Assistant Teachers
 ผศ. ดร. กิติ์สุชาต พสุภา | ผศ. ดร. ปานวิทย์ ธุวะนุติ
