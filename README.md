@@ -184,4 +184,4 @@ sudo ./client-d <IP> <PORT> -init
 ## Assistant Teachers
 ผศ. ดร. กิติ์สุชาต พสุภา | ผศ. ดร. ปานวิทย์ ธุวะนุติ
 --------------------|----------------------
-![ผศ. ดร. กิติ์สุชาติ พสุภา](/resource/AJOung.jpg) |![ผศ. ดร. ปานวิทย์ ธุวะนุติ](/resource/AJPanwit.jpg)
+![ผศ. ดร. กิติ์สุชาต พสุภา](/resource/AJOung.jpg) |![ผศ. ดร. ปานวิทย์ ธุวะนุติ](/resource/AJPanwit.jpg)

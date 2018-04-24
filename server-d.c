@@ -367,7 +367,7 @@ void *command(){
             }
             else{
                 int command_exist = 0;
-                for(int i = 0; i < 10; i++){
+                for(int i = 0; i < 11; i++){
                     if(strncmp(chat.text, command_list[i], strlen(command_list[i])) == 0){
                         
                         command_exist = 1;
